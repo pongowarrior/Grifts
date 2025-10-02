@@ -1,87 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Grifts — Free Tools & Generators</title>
-  <meta name="description" content="Grifts: free web tools for creators & gamers. Passwords, QR codes, memes, captions & more.">
-  <link rel="icon" href="/assets/img/favicon.png" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#870160" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS - Free Tools for Creators, Gamers & Hustlers</title>
+    <meta name="description" content="100% free, browser-based tools for content creators, serious gamers, and side hustlers. No sign-ups, no BS.">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/common.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-row"> 
-      <a class="logo" href="/">✨ Grifts</a>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <a href="/tools/">Tools</a>
-        <a href="/about.html">About</a>
-      </nav>
-    </div>
-  </header>
 
-  <main class="container">
-    <section class="hero">
-      <h1><span class="glow">Grifts</span> — Free tools for creators, gamers & dreamers</h1>
-      <p class="sub">Colorful. Mobile-first. No signups. Just instant magic ✨</p>
-      <input id="toolSearch" class="search" placeholder="🔍 Search tools (QR, password, memes…)" />
-    </section>
+    <nav>
+        <div class="container">
+            <a href="/index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/gaming/index.html">Gaming</a></li>
+                <li><a href="/influencer/index.html">Influencer</a></li>
+                <li><a href="/utilities/index.html">Utilities</a></li>
+                <li><a href="/viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <section id="toolsGrid" class="grid">
-      <article class="card" data-title="Password Generator">
-        <a href="/tools/password/">
-          <h3>🔑 Password Generator</h3>
-          <p>Create ultra-strong passwords instantly in your browser.</p>
-        </a>
-      </article>
+    <main class="container">
+        <header style="text-align: center; padding: 4rem 0 2rem;">
+            <h1 style="font-size: 2.5rem;">GRIND HARDER, GRIFT SMARTER.</h1>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 1rem auto;">
+                The only suite of **free, no-BS, browser-based tools** specialized for revenue-generating creators, competitive gamers, and ambitious hustlers.
+            </p>
+        </header>
 
-      <article class="card" data-title="QR Code Generator">
-        <a href="/tools/qr/">
-          <h3>📱 QR Code Generator</h3>
-          <p>Turn links & text into stylish QR codes you can save.</p>
-        </a>
-      </article>
+        <div class="ad-space">
+            Advertisement (Google AdSense Banner)
+        </div>
 
-      <article class="card" data-title="Meme Caption Generator">
-        <a href="/tools/meme-caption/">
-          <h3>😂 Meme Caption Generator</h3>
-          <p>Generate fresh, viral-ready captions for any meme template.</p>
-        </a>
-      </article>
+        <h2 class="section-title" style="margin-top: 4rem;">Select Your Category</h2>
+        <div class="tool-grid">
 
-      <article class="card" data-title="Unit Converter Calculator">
-        <a href="/tools/converter/">
-          <h3>🧮 Unit Converter & Calculator</h3>
-          <p>Instantly convert weights, lengths, currencies, and temperatures.</p>
-        </a>
-      </article>
+            <a href="/gaming/index.html" class="card">
+                <h3>🎮 Gaming Tools</h3>
+                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Optimize Your Build</p>
+                <p style="color: var(--text-secondary);">Calculators, DPS optimization, and niche utilities for competitive players. (2 Tools)</p>
+            </a>
 
-      <article class="card" data-title="Invoice Generator">
-        <a href="/tools/invoice/">
-          <h3>📄 Invoice Generator</h3>
-          <p>Generate and download professional, customizable PDF invoices for free.</p>
-        </a>
-      </article>
-      
-    </section>
-  </main>
+            <a href="/influencer/index.html" class="card">
+                <h3>✨ Influencer Tools</h3>
+                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Generate Virality</p>
+                <p style="color: var(--text-secondary);">Headline testers, hook databases, and content idea generators to boost your views. (4 Tools)</p>
+            </a>
 
-  <footer class="site-footer">
-    <div class="container">
-      <small>© 2025 Grifts — Built with ♥ for everyone</small>
-    </div>
-  </footer>
+            <a href="/utilities/index.html" class="card">
+                <h3>⚙️ Utilities</h3>
+                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Hustle Smarter</p>
+                <p style="color: var(--text-secondary);">Invoice creation, secure passwords, resume building, and essential quick tools. (5 Tools)</p>
+            </a>
 
-  <script src="/assets/js/main.js"></script>
-  <script>
-    // Register service worker for PWA support
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").then(() => {
-        console.log("✅ Service Worker registered!");
-      }).catch(err => console.error("SW registration failed:", err));
-    }
-  </script>
+            <a href="/viral/index.html" class="card">
+                <h3>🚀 Viral Tools</h3>
+                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Get Shared</p>
+                <p style="color: var(--text-secondary);">Meme captioners, compatibility calculators, and challenge generators. (8 Tools)</p>
+            </a>
+
+        </div>
+        
+        <div class="ad-space" style="border: 1px dashed var(--accent-green);">
+            AFFILIATE SPOT: Recommended Gear/Software
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p>100% free, browser-based tools. No sign-ups. No BS.</p>
+            <div class="footer-links">
+                <a href="/privacy.html">Privacy</a>
+                <a href="/contact.html">Contact</a>
+                <a href="/about.html">About</a>
+            </div>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+
 </body>
 </html>
