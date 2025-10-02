@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Grifts — Free Tools & Generators</title>
+  <meta name="description" content="Grifts: free web tools for creators & gamers. Passwords, QR codes, memes, captions & more.">
+  <link rel="icon" href="/assets/img/favicon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#870160" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="logo" href="/">✨ Grifts</a>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/tools/">Tools</a>
+        <a href="/about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero">
+      <h1><span class="glow">Grifts</span> — Free tools for creators, gamers & dreamers</h1>
+      <p class="sub">Colorful. Mobile-first. No signups. Just instant magic ✨</p>
+      <input id="toolSearch" class="search" placeholder="🔍 Search tools (QR, password, memes…)" />
+    </section>
+
+    <!-- Tools Grid -->
+    <section id="toolsGrid" class="grid">
+      <article class="card" data-title="Password Generator">
+        <a href="/tools/password/">
+          <h3>🔑 Password Generator</h3>
+          <p>Create ultra-strong passwords instantly in your browser.</p>
+        </a>
+      </article>
+
+      <article class="card" data-title="QR Code Generator">
+        <a href="/tools/qr/">
+          <h3>📱 QR Code Generator</h3>
+          <p>Turn links & text into stylish QR codes you can save.</p>
+        </a>
+      </article>
+
+      <!-- Add more tool cards here -->
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 Grifts — Built with ♥ for everyone</small>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script>
+    // Register service worker for PWA support
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").then(() => {
+        console.log("✅ Service Worker registered!");
+      }).catch(err => console.error("SW registration failed:", err));
+    }
+  </script>
+</body>
+</html>
