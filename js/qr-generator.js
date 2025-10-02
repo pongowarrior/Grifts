@@ -27,16 +27,18 @@ function generateQRCode() {
     downloadButton.disabled = true;
     
     // Create new QR Code instance (using the QRCode.js library)
-    qrCodeInstance = new QRCode(qrcodeContainer, {
+    // FIX: Passing the string ID "qrcode" instead of the DOM element for robustness
+    qrCodeInstance = new QRCode("qrcode", { 
         text: data,
         width: size,
         height: size,
-        colorDark: "#ffffff", // White foreground (text-primary)
-        colorLight: "#0a0a0a", // Dark background (bg-dark)
+        // Using provided dark theme colors
+        colorDark: "#ffffff", 
+        colorLight: "#0a0a0a",
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    // We must wait a moment for the canvas/image to be rendered
+    // Wait for the canvas/image to be rendered
     setTimeout(() => {
         downloadButton.disabled = false;
         showAlert('QR Code generated!', 'success');
@@ -49,9 +51,11 @@ function downloadQRCode() {
     if (!qrCodeInstance) return;
 
     // QRCode.js renders the code as a Canvas element
+    // NOTE: When using the string ID method, the element is usually the first child of the target div
     const canvas = qrcodeContainer.querySelector('canvas');
     if (!canvas) {
-        showAlert('QR Code not ready for download.', 'error');
+        // Fallback for when it might render as a table (rare with default settings)
+        showAlert('QR Code not ready for download (Canvas not found).', 'error');
         return;
     }
 
@@ -60,6 +64,8 @@ function downloadQRCode() {
     
     // Use the shared downloadFile function from common.js
     const filename = `grifts-qrcode-${dataInput.value.slice(0, 15).replace(/[^a-z0-9]/gi, '')}.png`;
+    
+    // NOTE: downloadFile in common.js expects the content string (which the dataURL is)
     downloadFile(dataURL, filename, 'image/png');
 }
 
@@ -75,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // Debounce the input for real-time generation (optional, but good UX)
+    // Debounce the input for real-time generation 
     dataInput.addEventListener('input', debounce(generateQRCode, 500));
     sizeInput.addEventListener('input', debounce(generateQRCode, 500));
 
