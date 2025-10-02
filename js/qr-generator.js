@@ -1,4 +1,3 @@
-
 // DOM Elements
 const dataInput = document.getElementById('qr-data-input');
 const sizeInput = document.getElementById('qr-size-input');
@@ -17,19 +16,20 @@ function generateQRCode() {
     const size = parseInt(sizeInput.value);
 
     if (!data || size < 100 || size > 512) {
+        // showAlert comes from common.js
         showAlert('Please enter valid data and size (100-512px).', 'error');
         downloadButton.disabled = true;
         return;
     }
 
-    // 2. Setup New Container (The Fix)
+    // 2. Setup New Container (The FIX for QRCode.js DOM conflicts)
     downloadButton.disabled = true;
     
     // Create a NEW temporary div to hold the QR code output (canvas)
     const tempDiv = document.createElement('div');
     
     // 3. Create new QR Code instance
-    // We pass the new temporary element (tempDiv), NOT the ID string, to the library
+    // We pass the new temporary element (tempDiv), NOT the ID string
     qrCodeInstance = new QRCode(tempDiv, { 
         text: data,
         width: size,
@@ -40,7 +40,6 @@ function generateQRCode() {
     });
 
     // 4. Swap the Elements (Crucial Step)
-    // Wait for the canvas/image to be rendered
     setTimeout(() => {
         const outputElement = tempDiv.querySelector('canvas, table');
         
@@ -49,7 +48,7 @@ function generateQRCode() {
             qrcodeContainer.innerHTML = '';
             qrcodeContainer.appendChild(tempDiv);
             
-            // Re-apply center styles (since the new tempDiv is now the immediate child)
+            // Re-apply center styles 
             tempDiv.style.display = 'flex';
             tempDiv.style.justifyContent = 'center';
             tempDiv.style.alignItems = 'center';
@@ -57,7 +56,6 @@ function generateQRCode() {
             downloadButton.disabled = false;
             showAlert('QR Code generated!', 'success');
         } else {
-             // If this alert appears, the external library failed to execute.
              showAlert('QR Code generation failed. Check browser console.', 'error');
         }
     }, 100); 
@@ -81,7 +79,7 @@ function downloadQRCode() {
 
     const dataURL = canvas.toDataURL('image/png');
     
-    // Use the shared downloadFile function from common.js
+    // downloadFile comes from common.js
     const filename = `grifts-qrcode-${dataInput.value.slice(0, 15).replace(/[^a-z0-9]/gi, '')}.png`;
     downloadFile(dataURL, filename, 'image/png');
 }
@@ -98,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // Simple input listeners (NO DEBOUNCE) to avoid any potential crash points
+    // Simple input listeners (NO DEBOUNCE to avoid potential crash points)
     dataInput.addEventListener('input', generateQRCode);
     sizeInput.addEventListener('input', generateQRCode);
 
