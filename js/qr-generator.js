@@ -1,9 +1,9 @@
-// DOM Elements (Initial references - MUST be updated inside functions)
+// DOM Elements
 const dataInput = document.getElementById('qr-data-input');
 const sizeInput = document.getElementById('qr-size-input');
 const generateButton = document.getElementById('generate-btn');
 const downloadButton = document.getElementById('download-btn');
-const qrcodeContainer = document.getElementById('qrcode'); // This variable becomes stale!
+const qrcodeContainer = document.getElementById('qrcode'); // This is the parent div
 
 let qrCodeInstance = null;
 const defaultContent = 'https://grifts.co.uk';
@@ -21,48 +21,47 @@ function generateQRCode() {
         return;
     }
 
-    // *** CRITICAL FIX: Refresh the DOM reference before cleanup ***
-    // This ensures we are always manipulating the current element in the page.
-    const currentQrcodeContainer = document.getElementById('qrcode');
-
-    // 2. Cleanup 
-    if (qrCodeInstance) {
-        qrCodeInstance = null;
-    }
-    // Remove all children (canvas/table) from the container using the fresh reference
-    currentQrcodeContainer.innerHTML = ''; 
-
-    // 3. Setup
+    // 2. Setup New Container (The Fix)
     downloadButton.disabled = true;
     
-    // 4. Create new QR Code instance
-    // We use the string ID "qrcode" here for robustness
-    qrCodeInstance = new QRCode("qrcode", { 
+    // Create a NEW temporary div to hold the QR code output (canvas)
+    const tempDiv = document.createElement('div');
+    
+    // 3. Create new QR Code instance
+    // We pass the new temporary element, NOT the ID string
+    qrCodeInstance = new QRCode(tempDiv, { 
         text: data,
         width: size,
         height: size,
-        colorDark: "#000000", // Black code lines (to contrast with white background)
-        colorLight: "#ffffff", // White background for the code area
+        colorDark: "#000000", 
+        colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    // 5. User Feedback
+    // 4. Swap the Elements (Crucial Step)
     // Wait for the canvas/image to be rendered
     setTimeout(() => {
-        // Use the fresh reference to query for the newly added output element
-        const outputElement = currentQrcodeContainer.querySelector('canvas, table');
+        const outputElement = tempDiv.querySelector('canvas, table');
         
         if (outputElement) {
+            // Success! Clear the OLD content and append the NEW content
+            qrcodeContainer.innerHTML = '';
+            qrcodeContainer.appendChild(tempDiv);
+            
+            // Re-apply center styles from the original div (tempDiv inherits its dimensions)
+            tempDiv.style.display = 'flex';
+            tempDiv.style.justifyContent = 'center';
+            tempDiv.style.alignItems = 'center';
+
             downloadButton.disabled = false;
             showAlert('QR Code generated!', 'success');
         } else {
-             // If this alert shows, the QRCode.js library itself is failing.
              showAlert('QR Code generation failed. Check browser console.', 'error');
         }
     }, 100); 
 }
 
-// --- Download Logic ---
+// --- Download Logic (Remains Corrected) ---
 
 function downloadQRCode() {
     if (downloadButton.disabled) {
@@ -70,11 +69,8 @@ function downloadQRCode() {
         return;
     }
 
-    // *** CRITICAL FIX: Refresh the DOM reference before searching for canvas ***
-    const currentQrcodeContainer = document.getElementById('qrcode');
-
-    // QRCode.js renders the code as a Canvas element (or a table in fallback)
-    const canvas = currentQrcodeContainer.querySelector('canvas');
+    // Since the output is now wrapped inside a tempDiv child, search inside that structure
+    const canvas = qrcodeContainer.querySelector('canvas');
     
     if (!canvas) {
         showAlert('QR Code not ready for download (Canvas not found).', 'error');
@@ -83,7 +79,6 @@ function downloadQRCode() {
 
     const dataURL = canvas.toDataURL('image/png');
     
-    // Use the shared downloadFile function from common.js
     const filename = `grifts-qrcode-${dataInput.value.slice(0, 15).replace(/[^a-z0-9]/gi, '')}.png`;
     downloadFile(dataURL, filename, 'image/png');
 }
@@ -100,11 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // NOTE: The debounce lines are omitted here to prevent the suspected script crash.
-    // If you need real-time input, try adding them back ONLY after confirming
-    // the core functionality works.
-    // dataInput.addEventListener('input', debounce(generateQRCode, 500));
-    // sizeInput.addEventListener('input', debounce(generateQRCode, 500));
+    // Input listeners (without debounce to avoid crashes)
+    dataInput.addEventListener('input', generateQRCode);
+    sizeInput.addEventListener('input', generateQRCode);
 
     // Download listener
     downloadButton.addEventListener('click', downloadQRCode);
