@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Compatibility Calculator - Viral</title>
+    <meta name="description" content="Find out your viral compatibility score with any name! Perfect for sharing on social media.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="./index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">💖 Viral Compatibility Calculator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Find out your score! Enter any two names—yours, a celebrity, a friend, or even a rival—and see your compatibility percentage. **Designed to be shared.**
+            </p>
+        </header>
+
+        <div class="tool-content" style="grid-template-columns: 1fr;">
+            <div class="card" id="input-card" style="max-width: 500px; margin: 0 auto;">
+                <h2>Enter Names</h2>
+                
+                <div class="input-group">
+                    <label for="name1-input">Your Name (or Name 1):</label>
+                    <input type="text" id="name1-input" placeholder="e.g., John" maxlength="30">
+                </div>
+
+                <div class="input-group">
+                    <label for="name2-input">Partner's Name (or Name 2):</label>
+                    <input type="text" id="name2-input" placeholder="e.g., Sarah" maxlength="30">
+                </div>
+                
+                <button id="calculate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">CALCULATE COMPATIBILITY</button>
+            </div>
+
+            <div class="card result-card" style="max-width: 500px; margin: var(--spacing-md) auto;">
+                <h2>Your Score</h2>
+                <div class="result-box" style="display: block; text-align: center;">
+                    <div id="score-display" style="font-size: 4rem; font-weight: bold; color: var(--accent-green); line-height: 1;">
+                        0%
+                    </div>
+                    <p id="result-message" style="margin-top: 1rem; color: var(--text-secondary);">Enter two names and press calculate!</p>
+                </div>
+                
+                <div class="security-info" style="margin-top: 2rem;">
+                    <button id="share-btn" class="btn btn-secondary" style="width: 100%;">Share Your Result!</button>
+                    <p class="hint" style="text-align: center;">Use the share button to instantly post your result to social media.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AFFILIATE SPOT: Dating Apps or Relationship Guides
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Compatibility Calculator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/compatibility-calculator.js" defer></script>
+</body>
+</html>
