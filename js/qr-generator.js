@@ -1,9 +1,9 @@
-// DOM Elements
+// DOM Elements (Initial references - MUST be updated inside functions)
 const dataInput = document.getElementById('qr-data-input');
 const sizeInput = document.getElementById('qr-size-input');
 const generateButton = document.getElementById('generate-btn');
 const downloadButton = document.getElementById('download-btn');
-const qrcodeContainer = document.getElementById('qrcode');
+const qrcodeContainer = document.getElementById('qrcode'); // This variable becomes stale!
 
 let qrCodeInstance = null;
 const defaultContent = 'https://grifts.co.uk';
@@ -16,30 +16,32 @@ function generateQRCode() {
     const size = parseInt(sizeInput.value);
 
     if (!data || size < 100 || size > 512) {
-        // This is the showAlert from common.js
         showAlert('Please enter valid data and size (100-512px).', 'error');
         downloadButton.disabled = true;
         return;
     }
 
+    // *** CRITICAL FIX: Refresh the DOM reference before cleanup ***
+    // This ensures we are always manipulating the current element in the page.
+    const currentQrcodeContainer = document.getElementById('qrcode');
+
     // 2. Cleanup 
-    // Clear previous QR code instance and DOM content cleanly
     if (qrCodeInstance) {
         qrCodeInstance = null;
     }
-    // Remove all children (canvas/table) from the container
-    qrcodeContainer.innerHTML = ''; 
+    // Remove all children (canvas/table) from the container using the fresh reference
+    currentQrcodeContainer.innerHTML = ''; 
 
     // 3. Setup
     downloadButton.disabled = true;
     
     // 4. Create new QR Code instance
-    // Uses the safe string ID "qrcode"
+    // We use the string ID "qrcode" here for robustness
     qrCodeInstance = new QRCode("qrcode", { 
         text: data,
         width: size,
         height: size,
-        colorDark: "#000000", // Black code lines
+        colorDark: "#000000", // Black code lines (to contrast with white background)
         colorLight: "#ffffff", // White background for the code area
         correctLevel: QRCode.CorrectLevel.H
     });
@@ -47,20 +49,20 @@ function generateQRCode() {
     // 5. User Feedback
     // Wait for the canvas/image to be rendered
     setTimeout(() => {
-        // Check if a canvas or table (the code output) was successfully added
-        const outputElement = qrcodeContainer.querySelector('canvas, table');
+        // Use the fresh reference to query for the newly added output element
+        const outputElement = currentQrcodeContainer.querySelector('canvas, table');
         
         if (outputElement) {
             downloadButton.disabled = false;
             showAlert('QR Code generated!', 'success');
         } else {
-             // If this alert shows, the QRCode.js library itself is failing to render.
+             // If this alert shows, the QRCode.js library itself is failing.
              showAlert('QR Code generation failed. Check browser console.', 'error');
         }
     }, 100); 
 }
 
-// --- Download Logic (remains correct) ---
+// --- Download Logic ---
 
 function downloadQRCode() {
     if (downloadButton.disabled) {
@@ -68,8 +70,12 @@ function downloadQRCode() {
         return;
     }
 
-    // QRCode.js renders the code as a Canvas element
-    const canvas = qrcodeContainer.querySelector('canvas');
+    // *** CRITICAL FIX: Refresh the DOM reference before searching for canvas ***
+    const currentQrcodeContainer = document.getElementById('qrcode');
+
+    // QRCode.js renders the code as a Canvas element (or a table in fallback)
+    const canvas = currentQrcodeContainer.querySelector('canvas');
+    
     if (!canvas) {
         showAlert('QR Code not ready for download (Canvas not found).', 'error');
         return;
@@ -94,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // TEMPORARILY REMOVED: These lines are the suspected cause of the script crash.
+    // NOTE: The debounce lines are omitted here to prevent the suspected script crash.
+    // If you need real-time input, try adding them back ONLY after confirming
+    // the core functionality works.
     // dataInput.addEventListener('input', debounce(generateQRCode, 500));
     // sizeInput.addEventListener('input', debounce(generateQRCode, 500));
 
