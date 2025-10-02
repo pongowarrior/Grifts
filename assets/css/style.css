@@ -22,6 +22,14 @@ body {
   animation: bgShift 20s ease-in-out infinite alternate;
 }
 
+/* New Utility: The Container class for centralizing content */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gap); /* Added padding for smaller screens */
+  width: 100%;
+}
+
 /* Background animation */
 @keyframes bgShift {
   0% { background-position: 0% 50%; }
@@ -33,7 +41,7 @@ body {
 
 /* Header */
 .site-header {
-  padding: 1rem;
+  padding: 1rem 0; /* Changed to 0 so the container handles horizontal padding */
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(10px);
   position: sticky;
@@ -44,8 +52,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: var(--max-width);
-  margin: 0 auto;
 }
 .logo {
   font-weight: 700;
@@ -69,10 +75,10 @@ body {
 /* Hero */
 .hero {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 3rem 0; /* Remove horizontal padding here, let container handle it */
 }
 .hero h1 {
-  font-size: 2.2rem;
+  font-size: clamp(2rem, 5vw + 1rem, 3.5rem); /* Responsive font size */
   margin-bottom: 1rem;
   line-height: 1.3;
 }
@@ -93,7 +99,8 @@ body {
   outline: none;
   font-size: 1rem;
   box-shadow: 0 0 15px rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.15);
+  /* Slightly more opaque search background for focus */
+  background: rgba(255,255,255,0.25); 
   color: #fff;
 }
 .search::placeholder { color: #ddd; }
@@ -104,8 +111,9 @@ body {
   gap: var(--gap);
   margin: 2rem auto;
   max-width: var(--max-width);
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  padding: 0 1rem;
+  /* Grid settings for better small-screen presentation */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+  padding: 0 var(--gap); /* Use CSS variable for consistent padding */
 }
 .card {
   background: var(--color-card);
@@ -115,6 +123,13 @@ body {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: 1px solid rgba(255,255,255,0.1);
   cursor: pointer;
+  /* Ensure the whole card is clickable for navigation */
+  position: relative; 
+}
+.card a {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Make the link cover the whole card content */
 }
 .card:hover {
   transform: translateY(-7px) scale(1.02);
@@ -143,7 +158,7 @@ body {
 /* Footer */
 .site-footer {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1.5rem 0; /* Changed to 0 so the container handles horizontal padding */
   color: var(--color-sub);
   margin-top: auto;
   background: rgba(0,0,0,0.25);

@@ -4,7 +4,25 @@
     <loc>https://grifts.co.uk/</loc>
     <priority>1.0</priority>
   </url>
+
   <url>
     <loc>https://grifts.co.uk/tools/password/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://grifts.co.uk/tools/qr/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://grifts.co.uk/tools/invoice/</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://grifts.co.uk/tools/converter/</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://grifts.co.uk/tools/meme-caption/</loc>
+    <priority>0.7</priority>
   </url>
 </urlset>
