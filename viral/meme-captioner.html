@@ -17,6 +17,9 @@
         }
         #meme-canvas {
             display: block; /* Important to remove extra space below canvas */
+            /* Ensure the canvas scales responsively */
+            width: 100%; 
+            height: auto;
         }
     </style>
 </head>
@@ -45,7 +48,7 @@
                 <label for="bottom-text" style="margin-top: 1rem;">Bottom Caption:</label>
                 <input type="text" id="bottom-text" placeholder="ENTER BOTTOM TEXT HERE" maxlength="80">
 
-                <button id="draw-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Draw Text</button>
+                <button id="draw-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Update Preview</button>
             </div>
 
             <div class="card result-card">
@@ -55,7 +58,7 @@
                 </div>
                 
                 <div class="security-info" style="margin-top: 1rem;">
-                    <button id="download-btn" class="btn btn-secondary" style="width: 100%;" disabled>Download PNG (Step 2)</button>
+                    <button id="download-btn" class="btn btn-secondary" style="width: 100%;" disabled>Download PNG (With Watermark)</button>
                 </div>
             </div>
         </div>
