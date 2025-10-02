@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Meme Captioner - Viral</title>
+    <meta name="description" content="Instantly add top/bottom text to any image, drag, resize, and download the perfect meme.">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* CSS for the Meme Captioner */
+        .canvas-area {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+        }
+        #meme-canvas {
+            display: block; /* Important to remove extra space below canvas */
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">🖼️ Meme Captioner</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Add text to any image in seconds. Create viral content, not complicated design accounts.
+            </p>
+        </header>
+
+        <div class="tool-content">
+            <div class="card" id="control-card">
+                <h2>1. Upload & Text</h2>
+                
+                <label for="image-upload">Upload Image:</label>
+                <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 1rem;">
+
+                <label for="top-text">Top Caption:</label>
+                <input type="text" id="top-text" placeholder="ENTER TOP TEXT HERE" maxlength="80">
+
+                <label for="bottom-text" style="margin-top: 1rem;">Bottom Caption:</label>
+                <input type="text" id="bottom-text" placeholder="ENTER BOTTOM TEXT HERE" maxlength="80">
+
+                <button id="draw-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Draw Text</button>
+            </div>
+
+            <div class="card result-card">
+                <h2>Meme Preview</h2>
+                <div class="canvas-area">
+                    <canvas id="meme-canvas"></canvas>
+                </div>
+                
+                <div class="security-info" style="margin-top: 1rem;">
+                    <button id="download-btn" class="btn btn-secondary" style="width: 100%;" disabled>Download PNG (Step 2)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AD SPOT: Creative Software / Stock Photos
+        </div>
+    </main>
+
+    <footer>
+        </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/meme-captioner.js" defer></script>
+</body>
+</html>
