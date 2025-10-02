@@ -28,7 +28,7 @@ function generateQRCode() {
     const tempDiv = document.createElement('div');
     
     // 3. Create new QR Code instance
-    // We pass the new temporary element, NOT the ID string
+    // We pass the new temporary element (tempDiv), NOT the ID string, to the library
     qrCodeInstance = new QRCode(tempDiv, { 
         text: data,
         width: size,
@@ -44,11 +44,11 @@ function generateQRCode() {
         const outputElement = tempDiv.querySelector('canvas, table');
         
         if (outputElement) {
-            // Success! Clear the OLD content and append the NEW content
+            // Success! Clear the OLD content from the target div and append the NEW content
             qrcodeContainer.innerHTML = '';
             qrcodeContainer.appendChild(tempDiv);
             
-            // Re-apply center styles from the original div (tempDiv inherits its dimensions)
+            // Re-apply center styles (since the new tempDiv is now the immediate child)
             tempDiv.style.display = 'flex';
             tempDiv.style.justifyContent = 'center';
             tempDiv.style.alignItems = 'center';
@@ -56,12 +56,13 @@ function generateQRCode() {
             downloadButton.disabled = false;
             showAlert('QR Code generated!', 'success');
         } else {
+             // If this alert appears, the external library failed to execute.
              showAlert('QR Code generation failed. Check browser console.', 'error');
         }
     }, 100); 
 }
 
-// --- Download Logic (Remains Corrected) ---
+// --- Download Logic ---
 
 function downloadQRCode() {
     if (downloadButton.disabled) {
@@ -69,7 +70,7 @@ function downloadQRCode() {
         return;
     }
 
-    // Since the output is now wrapped inside a tempDiv child, search inside that structure
+    // Find the canvas element inside the main container
     const canvas = qrcodeContainer.querySelector('canvas');
     
     if (!canvas) {
@@ -79,6 +80,7 @@ function downloadQRCode() {
 
     const dataURL = canvas.toDataURL('image/png');
     
+    // Use the shared downloadFile function from common.js
     const filename = `grifts-qrcode-${dataInput.value.slice(0, 15).replace(/[^a-z0-9]/gi, '')}.png`;
     downloadFile(dataURL, filename, 'image/png');
 }
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // Input listeners (without debounce to avoid crashes)
+    // Simple input listeners (NO DEBOUNCE) to avoid any potential crash points
     dataInput.addEventListener('input', generateQRCode);
     sizeInput.addEventListener('input', generateQRCode);
 
