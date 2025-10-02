@@ -96,10 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // Debounce the input for real-time generation 
-    // We only attach to the inputs since generateQRCode already handles the logic
-    dataInput.addEventListener('input', debounce(generateQRCode, 500));
-    sizeInput.addEventListener('input', debounce(generateQRCode, 500));
+    // TEMPORARILY REMOVE THE DEBOUNCE FUNCTION CALLS
+    // dataInput.addEventListener('input', debounce(generateQRCode, 500));
+    // sizeInput.addEventListener('input', debounce(generateQRCode, 500));
 
     // Download listener
     downloadButton.addEventListener('click', downloadQRCode);
