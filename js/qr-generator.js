@@ -1,3 +1,5 @@
+alert('QR Generator Script Loaded!');
+
 // DOM Elements
 const dataInput = document.getElementById('qr-data-input');
 const sizeInput = document.getElementById('qr-size-input');
