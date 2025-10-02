@@ -16,16 +16,15 @@ function generateQRCode() {
     const size = parseInt(sizeInput.value);
 
     if (!data || size < 100 || size > 512) {
+        // This is the showAlert from common.js
         showAlert('Please enter valid data and size (100-512px).', 'error');
         downloadButton.disabled = true;
         return;
     }
 
-    // 2. Cleanup (Crucial Fix)
+    // 2. Cleanup 
     // Clear previous QR code instance and DOM content cleanly
     if (qrCodeInstance) {
-        // If the library provides a destroy method, we'd use it here.
-        // Since it doesn't, we must manually clear the container.
         qrCodeInstance = null;
     }
     // Remove all children (canvas/table) from the container
@@ -35,7 +34,7 @@ function generateQRCode() {
     downloadButton.disabled = true;
     
     // 4. Create new QR Code instance
-    // Using the string ID "qrcode" for robustness
+    // Uses the safe string ID "qrcode"
     qrCodeInstance = new QRCode("qrcode", { 
         text: data,
         width: size,
@@ -55,13 +54,13 @@ function generateQRCode() {
             downloadButton.disabled = false;
             showAlert('QR Code generated!', 'success');
         } else {
-             // If still nothing appears, show a detailed error
+             // If this alert shows, the QRCode.js library itself is failing to render.
              showAlert('QR Code generation failed. Check browser console.', 'error');
         }
     }, 100); 
 }
 
-// --- Download Logic ---
+// --- Download Logic (remains correct) ---
 
 function downloadQRCode() {
     if (downloadButton.disabled) {
@@ -72,7 +71,6 @@ function downloadQRCode() {
     // QRCode.js renders the code as a Canvas element
     const canvas = qrcodeContainer.querySelector('canvas');
     if (!canvas) {
-        // Fallback for an unlikely case
         showAlert('QR Code not ready for download (Canvas not found).', 'error');
         return;
     }
@@ -96,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     generateButton.addEventListener('click', generateQRCode);
     
-    // TEMPORARILY REMOVE THE DEBOUNCE FUNCTION CALLS
+    // TEMPORARILY REMOVED: These lines are the suspected cause of the script crash.
     // dataInput.addEventListener('input', debounce(generateQRCode, 500));
     // sizeInput.addEventListener('input', debounce(generateQRCode, 500));
 
