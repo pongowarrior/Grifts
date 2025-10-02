@@ -1,16 +1,17 @@
-const CACHE = 'grifts-v1';
+// Service Worker (Updated to v2 to force cache refresh)
+const CACHE = 'grifts-v2'; 
 const CORE_ASSETS = [
     '/',
     '/index.html',
     '/assets/css/style.css',
     '/assets/js/main.js',
-    // --- New Tool Assets Added Below ---
+    // --- New Tool Assets Added ---
     '/tools/invoice/index.html',
     '/tools/invoice/main.js',
-    '/tools/password/index.html', // Placeholder for when you build it
-    '/tools/qr/index.html',       // Placeholder for when you build it
-    '/tools/converter/index.html',// Placeholder for when you build it
-    '/tools/meme-caption/index.html',// Placeholder for when you build it
+    '/tools/password/index.html', 
+    '/tools/qr/index.html',       
+    '/tools/converter/index.html',
+    '/tools/meme-caption/index.html',
     // Crucial External Dependency for Invoice Generator
     'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js' 
 ];

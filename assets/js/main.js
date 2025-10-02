@@ -1,4 +1,4 @@
-// main.js — Grifts homepage interactions
+// main.js — Grifts homepage interactions (Updated with Debounce)
 
 document.addEventListener("DOMContentLoaded", () => {
     const search = document.getElementById("toolSearch");
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let searchTimeout;
 
-    // Function to run the search logic
+    // Function to run the actual search logic
     const runSearch = (q) => {
         cards.forEach(card => {
             const title = card.dataset.title.toLowerCase();
