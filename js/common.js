@@ -1,3 +1,9 @@
+/*
+File: js/common.js
+Description: All shared utility functions (Memory Store, Alerts, Copy, Download, etc.)
+*/
+
+// --- 1. Memory Storage System (In-Memory replacement for localStorage) ---
 const memoryStore = {};
 
 function saveToMemory(key, value) {
@@ -17,6 +23,7 @@ function clearMemory(key = null) {
     }
 }
 
+// --- 2. Copy to Clipboard Utility ---
 function copyToClipboard(text, buttonElement = null) {
     navigator.clipboard.writeText(text).then(() => {
         showAlert('Copied to clipboard!', 'success');
@@ -38,6 +45,7 @@ function copyToClipboard(text, buttonElement = null) {
     });
 }
 
+// --- 3. Alert/Notification System ---
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
@@ -85,9 +93,29 @@ function showAlert(message, type = 'info') {
     }, 3000);
 }
 
+// --- 4. File Download Utility (FIXED FOR DATA URLs) ---
+/**
+ * Handles file downloads for both raw text/data and Data URLs (like images).
+ * @param {string} content The file content (raw text OR a data: URL).
+ * @param {string} filename The name of the file to download.
+ * @param {string} mimeType The MIME type of the file.
+ */
 function downloadFile(content, filename, mimeType = 'text/plain') {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
+    // 1. Determine the source (Data URL for images, Blob for text/data)
+    let url;
+    let removeUrl = false; // Flag to revoke URL if we create one
+
+    if (content.startsWith('data:')) {
+        // If it's a Data URL (like an image from Canvas/QR Code), use it directly
+        url = content;
+    } else {
+        // If it's raw text/data, create a Blob
+        const blob = new Blob([content], { type: mimeType });
+        url = URL.createObjectURL(blob);
+        removeUrl = true; // Mark for cleanup
+    }
+    
+    // 2. Trigger the download using a hidden link
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
@@ -95,14 +123,21 @@ function downloadFile(content, filename, mimeType = 'text/plain') {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    
+    // 3. Cleanup
+    if (removeUrl) {
+        URL.revokeObjectURL(url);
+    }
+    
     showAlert(`Downloaded ${filename}`, 'success');
 }
 
+// --- 5. ID Generator Utility ---
 function generateId(length = 8) {
     return Math.random().toString(36).substring(2, length + 2).toUpperCase();
 }
 
+// --- 6. Debounce Utility ---
 function debounce(func, wait) {
     let timeout;
     return function(...args) {
@@ -116,6 +151,7 @@ function debounce(func, wait) {
     };
 }
 
+// --- 7. Smooth Scrolling Initialization (runs on page load) ---
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

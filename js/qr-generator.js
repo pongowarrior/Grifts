@@ -11,52 +11,72 @@ const defaultContent = 'https://grifts.co.uk';
 // --- Core Generation Function ---
 
 function generateQRCode() {
+    // 1. Validation and Data
     const data = dataInput.value.trim() || defaultContent;
     const size = parseInt(sizeInput.value);
 
-    // Input validation
     if (!data || size < 100 || size > 512) {
         showAlert('Please enter valid data and size (100-512px).', 'error');
+        downloadButton.disabled = true;
         return;
     }
 
-    // Clear previous QR code
-    qrcodeContainer.innerHTML = '';
-    
-    // Disable download button until a valid code is generated
+    // 2. Cleanup (Crucial Fix)
+    // Clear previous QR code instance and DOM content cleanly
+    if (qrCodeInstance) {
+        // If the library provides a destroy method, we'd use it here.
+        // Since it doesn't, we must manually clear the container.
+        qrCodeInstance = null;
+    }
+    // Remove all children (canvas/table) from the container
+    qrcodeContainer.innerHTML = ''; 
+
+    // 3. Setup
     downloadButton.disabled = true;
     
-    // Create new QR Code instance (using the QRCode.js library)
+    // 4. Create new QR Code instance
+    // Using the string ID "qrcode" for robustness
     qrCodeInstance = new QRCode("qrcode", { 
         text: data,
         width: size,
         height: size,
-        // FIX: Inverted colors to make code lines visible on the dark background.
-        colorDark: "#000000", // Black code lines (will appear dark on the white 'light' background)
+        colorDark: "#000000", // Black code lines
         colorLight: "#ffffff", // White background for the code area
         correctLevel: QRCode.CorrectLevel.H
     });
 
+    // 5. User Feedback
     // Wait for the canvas/image to be rendered
     setTimeout(() => {
-        downloadButton.disabled = false;
-        showAlert('QR Code generated!', 'success');
+        // Check if a canvas or table (the code output) was successfully added
+        const outputElement = qrcodeContainer.querySelector('canvas, table');
+        
+        if (outputElement) {
+            downloadButton.disabled = false;
+            showAlert('QR Code generated!', 'success');
+        } else {
+             // If still nothing appears, show a detailed error
+             showAlert('QR Code generation failed. Check browser console.', 'error');
+        }
     }, 100); 
 }
 
 // --- Download Logic ---
 
 function downloadQRCode() {
-    if (!qrCodeInstance) return;
+    if (downloadButton.disabled) {
+        showAlert('No QR Code available to download.', 'error');
+        return;
+    }
 
     // QRCode.js renders the code as a Canvas element
     const canvas = qrcodeContainer.querySelector('canvas');
     if (!canvas) {
+        // Fallback for an unlikely case
         showAlert('QR Code not ready for download (Canvas not found).', 'error');
         return;
     }
 
-    // Convert the Canvas image to a Data URL (PNG format)
     const dataURL = canvas.toDataURL('image/png');
     
     // Use the shared downloadFile function from common.js
@@ -77,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     generateButton.addEventListener('click', generateQRCode);
     
     // Debounce the input for real-time generation 
+    // We only attach to the inputs since generateQRCode already handles the logic
     dataInput.addEventListener('input', debounce(generateQRCode, 500));
     sizeInput.addEventListener('input', debounce(generateQRCode, 500));
 
