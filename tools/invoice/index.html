@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Free Invoice Generator — Grifts</title>
+  <meta name="description" content="Generate and download professional, customizable PDF invoices for free. No signups, no database.">
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    /* Tool-specific styles */
+    .invoice-tool-container {
+      display: flex;
+      gap: var(--gap);
+      flex-direction: column;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .input-form, .preview-panel {
+      flex: 1;
+      padding: 1.5rem;
+      background: var(--color-card);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .input-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+      font-weight: 500;
+      color: var(--color-sub);
+    }
+    .input-form input, .input-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+    .input-form input:focus, .input-form textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #ff91ff;
+    }
+    
+    /* Invoice Preview Styling (designed for PDF output) */
+    .invoice-preview {
+      background: #fff; /* White background for printing/PDF */
+      color: #333;
+      padding: 2rem;
+      min-height: 500px;
+      border-radius: 8px;
+    }
+    .invoice-preview h2 { color: #870160; margin-top: 0; }
+    .invoice-preview table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .invoice-preview th, .invoice-preview td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .invoice-preview th { background-color: #f2f2f2; }
+    .invoice-preview .total-row { background-color: #ffd369; font-weight: bold; }
+
+    /* Button Styling */
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 1.5rem;
+    }
+    .btn {
+        padding: 12px 25px;
+        border-radius: 30px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .btn-primary {
+        background-color: #870160;
+        color: #fff;
+    }
+    .btn-secondary {
+        background-color: #333;
+        color: #ddd;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    .monetization-block {
+        text-align: center;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--color-sub);
+    }
+
+    @media (min-width: 900px) {
+      .invoice-tool-container {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="logo" href="/">✨ Grifts</a>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/tools/">Tools</a>
+        <a href="/about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="invoice-tool-container">
+    <div class="input-form">
+        <h2>📄 Basic Invoice Details</h2>
+        <p class="sub">Free, no-signup PDF invoices, instantly generated on your browser.</p>
+        
+        <label for="invoiceNumber">Invoice Number</label>
+        <input type="text" id="invoiceNumber" value="INV-001">
+
+        <label for="invoiceDate">Date</label>
+        <input type="date" id="invoiceDate" value="2025-10-02">
+
+        <label for="dueDate">Due Date</label>
+        <input type="date" id="dueDate">
+
+        <label for="myDetails">Your Company/Personal Details</label>
+        <textarea id="myDetails" rows="4">Grifts Services
+123 Web Lane
+contact@grifts.co.uk</textarea>
+
+        <label for="clientDetails">Client Details</label>
+        <textarea id="clientDetails" rows="4">Client Name
+Client Address</textarea>
+        
+        <h3>Items/Services (Simple)</h3>
+        <label for="itemDescription">Description</label>
+        <input type="text" id="itemDescription" value="Web Design Service">
+        
+        <label for="itemAmount">Amount ($)</label>
+        <input type="number" id="itemAmount" value="500" min="0">
+
+        <div class="action-buttons">
+            <button id="generatePdf" class="btn btn-primary">Download Free Basic PDF</button>
+            <button class="btn btn-secondary">Upgrade to Premium Templates ($3)</button>
+        </div>
+
+        <div class="monetization-block">
+            [span_0](start_span)<small>✨ Ad Block Placeholder: Consider promoting accounting software or a premium template service here.[span_0](end_span)</small>
+        </div>
+    </div>
+
+    <div class="preview-panel">
+        <h2>Invoice Preview</h2>
+        <div id="invoicePreview" class="invoice-preview">
+            </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 Grifts — Built with ♥ for everyone</small>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="/tools/invoice/main.js"></script>
+</body>
+</html>
