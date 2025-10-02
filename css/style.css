@@ -320,4 +320,38 @@ footer {
     transition: width 0.3s ease-in-out, background-color 0.3s;
 }
 
+/* Add to the end of your existing css/style.css */
+
+/* --- 9. Headline Generator Specific Styles --- */
+
+.headline-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.headline-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.headline-item span {
+    flex-grow: 1;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    padding-right: 1rem;
+    line-height: 1.4;
+}
+
+/* Button specific to the headline item for copy */
+.headline-item .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+
 

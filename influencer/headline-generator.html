@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | A/B Headline Generator - Influencer</title>
+    <meta name="description" content="Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles to maximize views.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="./index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="../viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">✨ A/B Headline Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Generate ten unique, high-conversion headlines for videos, blogs, and articles. A/B test them to find your winner and **boost your click-through rate.**
+            </p>
+        </header>
+
+        <div class="tool-content" style="grid-template-columns: 1fr;">
+            <div class="card" id="input-card">
+                <h2>Content Focus</h2>
+                
+                <div class="input-group">
+                    <label for="topic-input">Primary Topic / Keyword (e.g., *Elden Ring Build*):</label>
+                    <input type="text" id="topic-input" placeholder="What is your content about?" maxlength="50">
+                    <p class="hint">Keep it specific for best results.</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="outcome-input">Desired Outcome / Benefit (e.g., *Get Max DPS*):</label>
+                    <input type="text" id="outcome-input" placeholder="What does the viewer gain?" maxlength="50">
+                    <p class="hint">Use power words like 'Max,' 'Ultimate,' or 'Fastest.'</p>
+                </div>
+                
+                <button id="generate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">GENERATE HEADLINES</button>
+
+            </div>
+
+            <div class="card result-card" style="margin-top: var(--spacing-md);">
+                <h2>Generated Headlines</h2>
+                <div id="headline-results">
+                    <p style="text-align: center; color: var(--text-secondary);">Enter a topic and outcome to generate headlines.</p>
+                </div>
+                <button id="copy-all-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">Copy All Headlines</button>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AFFILIATE SPOT: Recommended A/B Testing Tools or SEO Services
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | A/B Headline Generator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/headline-generator.js" defer></script>
+</body>
+</html>
