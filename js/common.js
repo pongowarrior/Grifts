@@ -163,3 +163,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// --- 8. Mobile Menu Toggle ---
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('nav .container');
+    if (!nav) return;
+    
+    // Create hamburger button
+    const hamburger = document.createElement('button');
+    hamburger.className = 'mobile-menu-toggle';
+    hamburger.innerHTML = '☰';
+    hamburger.style.cssText = `
+        display: none;
+        background: none;
+        border: none;
+        color: var(--accent-green);
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    `;
+    
+    nav.appendChild(hamburger);
+    
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks) return;
+    
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+    
+    // Show/hide hamburger based on screen size
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    function handleMobile(e) {
+        if (e.matches) {
+            hamburger.style.display = 'block';
+        } else {
+            hamburger.style.display = 'none';
+            navLinks.classList.remove('active');
+        }
+    }
+    mediaQuery.addListener(handleMobile);
+    handleMobile(mediaQuery);
+});

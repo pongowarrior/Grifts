@@ -8,49 +8,13 @@ const shareButton = document.getElementById('share-btn');
 const heartEmoji = document.getElementById('heart-emoji');
 const downloadPdfButton = document.getElementById('download-pdf-btn');
 
-/**
- * Monetization Hook: This function acts as the gate for the paid report.
- * It simulates a download using common.js's downloadFile to deliver a checkout link.
- */
-function generatePDFReport(name1, name2, score) {
-    showAlert(`Custom Report generation requested for ${name1} and ${name2}.`, 'info');
-    
-    // The content is a plain text file that directs the user to the payment link
-    const filename = `Grifts_Compatibility_Report_Checkout.txt`;
-    const content = `
-================================================
-CUSTOM COMPATIBILITY REPORT: ${name1} & ${name2}
-================================================
-
-Thank you for requesting your Score Analysis!
-
-Your compatibility score is: ${score}%.
-
-This report costs $9 USD for a detailed, shareable PDF analysis.
-
-================================================
-ACTION REQUIRED:
-Please visit the payment link below to complete your order:
-https://grifts.co.uk/checkout/compatibility-report-9usd
-================================================
-
-Your file is downloaded. Open it to access the checkout link!
-    `;
-
-    // Use the shared downloadFile utility (from common.js)
-    downloadFile(content, filename, 'text/plain');
-
-    showAlert('Download started: Open the text file for your checkout link!', 'success');
-}
-
-
 // --- Compatibility Algorithm (The Viral JS Trick) ---
 // Classic "Love Calculator" score reduction logic for fun, deterministic results.
 function calculateCompatibility(name1, name2) {
     // 1. Clean and standardize names
     const cleanName1 = name1.toLowerCase().replace(/[^a-z]/g, '');
     const cleanName2 = name2.toLowerCase().replace(/[^a-z]/g, '');
-
+    
     if (cleanName1.length === 0 || cleanName2.length === 0) {
         return 0;
     }
@@ -61,25 +25,25 @@ function calculateCompatibility(name1, name2) {
     for (const char of combinedName) {
         frequency[char] = (frequency[char] || 0) + 1;
     }
-
+    
     // 3. Create the initial sequence string (e.g., "4112" from "adamnana")
     let sequence = Object.values(frequency).join('');
-
+    
     // 4. Reduction Loop: Sum adjacent digits until the result is 2 digits or less.
     while (sequence.length > 2) {
         let newSequence = '';
         for (let i = 0; i < sequence.length - 1; i++) {
             // Sum adjacent digits
-            const digitSum = (parseInt(sequence[i]) + parseInt(sequence[i+1])).toString();
+            const digitSum = (parseInt(sequence[i]) + parseInt(sequence[i + 1])).toString();
             newSequence += digitSum;
         }
         sequence = newSequence;
         
         // Final forced reduction if it's still too long due to small sums (e.g., "121212")
-        if (sequence.length > 2 && sequence.length < combinedName.length) { 
-             const firstDigit = parseInt(sequence[0]);
-             const secondDigit = parseInt(sequence[1]);
-             sequence = (firstDigit + secondDigit).toString();
+        if (sequence.length > 2 && sequence.length < combinedName.length) {
+            const firstDigit = parseInt(sequence[0]);
+            const secondDigit = parseInt(sequence[1]);
+            sequence = (firstDigit + secondDigit).toString();
         }
     }
     
@@ -128,13 +92,35 @@ function displayResult(score, name1, name2) {
     downloadPdfButton.dataset.name2 = name2;
     downloadPdfButton.dataset.score = score;
     downloadPdfButton.style.display = 'block';
-
+    
+    // 4. Update URL with names and score for sharing (Enhancement #30)
+    const shareURL = `${window.location.pathname}?n1=${encodeURIComponent(name1)}&n2=${encodeURIComponent(name2)}`;
+    window.history.pushState({ name1, name2, score }, '', shareURL);
+    
     showAlert(`Score calculated: ${score}%`, 'success');
-
-    // 4. Remove glow after a short period 
+    
+    // 5. Remove glow after a short period 
     setTimeout(() => {
         scoreDisplay.classList.remove('score-glow');
     }, 1500);
+}
+
+// --- Check for shared result in URL (Enhancement #30) ---
+function loadSharedCompatibility() {
+    const params = new URLSearchParams(window.location.search);
+    const name1 = params.get('n1');
+    const name2 = params.get('n2');
+    
+    if (name1 && name2) {
+        // Auto-fill inputs and calculate
+        name1Input.value = decodeURIComponent(name1);
+        name2Input.value = decodeURIComponent(name2);
+        
+        const score = calculateCompatibility(name1, name2);
+        displayResult(score, name1, name2);
+        
+        showAlert('Viewing shared compatibility score!', 'info');
+    }
 }
 
 
@@ -144,8 +130,8 @@ function generatePDFReport(name1, name2, score) {
     // The "micro-payment" is simulated: user clicks, and the content is generated.
     
     // Using .txt to avoid complex external PDF library (jsPDF) dependencies.
-    const filename = `Grifts-Report-${name1}-and-${name2}.txt`; 
-
+    const filename = `Grifts-Report-${name1}-and-${name2}.txt`;
+    
     const reportContent = `
     
         *** GRIFTS VIRAL COMPATIBILITY REPORT ***
@@ -186,6 +172,9 @@ function generatePDFReport(name1, name2, score) {
 // --- Initialization / Event Listeners ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if viewing a shared result (Enhancement #30)
+    loadSharedCompatibility();
+    
     // Initial hide
     shareButton.style.display = 'none';
     downloadPdfButton.style.display = 'none';
@@ -193,11 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateButton.addEventListener('click', () => {
         const name1 = name1Input.value.trim();
         const name2 = name2Input.value.trim();
-
+        
         if (name1.length === 0 || name2.length === 0) {
             showAlert('Please enter both names!', 'error');
             scoreDisplay.textContent = '0%';
-            scoreDisplay.style.color = 'var(--accent-green)'; 
+            scoreDisplay.style.color = 'var(--accent-green)';
             scoreDisplay.classList.remove('score-glow');
             heartEmoji.classList.remove('heart-pulse');
             heartEmoji.textContent = '❤️';
@@ -206,26 +195,29 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadPdfButton.style.display = 'none';
             return;
         }
-
+        
         const score = calculateCompatibility(name1, name2);
         displayResult(score, name1, name2);
     });
-
+    
     // Share button logic
     shareButton.addEventListener('click', () => {
         const name1 = shareButton.dataset.name1;
         const name2 = shareButton.dataset.name2;
         const score = shareButton.dataset.score;
         
-        const shareText = `My viral compatibility score with ${name2} is ${score}%! We are an optimized match! Check your score at ${window.location.href} #CompatibilityCalculator #Grifts`;
+        // Generate shareable URL with names encoded (Enhancement #30)
+        const shareURL = `${window.location.origin}${window.location.pathname}?n1=${encodeURIComponent(name1)}&n2=${encodeURIComponent(name2)}`;
+        const shareText = `My viral compatibility score with ${name2} is ${score}%! We are an optimized match! Check your score at ${shareURL} #CompatibilityCalculator #Grifts`;
         
         // Use Web Share API if available (best for mobile)
         if (navigator.share) {
             navigator.share({
                 title: 'Viral Compatibility Score',
                 text: shareText,
-                url: window.location.href,
-            }).catch(() => {
+                url: shareURL,
+            }).catch((err) => {
+                console.log('Share failed:', err);
                 // Fallback to copying to clipboard
                 copyToClipboard(shareText, shareButton);
             });
@@ -234,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             copyToClipboard(shareText, shareButton);
         }
     });
-
+    
     // PDF Download Button Logic (Monetization Hook)
     downloadPdfButton.addEventListener('click', () => {
         const name1 = downloadPdfButton.dataset.name1;

@@ -71,7 +71,7 @@ function processTemplate(template, userText, emojiSet) {
     const textReplacement = userText.toUpperCase();
     
     let result = template.replace(/{TEXT}/g, textReplacement);
-
+    
     // Replace all {EMOJI} placeholders with a random emoji from the set
     while (result.includes('{EMOJI}')) {
         result = result.replace('{EMOJI}', getRandomElement(emojiSet));
@@ -82,7 +82,7 @@ function processTemplate(template, userText, emojiSet) {
 
 // --- Core Generation Logic ---
 
-function generateEmojiString() {
+function generateEmojiString(showSuccessAlert = true) {
     const text = textInput.value.trim();
     const styleKey = styleSelect.value;
     
@@ -92,23 +92,26 @@ function generateEmojiString() {
         emojiOutput.textContent = 'Enter text and choose a style to generate a viral reaction!';
         return;
     }
-
+    
     const styleData = emojiDatabase[styleKey];
     
     if (!styleData) {
         showAlert('Invalid style selected.', 'error');
         return;
     }
-
+    
     const template = getRandomElement(styleData.templates);
     const finalString = processTemplate(template, text, styleData.emojis);
-
+    
     // Display the result
     emojiOutput.textContent = finalString;
     
     // Enable copy button
     copyButton.disabled = false;
-    showAlert('Generated successfully!', 'success');
+    
+    if (showSuccessAlert) {
+        showAlert('Generated successfully!', 'success');
+    }
 }
 
 
@@ -118,15 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial State
     emojiOutput.textContent = 'Enter text and choose a style to generate a viral reaction!';
     copyButton.disabled = true;
-
+    
     // 2. Generate button listener
     generateButton.addEventListener('click', generateEmojiString);
-
+    
     // 3. Debounce input changes for real-time updates
-    textInput.addEventListener('input', debounce(generateEmojiString, 400));
+    textInput.addEventListener('input', typeof debounce === 'function' ? debounce(generateEmojiString, 400) : generateEmojiString);
     styleSelect.addEventListener('change', generateEmojiString);
-
-    // 4. Co!py to Clipboard listener
+    
+    // 4. Copy to Clipboard listener
     copyButton.addEventListener('click', () => {
         const textToCopy = emojiOutput.textContent;
         if (textToCopy) {
@@ -136,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert('Nothing to copy!', 'info');
         }
     });
-
-    // Optional: Run an initial generation with a default value
+    
+    // Optional: Run an initial generation with a default value (silent - no alert)
     textInput.value = 'HUSTLE';
-    generateEmojiString();
+    generateEmojiString(false);
 });

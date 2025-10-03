@@ -87,8 +87,8 @@ function generateHeadlines() {
     headlineTemplates.forEach((template, index) => {
         // Replace placeholders with user input
         const headline = template
-            .replace('{TOPIC}', topic)
-            .replace('{OUTCOME}', outcome);
+    .replaceAll('{TOPIC}', topic)
+    .replaceAll('{OUTCOME}', outcome);
         
         generatedText.push(`${index + 1}. ${headline}`);
 
@@ -134,15 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. "Copy All" button listener
     copyAllButton.addEventListener('click', () => {
-        const! allHeadlines = copyAllButton.dataset.allHeadlines;
+        const allHeadlines = copyAllButton.dataset.allHeadlines;
         if (allHeadlines) {
             // Use the shared function from common.js
             copyToClipboard(allHeadlines, copyAllButton);
         } else {
             showAlert('Nothing to copy!', 'info');
         }
-    });
-    
-    // Initial run to prompt user
-    generateHeadlines();
-});

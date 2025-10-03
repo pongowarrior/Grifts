@@ -110,32 +110,20 @@ function renderRecentConversions(conversions) {
  * Saves a new conversion string to sessionStorage and updates the UI.
  * (Uses sessionStorage instead of memoryStore)
  */
-function saveRecentConversion(text) {
-    // Load existing, or default to an empty array
-    let conversions = loadFromSession(RECENT_CONVERSIONS_KEY);
+function saveRecentConversion(conversionString) {
+    let recents = loadFromMemory(RECENT_CONVERSIONS_KEY) || [];
     
-    // 1. Remove the new entry if it already exists (to move it to the top)
-    conversions = conversions.filter(c => c !== text);
-    
-    // 2. Add the new entry to the front
-    conversions.unshift(text);
-    
-    // 3. Trim the array to the max size
-    if (conversions.length > MAX_RECENT_CONVERSIONS) {
-        conversions = conversions.slice(0, MAX_RECENT_CONVERSIONS);
-    }
+    // Add new conversion to the front, filter duplicates, and limit size
+    recents.unshift(conversionString);
+    recents = [...new Set(recents)].slice(0, MAX_RECENT_CONVERSIONS);
 
-    saveToSession(RECENT_CONVERSIONS_KEY, conversions);
-    renderRecentConversions(conversions);
+    saveToMemory(RECENT_CONVERSIONS_KEY, recents);
+    renderRecentConversions(recents);
 }
 
-/**
- * Loads recent conversions from session storage and updates the UI.
- * (Uses sessionStorage instead of memoryStore)
- */
 function loadRecentConversions() {
-    const conversions = loadFromSession(RECENT_CONVERSIONS_KEY);
-    renderRecentConversions(conversions);
+    const recents = loadFromMemory(RECENT_CONVERSIONS_KEY) || [];
+    renderRecentConversions(recents);
 }
 
 // ----------------------------------------------------------------------
@@ -181,10 +169,10 @@ function convertUnit() {
     const abbrFrom = unitFromSelect.value;
     const abbrTo = unitToSelect.value;
 
-    if (isNaN(value) || valueInput.value.trim() === '') {
-        resultOutput.textContent = 'Enter a value.';
-        return;
-    }
+    if (isNaN(value)) {
+    resultOutput.textContent = 'Invalid Value';
+    return;
+}
 
     const unitFrom = getUnitByAbbr(type, abbrFrom);
     const unitTo = getUnitByAbbr(type, abbrTo);
@@ -322,6 +310,12 @@ function calculateResult(first, second, op) {
         case '/': 
             if (second === 0) {
                 showAlert('Error: Cannot divide by zero!', 'error');
+                // Reset calculator state
+                displayValue = '0';
+                firstOperand = null;
+                operator = null;
+                waitingForSecondOperand = false;
+                updateCalculatorDisplay();
                 return 0;
             }
             return first / second;

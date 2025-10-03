@@ -73,14 +73,20 @@ function downloadQRCode() {
     const canvas = qrcodeContainer.querySelector('canvas');
     
     if (!canvas) {
-        showAlert('QR Code not ready for download (Canvas not found).', 'error');
+        // Fallback: check if QRCode.js created a table instead
+        const table = qrcodeContainer.querySelector('table');
+        if (table) {
+            showAlert('QR download only works with canvas. Try a modern browser.', 'error');
+            return;
+        }
+        showAlert('QR Code not ready for download.', 'error');
         return;
     }
 
     const dataURL = canvas.toDataURL('image/png');
     
-    // downloadFile comes from common.js
-    const filename = `grifts-qrcode-${dataInput.value.slice(0, 15).replace(/[^a-z0-9]/gi, '')}.png`;
+    // Use timestamp for more reliable filenames
+    const filename = `grifts-qrcode-${Date.now()}.png`;
     downloadFile(dataURL, filename, 'image/png');
 }
 

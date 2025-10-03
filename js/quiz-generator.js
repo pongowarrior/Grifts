@@ -237,13 +237,43 @@ function showResult() {
     quizCard.style.display = 'none';
     quizResultScreen.style.display = 'block';
 
+    // 4. Update URL with result parameter for sharing (Enhancement #29)
+    const resultURL = `${window.location.pathname}?result=${resultKey}`;
+    window.history.pushState({ result: resultKey }, '', resultURL);
+
     showAlert(`You are the ${finalResult.title}!`, 'success');
+}
+
+// --- Check for shared result in URL (Enhancement #29) ---
+function loadSharedResult() {
+    const params = new URLSearchParams(window.location.search);
+    const resultKey = params.get('result');
+    
+    if (resultKey && quizResults[resultKey]) {
+        // Skip directly to result screen
+        const result = quizResults[resultKey];
+        
+        resultTitleElement.textContent = result.title;
+        resultTitleElement.style.color = result.color;
+        resultDescriptionElement.textContent = result.desc;
+        
+        shareButton.dataset.resultTitle = result.title;
+        shareButton.dataset.resultKey = resultKey;
+        
+        quizCard.style.display = 'none';
+        quizResultScreen.style.display = 'block';
+        
+        showAlert('Viewing shared result!', 'info');
+    }
 }
 
 
 // --- Event Listeners and Initialization ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if viewing a shared result (Enhancement #29)
+    loadSharedResult();
+    
     // Initial setup
     resetQuiz();
 
@@ -251,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', () => {
         quizStartScreen.style.display = 'none';
         quizContentScreen.style.display = 'block';
-        rend!erQuestion();
+        renderQuestion();
     });
 
     // Next Button: Tally score and move on
@@ -263,8 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Share Button: Use shared copy function
     shareButton.addEventListener('click', () => {
         const resultTitle = shareButton.dataset.resultTitle;
+        const resultKey = shareButton.dataset.resultKey;
         
-        const shareText = `I took the 'Which Legendary Creature Are You?' quiz on GRIFTS and I am ${resultTitle}! Take the quiz here: ${window.location.href} #ViralQuiz #Grifts`;
+        // Generate shareable URL with result encoded
+        const shareURL = `${window.location.origin}${window.location.pathname}?result=${resultKey}`;
+        const shareText = `I took the 'Which Legendary Creature Are You?' quiz on GRIFTS and I am ${resultTitle}! Take the quiz here: ${shareURL} #ViralQuiz #Grifts`;
         
         // Use the shared copyToClipboard function from common.js
         copyToClipboard(shareText, shareButton);

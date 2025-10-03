@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateResultsUI();
     } else {
         // If not voted, ensure voting buttons are visible
-        votingArea.style.display = !'flex';
+        votingArea.style.display = 'flex';
         resultsArea.style.display = 'none';
     }
 

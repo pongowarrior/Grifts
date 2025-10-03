@@ -22,7 +22,13 @@ function handleImageUpload(event) {
             currentImage = img;
             drawMeme(); // Draw image and text immediately
         };
+        img.onerror = () => {
+            showAlert('Failed to load image. The file may be corrupted or in an unsupported format.', 'error');
+        };
         img.src = e.target.result;
+    };
+    reader.onerror = () => {
+        showAlert('Failed to read file. Please try a different image.', 'error');
     };
     reader.readAsDataURL(file);
 }
@@ -41,7 +47,8 @@ function drawMeme() {
 
     // Set the container width for responsiveness (optional, but helps layout)
     canvasArea.style.maxWidth = `${currentImage.width}px`;
-    
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
     // Draw the image first (fills the entire canvas)
     ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
 
@@ -115,7 +122,7 @@ function downloadMeme() {
     const dataURL = canvas.toDataURL('image/png');
     
     // C. Use the shared downloadFile function from common.js
-    const filename = `grifts-meme-${generateId(6)}.png`; 
+    const filename = `grifts-meme-${typeof generateId === 'function' ? generateId(6) : Date.now()}.png`; 
     
     downloadFile(dataURL, filename, 'image/png');
 
@@ -137,9 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     imageUpload.addEventListener('change', handleImageUpload);
     
     // Redraw on input change (using debounce from common.js is recommended for better performance)
-    topTextInput.addEventListener('input', debounce(drawMeme, 150));
-    bottomTextInput.addEventListener('input', debounce(drawMeme, 150));
-
+    topTextInput.addEventListener('input', typeof debounce === 'function' ? debounce(drawMeme, 150) : drawMeme);
+bottomTextInput.addEventListener('input', typeof debounce === 'function' ? debounce(drawMeme, 150) : drawMeme);
     // Redraw on button click (for explicit control)
     drawButton.addEventListener('click', drawMeme);
     

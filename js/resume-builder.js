@@ -58,94 +58,111 @@ function collectResumeData() {
         isPro: isProUnlocked
     };
 }
-
-
-// --- PDF Generation Logic (NEW CORE MONETIZATION) ---
-function generateResumePdf(data) {
-    // window.jsPDF is available globally from the CDN
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4
-
-    // Style Constants (in mm)
-    const MARGIN = 15;
-    let y = MARGIN;
-    const LINE_HEIGHT = 5;
-    const MAX_WIDTH = doc.internal.pageSize.getWidth() - 2 * MARGIN;
-
-    // --- Title (Full Name) ---
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text(data.name, MARGIN, y);
-    y += LINE_HEIGHT * 2;
-
-    // --- Contact Info ---
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    data.contactInfo.forEach(line => {
-        doc.text(line, MARGIN, y);
-        y += LINE_HEIGHT * 0.8;
-    });
-    y += LINE_HEIGHT * 1.5;
-
-    // --- Helper function to add a section ---
-    function addSection(title, contentArray) {
-        if (contentArray.length === 0) return;
-        
-        // Add Title
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "bold");
-        doc.text(title.toUpperCase(), MARGIN, y);
-        y += LINE_HEIGHT;
-        
-        // Add Divider
-        doc.setDrawColor(200);
-        doc.line(MARGIN, y - 1, doc.internal.pageSize.getWidth() - MARGIN, y - 1);
-        
-        // Add Content
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        
-        contentArray.forEach(line => {
-            const splitText = doc.splitTextToSize(line, MAX_WIDTH);
-            splitText.forEach(splitLine => {
-                // Check for page overflow
-                if (y > doc.internal.pageSize.getHeight() - MARGIN - 15) { 
-                    doc.addPage();
-                    y = MARGIN; // Reset Y position
-                }
-                doc.text(splitLine, MARGIN, y);
-                y += LINE_HEIGHT * 0.7; // Tighter line spacing for body text
-            });
-        });
-        y += LINE_HEIGHT * 1.5; // Space after section
-    }
-
-    // --- Resume Sections ---
-    addSection("Experience Summary", data.experience);
-    addSection("Skills List", data.skills);
-    addSection("Education", data.education);
-
-
-    // --- Watermark (THE MONETIZATION HOOK) ---
-    if (data.template === 'basic') {
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(150); // Light gray color
-        const watermarkText = "FREE VERSION | Watermarked by Grifts.co.uk | Unlock Pro for No Watermark";
-        const wmX = doc.internal.pageSize.getWidth() / 2;
-        const wmY = doc.internal.pageSize.getHeight() - 5;
-        doc.text(watermarkText, wmX, wmY, null, null, "center");
+// --- PDF Generation Function ---
+function generateResumePdf(resumeData) {
+    // Check if jsPDF is loaded
+    if (typeof window.jspdf === 'undefined') {
+        showAlert('PDF library not loaded. Please refresh the page.', 'error');
+        return;
     }
     
-    // --- Final Step: Save/Download using common.js ---
-    const filename = `${data.name.replace(/[^a-zA-Z0-9]/g, '_')}_Resume_Grifts.pdf`;
-    const pdfDataURL = doc.output('datauristring');
-    // downloadFile is from common.js
-    downloadFile(pdfDataURL, filename, 'application/pdf');
-
-    showAlert('PDF generated successfully!', 'success');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    let y = 20; // Current Y position on the page
+    const leftMargin = 20;
+    const pageWidth = 170; // 210mm - 20mm margins on each side
+    
+    // --- Header: Name ---
+    doc.setFontSize(24);
+    doc.setFont(undefined, 'bold');
+    doc.text(resumeData.name, leftMargin, y);
+    y += 10;
+    
+    // --- Contact Information ---
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    resumeData.contactInfo.forEach(line => {
+        doc.text(line, leftMargin, y);
+        y += 5;
+    });
+    y += 5; // Extra spacing after contact
+    
+    // --- Experience Section ---
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('EXPERIENCE', leftMargin, y);
+    y += 8;
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    resumeData.experience.forEach(line => {
+        // Split long lines to fit page width
+        const splitLines = doc.splitTextToSize(line, pageWidth);
+        doc.text(splitLines, leftMargin, y);
+        y += splitLines.length * 5;
+        
+        // Check if we need a new page
+        if (y > 270) {
+            doc.addPage();
+            y = 20;
+        }
+    });
+    y += 5; // Extra spacing after experience
+    
+    // --- Skills Section ---
+    if (y > 250) { // Start new page if close to bottom
+        doc.addPage();
+        y = 20;
+    }
+    
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('SKILLS', leftMargin, y);
+    y += 8;
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    const skillsText = resumeData.skills.join(' • ');
+    const splitSkills = doc.splitTextToSize(skillsText, pageWidth);
+    doc.text(splitSkills, leftMargin, y);
+    y += splitSkills.length * 5 + 5;
+    
+    // --- Education Section ---
+    if (y > 250) { // Start new page if close to bottom
+        doc.addPage();
+        y = 20;
+    }
+    
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('EDUCATION', leftMargin, y);
+    y += 8;
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    resumeData.education.forEach(line => {
+        const splitLines = doc.splitTextToSize(line, pageWidth);
+        doc.text(splitLines, leftMargin, y);
+        y += splitLines.length * 5;
+    });
+    
+    // --- Watermark (for free version) ---
+    if (!resumeData.isPro) {
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Generated with GRIFTS - grifts.co.uk', leftMargin, 285);
+        }
+    }
+    
+    // --- Save the PDF ---
+    const filename = `${resumeData.name.replace(/\s+/g, '_')}_Resume.pdf`;
+    doc.save(filename);
+    showAlert('PDF downloaded successfully!', 'success');
 }
-
 
 // --- Main Action Handler (Updated) ---
 
