@@ -41,16 +41,42 @@ const headlineTemplates = [
 
 // --- Core Generation Function ---
 
-function generateHeadlines() {
-    // Sanitize inputs and ensure they exist
-    const topic = topicInput.value.trim();
-    const outcome = outcomeInput.value.trim();
+// File: influencer/headline-generator.js
+// ... (keep all existing DOM Elements and headlineTemplates array)
 
-    if (topic.length === 0 || outcome.length === 0) {
-        resultsContainer.innerHTML = '<p style="text-align: center; color: #ffcc00;">Please enter both a Topic and a Desired Outcome.</p>';
+// --- Core Generation Logic (COMPLETED) ---
+
+function generateHeadlines() {
+    const topic = topicInput.value.trim().toUpperCase();
+    const outcome = outcomeInput.value.trim().toUpperCase();
+
+    if (!topic || !outcome) {
+        resultsContainer.innerHTML = `<p style="text-align: center; color: var(--text-secondary);">Enter a topic and outcome to generate headlines.</p>`;
         copyAllButton.style.display = 'none';
+        
+        // Only show error on an explicit click if inputs are missing
+        if (document.activeElement === generateButton) {
+            showAlert('Please fill in both the Topic and the Desired Outcome.', 'error');
+        }
+        
         return;
     }
+
+    // --- CORE LOGIC: Loop through templates and replace placeholders ---
+    const generatedText = headlineTemplates.map(template => {
+        // Use global regex replace to catch all instances of the placeholder
+        let headline = template.replace(/{TOPIC}/g, topic);
+        headline = headline.replace(/{OUTCOME}/g, outcome);
+        return headline;
+    });
+
+    displayResults(generatedText);
+    copyAllButton.style.display = 'block'; // Show the copy all button after results
+    showAlert(`Generated ${generatedText.length} headlines for ${topic}!`, 'success');
+}
+
+// ... (keep the rest of the file: displayResults, attachCopyListeners, Initialization)
+
     
     // Ensure copy button is visible
     copyAllButton.style.display = 'block';
@@ -108,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. "Copy All" button listener
     copyAllButton.addEventListener('click', () => {
-        const allHeadlines = copyAllButton.dataset.allHeadlines;
+        const! allHeadlines = copyAllButton.dataset.allHeadlines;
         if (allHeadlines) {
             // Use the shared function from common.js
             copyToClipboard(allHeadlines, copyAllButton);

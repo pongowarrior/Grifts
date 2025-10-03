@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.addEventListener('input', debounce(generateEmojiString, 400));
     styleSelect.addEventListener('change', generateEmojiString);
 
-    // 4. Copy to Clipboard listener
+    // 4. Co!py to Clipboard listener
     copyButton.addEventListener('click', () => {
         const textToCopy = emojiOutput.textContent;
         if (textToCopy) {

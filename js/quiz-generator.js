@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', () => {
         quizStartScreen.style.display = 'none';
         quizContentScreen.style.display = 'block';
-        renderQuestion();
+        rend!erQuestion();
     });
 
     // Next Button: Tally score and move on

@@ -1,6 +1,6 @@
 // File: utilities/resume-builder.js
 
-// DOM Elements
+// DOM Elements (Keep these the same)
 const fullNameInput = document.getElementById('full-name');
 const contactInfoTextarea = document.getElementById('contact-info');
 const experienceTextarea = document.getElementById('experience-summary');
@@ -10,11 +10,11 @@ const generatePdfButton = document.getElementById('generate-pdf-btn');
 const templateBasic = document.getElementById('template-basic');
 const templatePro = document.getElementById('template-pro');
 
-// Global State (For MVP Steps 2/5)
+// Global State
 let selectedTemplate = 'basic'; // 'basic' or 'pro'
 let isProUnlocked = false; // Simulates the Stripe unlock status
 
-// --- Template Selection Logic (MVP Step 2 Prep) ---
+// --- Template Selection Logic ---
 
 function selectTemplate(templateId) {
     selectedTemplate = templateId === 'template-pro' ? 'pro' : 'basic';
@@ -32,39 +32,127 @@ function selectTemplate(templateId) {
 
     // Update visual styles
     templateBasic.style.border = selectedTemplate === 'basic' ? '2px solid var(--accent-green)' : '2px dashed var(--text-secondary)';
+    templateBasic.style.opacity = selectedTemplate === 'basic' ? '1' : '0.5';
+
     templatePro.style.border = selectedTemplate === 'pro' ? '2px solid var(--accent-blue)' : '2px dashed var(--text-secondary)';
-    templateBasic.style.opacity = selectedTemplate === 'basic' ? 1.0 : 0.5;
-    templatePro.style.opacity = selectedTemplate === 'pro' ? 1.0 : 0.5;
+    templatePro.style.opacity = isProUnlocked || selectedTemplate === 'pro' ? '1' : '0.5';
+    
+    // Update the button text color for Free PDF
+    if (selectedTemplate === 'basic') {
+        generatePdfButton.style.backgroundColor = 'var(--accent-green)';
+    } else if (selectedTemplate === 'pro' && isProUnlocked) {
+        generatePdfButton.style.backgroundColor = 'var(--accent-blue)';
+    }
 }
 
+// --- Data Collection Logic ---
 
-// --- Core Data Collection Function ---
-
-/**
- * Collects and formats data from the form inputs.
- * @returns {object} The structured resume data.
- */
 function collectResumeData() {
     return {
         name: fullNameInput.value.trim(),
-        contact: contactInfoTextarea.value.trim().split('\n').filter(line => line.length > 0),
-        experience: experienceTextarea.value.trim().split('\n').filter(line => line.length > 0),
-        // Simplifies skills into a clean array of strings
-        skills: skillsTextarea.value.trim().split(/[\n,]/).map(s => s.trim()).filter(s => s.length > 0),
-        education: educationTextarea.value.trim().split('\n').filter(line => line.length > 0),
+        contactInfo: contactInfoTextarea.value.split('\n').map(line => line.trim()).filter(line => line.length > 0),
+        experience: experienceTextarea.value.split('\n').map(line => line.trim()).filter(line => line.length > 0),
+        skills: skillsTextarea.value.split('\n').map(line => line.trim()).filter(line => line.length > 0),
+        education: educationTextarea.value.split('\n').map(line => line.trim()).filter(line => line.length > 0),
         template: selectedTemplate,
         isPro: isProUnlocked
     };
 }
 
 
-// --- Main Action Handler (Prep for MVP Steps 3, 4, 5) ---
+// --- PDF Generation Logic (NEW CORE MONETIZATION) ---
+function generateResumePdf(data) {
+    // window.jsPDF is available globally from the CDN
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4
+
+    // Style Constants (in mm)
+    const MARGIN = 15;
+    let y = MARGIN;
+    const LINE_HEIGHT = 5;
+    const MAX_WIDTH = doc.internal.pageSize.getWidth() - 2 * MARGIN;
+
+    // --- Title (Full Name) ---
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text(data.name, MARGIN, y);
+    y += LINE_HEIGHT * 2;
+
+    // --- Contact Info ---
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    data.contactInfo.forEach(line => {
+        doc.text(line, MARGIN, y);
+        y += LINE_HEIGHT * 0.8;
+    });
+    y += LINE_HEIGHT * 1.5;
+
+    // --- Helper function to add a section ---
+    function addSection(title, contentArray) {
+        if (contentArray.length === 0) return;
+        
+        // Add Title
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(title.toUpperCase(), MARGIN, y);
+        y += LINE_HEIGHT;
+        
+        // Add Divider
+        doc.setDrawColor(200);
+        doc.line(MARGIN, y - 1, doc.internal.pageSize.getWidth() - MARGIN, y - 1);
+        
+        // Add Content
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        
+        contentArray.forEach(line => {
+            const splitText = doc.splitTextToSize(line, MAX_WIDTH);
+            splitText.forEach(splitLine => {
+                // Check for page overflow
+                if (y > doc.internal.pageSize.getHeight() - MARGIN - 15) { 
+                    doc.addPage();
+                    y = MARGIN; // Reset Y position
+                }
+                doc.text(splitLine, MARGIN, y);
+                y += LINE_HEIGHT * 0.7; // Tighter line spacing for body text
+            });
+        });
+        y += LINE_HEIGHT * 1.5; // Space after section
+    }
+
+    // --- Resume Sections ---
+    addSection("Experience Summary", data.experience);
+    addSection("Skills List", data.skills);
+    addSection("Education", data.education);
+
+
+    // --- Watermark (THE MONETIZATION HOOK) ---
+    if (data.template === 'basic') {
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "italic");
+        doc.setTextColor(150); // Light gray color
+        const watermarkText = "FREE VERSION | Watermarked by Grifts.co.uk | Unlock Pro for No Watermark";
+        const wmX = doc.internal.pageSize.getWidth() / 2;
+        const wmY = doc.internal.pageSize.getHeight() - 5;
+        doc.text(watermarkText, wmX, wmY, null, null, "center");
+    }
+    
+    // --- Final Step: Save/Download using common.js ---
+    const filename = `${data.name.replace(/[^a-zA-Z0-9]/g, '_')}_Resume_Grifts.pdf`;
+    const pdfDataURL = doc.output('datauristring');
+    // downloadFile is from common.js
+    downloadFile(pdfDataURL, filename, 'application/pdf');
+
+    showAlert('PDF generated successfully!', 'success');
+}
+
+
+// --- Main Action Handler (Updated) ---
 
 function handleGenerateClick() {
     const resumeData = collectResumeData();
 
     if (!resumeData.name || !resumeData.experience.length) {
-        // showAlert function assumed to be available from common.js
         showAlert('Please fill in your Full Name and at least some Experience.', 'error');
         return;
     }
@@ -76,11 +164,8 @@ function handleGenerateClick() {
         return;
     }
     
-    // MVP Step 3 & 4: Call the PDF generation function (to be built next)
-    // generateResumePdf(resumeData); 
-
-    showAlert(`Data collected for ${selectedTemplate} template. Next step is PDF generation!`, 'success');
-    console.log('Collected Resume Data:', resumeData);
+    // Call the PDF generation function
+    generateResumePdf(resumeData); 
 }
 
 

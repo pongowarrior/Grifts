@@ -18,274 +18,323 @@ const UNIT_DEFINITIONS = {
         { name: 'Pounds (lb)', abbr: 'lb', factor: 453.592 },       // 1 lb = 453.592 g
         { name: 'Ounces (oz)', abbr: 'oz', factor: 28.3495 },        // 1 oz = 28.3495 g
     ],
-    // Temperature requires special handling (not simple multiplication)
-    temp: [
-        { name: 'Celsius (°C)', abbr: 'C', factor: 1 },             
-        { name: 'Fahrenheit (°F)', abbr: 'F', factor: 1 },
-        { name: 'Kelvin (K)', abbr: 'K', factor: 1 },
-    ],
-    area: [
-        { name: 'Square Meters (m²)', abbr: 'm2', factor: 1 },       // Base Unit (m²)
-        { name: 'Square Kilometers (km²)', abbr: 'km2', factor: 1000000 },
-        { name: 'Square Feet (ft²)', abbr: 'ft2', factor: 0.092903 },
-        { name: 'Acres', abbr: 'ac', factor: 4046.86 },
-    ],
-    volume: [
-        { name: 'Liters (L)', abbr: 'L', factor: 1 },               // Base Unit (Liter)
-        { name: 'Milliliters (mL)', abbr: 'mL', factor: 0.001 },
-        { name: 'Cubic Meters (m³)', abbr: 'm3', factor: 1000 },
-        { name: 'US Gallons (gal)', abbr: 'gal', factor: 3.78541 },
-        { name: 'US Quarts (qt)', abbr: 'qt', factor: 0.946353 },
+    temperature: [
+        // Base unit for temperature is always Kelvin for conversion consistency
+        { name: 'Celsius (°C)', abbr: 'C', toBase: (c) => c + 273.15, fromBase: (k) => k - 273.15 },
+        { name: 'Fahrenheit (°F)', abbr: 'F', toBase: (f) => (f - 32) * 5/9 + 273.15, fromBase: (k) => (k - 273.15) * 9/5 + 32 },
+        { name: 'Kelvin (K)', abbr: 'K', toBase: (k) => k, fromBase: (k) => k }, // Base Unit (Kelvin)
     ]
 };
 
-const MAX_RECENT_CONVERSIONS = 5;
-const RECENT_CONVERSIONS_KEY = 'grifts_recent_conversions';
-
-
 // --- DOM Elements ---
-const typeSelect = document.getElementById('conversion-type-select');
-const valueInput = document.getElementById('conversion-value-input');
-const unitFromSelect = document.getElementById('unit-from-select');
-const unitToSelect = document.getElementById('unit-to-select');
-const swapButton = document.getElementById('swap-btn');
+const typeSelect = document.getElementById('unit-type');
+const valueInput = document.getElementById('value-input');
+const unitFromSelect = document.getElementById('unit-from');
+const unitToSelect = document.getElementById('unit-to');
+const resultOutput = document.getElementById('result-output');
 const convertButton = document.getElementById('convert-btn');
-const resultOutput = document.getElementById('conversion-result-output');
-const recentList = document.getElementById('recent-conversions-list');
-const calculatorOutput = document.getElementById('calculator-output');
-const calculatorButtons = document.querySelector('.calc-buttons');
+const swapButton = document.getElementById('swap-btn');
+const recentConversionsList = document.getElementById('recent-conversions-list');
+
+// Calculator DOM Elements
+const calculatorDisplay = document.getElementById('calculator-display');
+const calculatorButtons = document.getElementById('calculator-buttons');
+
+// Calculator State
+let displayValue = '0';
+let firstOperand = null;
+let operator = null;
+let waitingForSecondOperand = false;
 
 
-// --- Unit Conversion Functions ---
+// ----------------------------------------------------------------------
+// --- FIX #1: Security & Data Handling (sessionStorage for Conversions) ---
+// ----------------------------------------------------------------------
 
+const RECENT_CONVERSIONS_KEY = 'grifts-recent-conversions';
+const MAX_RECENT_CONVERSIONS = 5;
+
+/**
+ * Custom utility to safely save data to session storage.
+ */
+function saveToSession(key, value) {
+    try {
+        sessionStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        console.error('Error saving to sessionStorage:', e);
+    }
+}
+
+/**
+ * Custom utility to safely load data from session storage.
+ */
+function loadFromSession(key, defaultValue = []) {
+    try {
+        const data = sessionStorage.getItem(key);
+        return data ? JSON.parse(data) : defaultValue;
+    } catch (e) {
+        console.error('Error loading from sessionStorage:', e);
+        return defaultValue;
+    }
+}
+
+/**
+ * Renders the recent conversion list in the UI.
+ */
+function renderRecentConversions(conversions) {
+    recentConversionsList.innerHTML = ''; // Clear existing list
+    
+    if (conversions.length === 0) {
+        recentConversionsList.innerHTML = '<li>No recent conversions saved.</li>';
+        return;
+    }
+    
+    conversions.forEach(text => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        
+        // Allow clicking a recent conversion to load the value into the main input
+        li.addEventListener('click', () => {
+            const match = text.match(/^([\d.]+)/);
+            if (match) {
+                valueInput.value = match[1];
+                convertUnit();
+            }
+        });
+        
+        recentConversionsList.appendChild(li);
+    });
+}
+
+/**
+ * Saves a new conversion string to sessionStorage and updates the UI.
+ * (Uses sessionStorage instead of memoryStore)
+ */
+function saveRecentConversion(text) {
+    // Load existing, or default to an empty array
+    let conversions = loadFromSession(RECENT_CONVERSIONS_KEY);
+    
+    // 1. Remove the new entry if it already exists (to move it to the top)
+    conversions = conversions.filter(c => c !== text);
+    
+    // 2. Add the new entry to the front
+    conversions.unshift(text);
+    
+    // 3. Trim the array to the max size
+    if (conversions.length > MAX_RECENT_CONVERSIONS) {
+        conversions = conversions.slice(0, MAX_RECENT_CONVERSIONS);
+    }
+
+    saveToSession(RECENT_CONVERSIONS_KEY, conversions);
+    renderRecentConversions(conversions);
+}
+
+/**
+ * Loads recent conversions from session storage and updates the UI.
+ * (Uses sessionStorage instead of memoryStore)
+ */
+function loadRecentConversions() {
+    const conversions = loadFromSession(RECENT_CONVERSIONS_KEY);
+    renderRecentConversions(conversions);
+}
+
+// ----------------------------------------------------------------------
+// --- Unit Converter Core Logic ---
+// ----------------------------------------------------------------------
+
+/**
+ * Finds a unit definition by its abbreviation for the given type.
+ */
+function getUnitByAbbr(type, abbr) {
+    return UNIT_DEFINITIONS[type].find(unit => unit.abbr === abbr);
+}
+
+/**
+ * Populates the 'From' and 'To' dropdowns based on the selected unit type.
+ */
 function populateUnitDropdowns(type) {
     const units = UNIT_DEFINITIONS[type];
-    if (!units) return;
-
+    
+    // Clear old options
     unitFromSelect.innerHTML = '';
     unitToSelect.innerHTML = '';
-
+    
     units.forEach(unit => {
-        const option = `<option value="${unit.abbr}">${unit.name}</option>`;
-        unitFromSelect.insertAdjacentHTML('beforeend', option);
-        unitToSelect.insertAdjacentHTML('beforeend', option);
+        const optionFrom = new Option(unit.name, unit.abbr);
+        const optionTo = new Option(unit.name, unit.abbr);
+        
+        unitFromSelect.add(optionFrom);
+        unitToSelect.add(optionTo);
     });
-
-    // Set initial sensible defaults
-    if (type === 'length') { unitFromSelect.value = 'm'; unitToSelect.value = 'ft'; } 
-    else if (type === 'mass') { unitFromSelect.value = 'kg'; unitToSelect.value = 'lb'; } 
-    else if (type === 'temp') { unitFromSelect.value = 'C'; unitToSelect.value = 'F'; }
+    
+    // Set defaults (e.g., first unit is usually the base or most common)
+    unitFromSelect.value = units[0].abbr;
+    unitToSelect.value = units[1] ? units[1].abbr : units[0].abbr;
 }
 
-function getUnitByAbbr(type, abbr) {
-    const units = UNIT_DEFINITIONS[type];
-    return units ? units.find(u => u.abbr === abbr) : null;
-}
-
+/**
+ * Core conversion logic.
+ */
 function convertUnit() {
     const type = typeSelect.value;
     const value = parseFloat(valueInput.value);
-    const fromAbbr = unitFromSelect.value;
-    const toAbbr = unitToSelect.value;
+    const abbrFrom = unitFromSelect.value;
+    const abbrTo = unitToSelect.value;
 
-    if (isNaN(value) || value <= 0) {
-        resultOutput.textContent = 'Invalid Value';
+    if (isNaN(value) || valueInput.value.trim() === '') {
+        resultOutput.textContent = 'Enter a value.';
         return;
     }
 
-    if (fromAbbr === toAbbr) {
-        resultOutput.textContent = value;
+    const unitFrom = getUnitByAbbr(type, abbrFrom);
+    const unitTo = getUnitByAbbr(type, abbrTo);
+
+    if (!unitFrom || !unitTo) {
+        resultOutput.textContent = 'Error: Invalid units.';
         return;
     }
 
-    let result = 0;
-    
-    // --- SPECIAL HANDLING: TEMPERATURE ---
-    if (type === 'temp') {
-        let tempInC = 0; 
+    let baseValue;
+    let finalResult;
+    let formattedResult;
 
-        // 1. Convert FROM unit to Celsius (C)
-        if (fromAbbr === 'F') {
-            tempInC = (value - 32) * (5/9);
-        } else if (fromAbbr === 'K') {
-            tempInC = value - 273.15;
-        } else { tempInC = value; } // Already C
-
-        // 2. Convert FROM Celsius (C) to TO unit
-        if (toAbbr === 'F') {
-            result = (tempInC * (9/5)) + 32;
-        } else if (toAbbr === 'K') {
-            result = tempInC + 273.15;
-        } else { result = tempInC; } // To C
+    // Handle Temperature (Non-linear conversion)
+    if (type === 'temperature') {
+        // 1. Convert FROM value to Kelvin (base unit)
+        baseValue = unitFrom.toBase(value);
+        // 2. Convert from Kelvin to the final unit
+        finalResult = unitTo.fromBase(baseValue);
     } 
-    // --- STANDARD CONVERSION (Length, Mass, Area, Volume) ---
+    // Handle Linear Units (Length, Mass)
     else {
-        const fromUnit = getUnitByAbbr(type, fromAbbr);
-        const toUnit = getUnitByAbbr(type, toAbbr);
-        
-        // 1. Convert FROM value TO Base Unit (Value * From_Factor)
-        const valueInBase = value * fromUnit.factor;
-
-        // 2. Convert Base Unit value TO TO unit (Base / To_Factor)
-        result = valueInBase / toUnit.factor;
+        // 1. Convert FROM value to Base Unit (factor is always conversion TO base)
+        baseValue = value * unitFrom.factor;
+        // 2. Convert from Base Unit to the final unit
+        finalResult = baseValue / unitTo.factor;
     }
-
-    // Format the result: Max 6 decimal places, trim trailing zeros
-    const formattedResult = result.toFixed(6).replace(/\.?0+$/, ''); 
-    resultOutput.textContent = formattedResult;
     
-    // Save to recents
-    const fromName = getUnitByAbbr(type, fromAbbr).name;
-    const toName = getUnitByAbbr(type, toAbbr).name;
-    const conversionString = `${value} ${fromName} = ${formattedResult} ${toName}`;
-    saveRecentConversion(conversionString);
+    // Format the result to 4 decimal places, avoiding scientific notation
+    formattedResult = parseFloat(finalResult.toFixed(4));
+    
+    const resultText = `${value} ${unitFrom.abbr} = ${formattedResult} ${unitTo.abbr}`;
+    resultOutput.textContent = formattedResult;
+
+    // Save the conversion for the recent list
+    saveRecentConversion(resultText);
 }
 
+/**
+ * Swaps the 'from' and 'to' units in the dropdowns.
+ */
 function swapUnits() {
-    const tempValue = unitFromSelect.value;
+    const temp = unitFromSelect.value;
     unitFromSelect.value = unitToSelect.value;
-    unitToSelect.value = tempValue;
-    convertUnit(); 
+    unitToSelect.value = temp;
+    convertUnit();
 }
 
-// --- Local Storage / Recent Conversion Management ---
 
-function saveRecentConversion(conversionString) {
-    if (!window.localStorage) return;
-
-    try {
-        let recents = JSON.parse(localStorage.getItem(RECENT_CONVERSIONS_KEY)) || [];
-        
-        // Add new conversion to the front, filter duplicates, and limit size
-        recents.unshift(conversionString);
-        recents = [...new Set(recents)].slice(0, MAX_RECENT_CONVERSIONS);
-
-        localStorage.setItem(RECENT_CONVERSIONS_KEY, JSON.stringify(recents));
-        renderRecentConversions(recents);
-    } catch (e) {
-        console.error("Could not save to localStorage:", e);
-    }
-}
-
-function loadRecentConversions() {
-    if (!window.localStorage) return;
-
-    try {
-        const recents = JSON.parse(localStorage.getItem(RECENT_CONVERSIONS_KEY)) || [];
-        renderRecentConversions(recents);
-    } catch (e) {
-        recentList.innerHTML = '<li>Error loading recents.</li>';
-    }
-}
-
-function renderRecentConversions(recents) {
-    if (recents.length === 0) {
-        recentList.innerHTML = '<li>No recent conversions saved.</li>';
-        return;
-    }
-
-    const html = recents.map(conv => `<li>${conv}</li>`).join('');
-    recentList.innerHTML = html;
-}
-
-// --- Basic Calculator Logic (Simple State Machine) ---
-
-let currentInput = '0';
-let currentOperator = null;
-let firstOperand = null;
-let waitingForSecondOperand = false;
+// ----------------------------------------------------------------------
+// --- Calculator Core Logic ---
+// ----------------------------------------------------------------------
 
 function updateCalculatorDisplay() {
-    // Show a scientific notation for very long results
-    calculatorOutput.value = currentInput.length > 15 ? 
-        parseFloat(currentInput).toExponential(5) : currentInput;
+    calculatorDisplay.value = displayValue;
 }
 
 function handleNumber(number) {
     if (waitingForSecondOperand === true) {
-        currentInput = number === '.' ? '0.' : number;
+        displayValue = number;
         waitingForSecondOperand = false;
     } else {
-        if (number === '.') {
-            if (!currentInput.includes('.')) {
-                currentInput += number;
-            }
-        } else {
-            // Prevent multiple leading zeros, unless it's a decimal
-            currentInput = (currentInput === '0' && number !== '.') ? number : currentInput + number;
+        // Prevent multiple decimal points
+        if (number === '.' && displayValue.includes('.')) {
+            return;
         }
-    }
-    updateCalculatorDisplay();
-}
-
-function handleAction(action) {
-    const currentValue = parseFloat(currentInput);
-
-    if (action === 'clear') {
-        currentInput = '0';
-        firstOperand = null;
-        currentOperator = null;
-        waitingForSecondOperand = false;
-    } else if (action === 'negate') {
-        currentInput = (currentValue * -1).toString();
-    } else if (action === 'percent') {
-        currentInput = (currentValue / 100).toString();
+        displayValue = displayValue === '0' ? number : displayValue + number;
     }
     updateCalculatorDisplay();
 }
 
 function handleOperator(nextOperator) {
-    const inputValue = parseFloat(currentInput);
+    const inputValue = parseFloat(displayValue);
 
-    if (firstOperand === null && !isNaN(inputValue)) {
+    if (operator && waitingForSecondOperand) {
+        operator = nextOperator;
+        return;
+    }
+
+    if (firstOperand === null) {
         firstOperand = inputValue;
-    } else if (currentOperator) {
-        const result = performCalculation(firstOperand, inputValue, currentOperator);
-        currentInput = parseFloat(result.toFixed(10)).toString(); 
-        firstOperand = parseFloat(currentInput);
+    } else if (operator) {
+        const result = calculateResult(firstOperand, inputValue, operator);
+        
+        displayValue = String(parseFloat(result.toFixed(8)));
+        firstOperand = result;
     }
 
     waitingForSecondOperand = true;
-    currentOperator = nextOperator;
+    operator = nextOperator;
     updateCalculatorDisplay();
-}
-
-function performCalculation(op1, op2, operator) {
-    switch (operator) {
-        case '+': return op1 + op2;
-        case '-': return op1 - op2;
-        case '*': return op1 * op2;
-        case '/': 
-            if (op2 === 0) {
-                showAlert('Cannot divide by zero!', 'error');
-                return op1; 
-            }
-            return op1 / op2;
-        default: return op2;
-    }
 }
 
 function handleEquals() {
-    if (currentOperator === null) { return; } // Nothing to calculate
+    const inputValue = parseFloat(displayValue);
     
-    const secondOperand = waitingForSecondOperand ? firstOperand : parseFloat(currentInput);
-    const result = performCalculation(firstOperand, secondOperand, currentOperator);
-    
-    currentInput = parseFloat(result.toFixed(10)).toString(); 
-    firstOperand = parseFloat(currentInput);
-    waitingForSecondOperand = true; 
-    
+    if (firstOperand === null || operator === null) {
+        // No pending operation, do nothing
+        return;
+    }
+
+    const result = calculateResult(firstOperand, inputValue, operator);
+
+    displayValue = String(parseFloat(result.toFixed(8)));
+    firstOperand = null;
+    operator = null;
+    waitingForSecondOperand = false;
     updateCalculatorDisplay();
 }
 
+function handleAction(action) {
+    switch (action) {
+        case 'clear':
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            break;
+        case 'backspace':
+            displayValue = displayValue.length > 1 ? displayValue.slice(0, -1) : '0';
+            break;
+        case 'percent':
+            const value = parseFloat(displayValue);
+            displayValue = String(value / 100);
+            break;
+    }
+    updateCalculatorDisplay();
+}
 
-// --- Initialization ---
+function calculateResult(first, second, op) {
+    switch (op) {
+        case '+': return first + second;
+        case '-': return first - second;
+        case '*': return first * second;
+        case '/': 
+            if (second === 0) {
+                showAlert('Error: Cannot divide by zero!', 'error');
+                return 0;
+            }
+            return first / second;
+        default: return second;
+    }
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+
+// --- Initialization ---\ndocument.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize Unit Converter
     
     populateUnitDropdowns(typeSelect.value); 
-    loadRecentConversions();
+    loadRecentConversions(); // *** NOW USES SESSIONSTORAGE ***
 
     // Event listeners for Conversion
     typeSelect.addEventListener('change', (e) => {
@@ -293,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         convertUnit();
     });
     
-    // Uses debounce utility from common.js to prevent rapid firing on input
+    // Uses debounce utility from common.js (assumes debounce exists)
     valueInput.addEventListener('input', typeof debounce === 'function' ? debounce(convertUnit, 200) : convertUnit);
     unitFromSelect.addEventListener('change', convertUnit);
     unitToSelect.addEventListener('change', convertUnit);
@@ -323,4 +372,3 @@ document.addEventListener('DOMContentLoaded', () => {
             handleAction(action);
         }
     });
-});

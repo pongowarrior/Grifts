@@ -54,7 +54,7 @@ function generatePassword() {
     }
     
     outputField.value = password;
-    calculateAndDisplayStrength(password, availableLength);
+    calcul!ateAndDisplayStrength(password, availableLength);
 }
 
 // --- Strength Calculation (Shannon Entropy) ---

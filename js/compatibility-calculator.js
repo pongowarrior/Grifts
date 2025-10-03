@@ -8,6 +8,42 @@ const shareButton = document.getElementById('share-btn');
 const heartEmoji = document.getElementById('heart-emoji');
 const downloadPdfButton = document.getElementById('download-pdf-btn');
 
+/**
+ * Monetization Hook: This function acts as the gate for the paid report.
+ * It simulates a download using common.js's downloadFile to deliver a checkout link.
+ */
+function generatePDFReport(name1, name2, score) {
+    showAlert(`Custom Report generation requested for ${name1} and ${name2}.`, 'info');
+    
+    // The content is a plain text file that directs the user to the payment link
+    const filename = `Grifts_Compatibility_Report_Checkout.txt`;
+    const content = `
+================================================
+CUSTOM COMPATIBILITY REPORT: ${name1} & ${name2}
+================================================
+
+Thank you for requesting your Score Analysis!
+
+Your compatibility score is: ${score}%.
+
+This report costs $9 USD for a detailed, shareable PDF analysis.
+
+================================================
+ACTION REQUIRED:
+Please visit the payment link below to complete your order:
+https://grifts.co.uk/checkout/compatibility-report-9usd
+================================================
+
+Your file is downloaded. Open it to access the checkout link!
+    `;
+
+    // Use the shared downloadFile utility (from common.js)
+    downloadFile(content, filename, 'text/plain');
+
+    showAlert('Download started: Open the text file for your checkout link!', 'success');
+}
+
+
 // --- Compatibility Algorithm (The Viral JS Trick) ---
 // Classic "Love Calculator" score reduction logic for fun, deterministic results.
 function calculateCompatibility(name1, name2) {
