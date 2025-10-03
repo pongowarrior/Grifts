@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Viral Quiz Generator - Which Persona Are You?</title>
+    <meta name="description" content="Instantly generate a fun, shareable personality quiz. Get a result, share it, and drive engagement!">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        /* Quiz Card Styling */
+        .quiz-card {
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-green);
+        }
+        
+        .answer-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        /* Styling for a selectable button/answer */
+        .answer-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            text-align: left;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+        }
+
+        .answer-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(0, 217, 245, 0.1);
+        }
+        
+        .answer-btn.selected {
+            border: 2px solid var(--accent-green);
+            background-color: rgba(0, 245, 160, 0.15);
+            font-weight: bold;
+        }
+        
+        /* Result Screen Styling */
+        #quiz-result {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        #result-title {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+        
+        #result-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        #result-image-placeholder {
+            min-height: 200px;
+            background-color: var(--bg-card);
+            border: 1px dashed var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="./index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">✨ Viral Quiz Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Find out: **Which Legendary Creature Are You?** Answer the questions and get a profile picture-ready result!
+            </p>
+        </header>
+
+        <div class="quiz-container">
+            <div class="card quiz-card" id="quiz-card">
+                <div id="quiz-start">
+                    <h2 style="color: var(--accent-green);">Ready to discover your destiny?</h2>
+                    <p style="margin: 1.5rem 0; color: var(--text-secondary);">This quiz has 5 quick questions. Your answers determine your final legendary creature persona!</p>
+                    <button id="start-btn" class="btn btn-primary" style="width: 100%;">START QUIZ</button>
+                </div>
+                
+                <div id="quiz-content" style="display: none;">
+                    <p class="hint" id="question-counter"></p>
+                    <p class="question-text" id="question-text"></p>
+                    
+                    <ul class="answer-list" id="answer-list">
+                        </ul>
+
+                    <button id="next-btn" class="btn btn-primary" style="margin-top: 1rem;" disabled>Next Question</button>
+                </div>
+            </div>
+            
+            <div id="quiz-result" class="card quiz-card">
+                <h2 id="result-title"></h2>
+                <div id="result-image-placeholder">
+                    <p>Your result image placeholder</p>
+                </div>
+                <p id="result-description"></p>
+                
+                <button id="share-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">🔗 Share My Result!</button>
+                <button id="restart-btn" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Restart Quiz</button>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AD SPOT: Merch Store / Fantasy Game Affiliate Link
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Viral Quiz Generator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/quiz-generator.js" defer></script>
+</body>
+</html>

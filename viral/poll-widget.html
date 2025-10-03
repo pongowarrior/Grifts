@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Mini-Poll / Vote Widget - Viral</title>
+    <meta name="description" content="Create a quick two-option poll, share the link, and see real-time voting results. Perfect for social media challenges.">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .poll-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .vote-options {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin: 1.5rem 0;
+        }
+        .vote-btn {
+            flex-grow: 1;
+            padding: 1.5rem 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .vote-btn:hover:not(:disabled) {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
+        }
+        .results-bar {
+            height: 30px;
+            background-color: var(--bg-card);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        #result-fill-a {
+            height: 100%;
+            width: 50%; /* Default 50% for initial state */
+            background-color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+            white-space: nowrap; /* Prevent percentage from wrapping */
+        }
+        #result-fill-b {
+            height: 100%;
+            width: 50%; /* Default 50% */
+            background-color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+            white-space: nowrap; 
+        }
+        #results-container {
+            display: flex;
+            height: 30px;
+        }
+        .share-box {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--bg-card);
+            border: 1px dashed var(--accent-green);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="./index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">📊 Mini-Poll Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Create a quick "Would You Rather" or two-option poll, share the link, and let the internet decide. **Highly engaging.**
+            </p>
+        </header>
+
+        <div class="poll-container">
+            <div class="card" id="input-card">
+                <h2>1. Create Your Poll</h2>
+                
+                <label for="poll-question">Your Question:</label>
+                <input type="text" id="poll-question" placeholder="e.g., Ultimate side hustle: Coding or E-commerce?" maxlength="100">
+
+                <div style="display: flex; gap: var(--spacing-sm); margin-top: 1rem;">
+                    <div style="flex-grow: 1;">
+                        <label for="option-a-text">Option A (Blue):</label>
+                        <input type="text" id="option-a-text" placeholder="Option A" maxlength="30">
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <label for="option-b-text">Option B (Green):</label>
+                        <input type="text" id="option-b-text" placeholder="Option B" maxlength="30">
+                    </div>
+                </div>
+
+                <button id="reset-poll-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Create New/Reset Poll</button>
+            </div>
+            
+            <div class="card result-card" style="margin-top: var(--spacing-md);">
+                <h2 id="display-question">❓ Loading Question...</h2>
+                
+                <div id="voting-area" class="vote-options">
+                    <button id="vote-a-btn" class="vote-btn">Option A</button>
+                    <button id="vote-b-btn" class="vote-btn">Option B</button>
+                </div>
+
+                <div id="results-area" style="display: none;">
+                    <h3 style="margin-bottom: 0.5rem;">Live Results: <span id="total-votes">0</span> votes</h3>
+                    <div id="results-container" class="results-bar">
+                        </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">*Results are shared anonymously and are not permanent.*</p>
+                </div>
+            </div>
+
+            <div class="share-box">
+                <button id="share-link-btn" class="btn btn-secondary" style="width: 100%;">🔗 Share Your Poll Link</button>
+                <p class="hint">The unique poll is stored in the link itself, making it instantly shareable.</p>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AD SPOT: Survey Software / Engagement Platforms
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Mini-Poll Generator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/poll-widget.js" defer></script>
+</body>
+</html>

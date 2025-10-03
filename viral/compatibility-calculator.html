@@ -6,6 +6,70 @@
     <title>GRIFTS | Compatibility Calculator - Viral</title>
     <meta name="description" content="Find out your viral compatibility score with any name! Perfect for sharing on social media.">
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Compatibility Calculator Specific Styles */
+        .name-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .name-input-group > div {
+            flex-grow: 1;
+        }
+
+        #score-display {
+            font-size: 5rem; 
+            font-weight: bold;
+            line-height: 1;
+            transition: color 0.5s ease-in-out, transform 0.5s;
+        }
+
+        /* Animation for the Result */
+        .score-glow {
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px var(--accent-green); }
+            to { text-shadow: 0 0 20px var(--accent-green), 0 0 30px var(--accent-blue); }
+        }
+
+        /* Heart animation above the score */
+        #heart-emoji {
+            font-size: 3rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease-in-out;
+            opacity: 0; /* Hidden initially */
+        }
+        .heart-pulse {
+            animation: pulse 1s infinite;
+            opacity: 1 !important;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* PDF Report Button Style (Monetization Hook) */
+        #download-pdf-btn {
+            margin-top: 0.5rem;
+            background-color: var(--bg-dark);
+            border: 2px solid #ffcc00; /* Gold/Yellow for Premium */
+            color: #ffcc00;
+            transition: background-color 0.3s;
+        }
+        #download-pdf-btn:hover {
+            background-color: rgba(255, 204, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 600px) {
+            .name-input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -29,35 +93,37 @@
             </p>
         </header>
 
-        <div class="tool-content" style="grid-template-columns: 1fr;">
-            <div class="card" id="input-card" style="max-width: 500px; margin: 0 auto;">
-                <h2>Enter Names</h2>
-                
-                <div class="input-group">
-                    <label for="name1-input">Your Name (or Name 1):</label>
-                    <input type="text" id="name1-input" placeholder="e.g., John" maxlength="30">
+        <div class="tool-content">
+            <div class="card" id="calculator-card" style="max-width: 500px; margin: 0 auto 1.5rem;">
+                <h2>Enter Two Names</h2>
+                <div class="name-input-group">
+                    <div>
+                        <label for="name1-input">Name 1 (Your Persona):</label>
+                        <input type="text" id="name1-input" placeholder="e.g., Grifter" maxlength="50">
+                    </div>
+                    <div>
+                        <label for="name2-input">Name 2 (Their Persona):</label>
+                        <input type="text" id="name2-input" placeholder="e.g., Algorithm" maxlength="50">
+                    </div>
                 </div>
-
-                <div class="input-group">
-                    <label for="name2-input">Partner's Name (or Name 2):</label>
-                    <input type="text" id="name2-input" placeholder="e.g., Sarah" maxlength="30">
-                </div>
                 
-                <button id="calculate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">CALCULATE COMPATIBILITY</button>
+                <button id="calculate-btn" class="btn btn-primary" style="width: 100%;">CALCULATE VIRAL SCORE</button>
             </div>
 
             <div class="card result-card" style="max-width: 500px; margin: var(--spacing-md) auto;">
                 <h2>Your Score</h2>
                 <div class="result-box" style="display: block; text-align: center;">
-                    <div id="score-display" style="font-size: 4rem; font-weight: bold; color: var(--accent-green); line-height: 1;">
+                    <span id="heart-emoji">❤️</span>
+                    <div id="score-display" style="font-size: 5rem; font-weight: bold; color: var(--accent-green); line-height: 1;">
                         0%
                     </div>
                     <p id="result-message" style="margin-top: 1rem; color: var(--text-secondary);">Enter two names and press calculate!</p>
                 </div>
                 
                 <div class="security-info" style="margin-top: 2rem;">
-                    <button id="share-btn" class="btn btn-secondary" style="width: 100%;">Share Your Result!</button>
-                    <p class="hint" style="text-align: center;">Use the share button to instantly post your result to social media.</p>
+                    <button id="share-btn" class="btn btn-secondary" style="width: 100%;">🔗 Share My Score!</button>
+                    <button id="download-pdf-btn" class="btn" style="width: 100%;">💰 Get Custom Report (PDF)</button>
+                    <p class="hint" style="text-align: center;">The shareable result drives traffic. The Custom PDF is your micro-payment hook.</p>
                 </div>
             </div>
         </div>

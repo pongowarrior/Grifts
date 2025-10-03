@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Unit Converter & Calculator Hub - Utilities</title>
+    <meta name="description" content="Fast, client-side unit conversions (Metric, Imperial) and a basic calculator.">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Tool Specific Styles */
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        .converter-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end; /* Align inputs/selects with button */
+        }
+        .converter-input-group select,
+        .converter-input-group input[type="number"] {
+            flex: 1;
+        }
+        #swap-btn {
+            background-color: var(--bg-dark);
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: var(--radius-sm);
+            height: 44px; /* Match standard button height */
+            line-height: 1.5;
+        }
+        #swap-btn:hover {
+            background-color: rgba(0, 217, 245, 0.1);
+        }
+        #conversion-result-output {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-green);
+            background-color: var(--bg-card);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word; /* Handle long results */
+        }
+
+        /* Basic Calculator Styles */
+        #calculator-output {
+            font-size: 1.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: right;
+            border: 1px solid var(--accent-blue);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            height: 50px;
+            line-height: 30px;
+            overflow: hidden;
+            font-family: monospace;
+        }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calc-buttons button {
+            padding: 1rem;
+            font-size: 1.2rem;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .calc-buttons button:hover {
+            background-color: var(--bg-card);
+        }
+        .calc-buttons button.operator {
+            color: var(--accent-green);
+        }
+        .calc-buttons button.equals {
+            background-color: var(--accent-blue);
+            color: var(--bg-dark);
+            font-weight: bold;
+        }
+
+        /* Recent Conversions */
+        #recent-conversions-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        #recent-conversions-list li {
+            background-color: var(--bg-card);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            word-break: break-all;
+        }
+        #recent-conversions-list li:first-child {
+            border-top-left-radius: var(--radius-sm);
+            border-top-right-radius: var(--radius-sm);
+        }
+        #recent-conversions-list li:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: var(--radius-sm);
+            border-bottom-right-radius: var(--radius-sm);
+        }
+
+        @media (max-width: 800px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="./index.html">Utilities</a></li>
+                <li><a href="../viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">🧮 Converter & Calculator Hub</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Quickly convert common units (metric ↔ imperial) and perform basic arithmetic. **Runs 100% client-side for speed.**
+            </p>
+        </header>
+
+        <div class="converter-grid">
+            
+            <div class="card">
+                <h2>Unit Converter</h2>
+                <p class="hint">Select a conversion type to begin.</p>
+                <div class="form-group">
+                    <label for="conversion-type-select">Conversion Type:</label>
+                    <select id="conversion-type-select">
+                        <option value="length">Length</option>
+                        <option value="mass">Mass / Weight</option>
+                        <option value="temp">Temperature</option>
+                        <option value="area">Area</option>
+                        <option value="volume">Volume</option>
+                        <option value="currency" disabled>Currency (Static - Future Feature)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="conversion-value-input">Value:</label>
+                    <input type="number" id="conversion-value-input" value="1" min="0.000001" step="any" placeholder="Enter value">
+                </div>
+
+                <div class="converter-input-group">
+                    <div style="flex: 1;">
+                        <label for="unit-from-select">From:</label>
+                        <select id="unit-from-select"></select>
+                    </div>
+                    <button id="swap-btn" title="Swap Units">⇆</button>
+                    <div style="flex: 1;">
+                        <label for="unit-to-select">To:</label>
+                        <select id="unit-to-select"></select>
+                    </div>
+                </div>
+
+                <button id="convert-btn" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">CONVERT</button>
+                
+                <h3 style="margin-top: 1.5rem;">Result:</h3>
+                <div id="conversion-result-output">
+                    1
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2>Basic Calculator</h2>
+                
+                <input type="text" id="calculator-output" class="text-input" value="0" readonly>
+                
+                <div class="calc-buttons">
+                    <button class="btn" data-action="clear">AC</button>
+                    <button class="btn operator" data-action="negate">+/-</button>
+                    <button class="btn operator" data-action="percent">%</button>
+                    <button class="btn operator" data-action="operator" data-value="/">÷</button>
+
+                    <button class="btn number" data-value="7">7</button>
+                    <button class="btn number" data-value="8">8</button>
+                    <button class="btn number" data-value="9">9</button>
+                    <button class="btn operator" data-action="operator" data-value="*">×</button>
+
+                    <button class="btn number" data-value="4">4</button>
+                    <button class="btn number" data-value="5">5</button>
+                    <button class="btn number" data-value="6">6</button>
+                    <button class="btn operator" data-action="operator" data-value="-">-</button>
+
+                    <button class="btn number" data-value="1">1</button>
+                    <button class="btn number" data-value="2">2</button>
+                    <button class="btn number" data-value="3">3</button>
+                    <button class="btn operator" data-action="operator" data-value="+">+</button>
+                    
+                    <button class="btn number" data-value="0" style="grid-column: span 2;">0</button>
+                    <button class="btn number" data-value=".">.</button>
+                    <button class="btn equals" data-action="equals">=</button>
+                </div>
+                
+                <h3 style="margin-top: 2rem;">Recent Conversions</h3>
+                <ul id="recent-conversions-list">
+                    <li>No recent conversions saved.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="ad-space">
+            **ADSENSE SPOT**: Financial / Mortgage / Investment Calculators Affiliate Link
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Converter & Calculator Hub</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/unit-converter.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Random Challenge Generator - Viral</title>
+    <meta name="description" content="Instantly generate a fun, viral challenge idea for TikTok, Instagram Reels, or YouTube Shorts. Get trending now!">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .challenge-container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #challenge-output {
+            min-height: 150px;
+            padding: 2rem;
+            margin: 2rem 0;
+            background-color: var(--bg-card);
+            border: 2px solid var(--accent-green);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: 1.5rem;
+        }
+        .action-buttons button {
+            flex-grow: 1;
+        }
+        .hint a {
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="./index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">⚡ Random Challenge Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Need an idea for your next viral short-form video? Click the button for an instant, trending content challenge.
+            </p>
+        </header>
+
+        <div class="challenge-container">
+            <div class="card">
+                <h2>1. Get a Viral Challenge</h2>
+                
+                <div id="challenge-output">
+                    Click 'Generate' to get your next content idea!
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="generate-btn" class="btn btn-primary">🔄 GENERATE NEW CHALLENGE</button>
+                    <button id="share-btn" class="btn btn-secondary" disabled>🔗 Share This Challenge</button>
+                </div>
+
+                <p class="hint" style="margin-top: 2rem;">
+                    *Sponsored Idea: Need music? Use our affiliate link for <a href="#" target="_blank">The Viral Sounds Library!</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AD SPOT: Social Media Scheduler / TikTok Analytics Tools
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Random Challenge Generator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/challenge-generator.js" defer></script>
+</body>
+</html>

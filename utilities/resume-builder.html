@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Free Resume Template Builder - Utilities</title>
+    <meta name="description" content="Free resume builder that lets users export a professional PDF CV with multiple templates.">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="./index.html">Utilities</a></li>
+                <li><a href="../viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">📝 Free Resume Builder</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Create a clean, modern, and professional PDF resume in minutes. Choose a free basic template or unlock **Pro templates**!
+            </p>
+        </header>
+
+        <div class="tool-content">
+            <div class="card" id="resume-form-card">
+                <h2>1. Personal Details</h2>
+                <div class="input-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" placeholder="John Doe">
+                </div>
+                <div class="input-group">
+                    <label for="contact-info">Contact Info (Email / Phone / Location / LinkedIn)</label>
+                    <textarea id="contact-info" rows="3" placeholder="email@example.com | (555) 123-4567 | City, State | linkedin.com/in/johndoe"></textarea>
+                </div>
+
+                <h2>2. Experience Summary</h2>
+                <p class="hint">List your key roles, responsibilities, and achievements.</p>
+                <div class="input-group">
+                    <textarea id="experience-summary" rows="8" placeholder="Job Title 1, Company (2020 - Present)
+- Led a team of 5 developers on a major project.
+- Increased user engagement by 25% through A/B testing.
+..."></textarea>
+                </div>
+
+                <h2>3. Key Skills</h2>
+                <p class="hint">Comma-separated or one per line (e.g., JavaScript, React, Python, AWS)</p>
+                <div class="input-group">
+                    <textarea id="skills-list" rows="4" placeholder="JavaScript, HTML, CSS, React, Node.js, Leadership"></textarea>
+                </div>
+                
+                <h2>4. Education</h2>
+                <div class="input-group">
+                    <textarea id="education-info" rows="4" placeholder="M.S. Computer Science, University Name (2018 - 2020)
+B.A. Business Administration, Other University (2014 - 2018)"></textarea>
+                </div>
+
+                <h2>5. Choose Template</h2>
+                <div class="template-selector" style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <div class="template-option" id="template-basic" style="cursor: pointer; padding: 1rem; border: 2px solid var(--accent-green); border-radius: var(--radius-sm); text-align: center;">
+                        <p style="font-weight: bold; color: var(--accent-green);">Basic (Free)</p>
+                    </div>
+                    <div class="template-option" id="template-pro" style="cursor: pointer; padding: 1rem; border: 2px dashed var(--text-secondary); border-radius: var(--radius-sm); text-align: center; opacity: 0.5;">
+                        <p style="font-weight: bold; color: var(--text-secondary);">Pro (🔒 Paid)</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="card result-card">
+                <h2>6. Generate & Export</h2>
+                <button id="generate-pdf-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Generate Free PDF</button>
+                <p class="hint" style="text-align: center; margin-top: 1rem;">The free PDF will contain a small watermark at the bottom.</p>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-green);">
+            AFFILIATE SPOT: Recommended Job Board / Resume Review Service
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Resume Builder</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="./resume-builder.js" defer></script>
+</body>
+</html>

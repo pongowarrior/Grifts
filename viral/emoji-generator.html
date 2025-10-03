@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIFTS | Text-to-Emoji Generator - Viral</title>
+    <meta name="description" content="Convert your text into elaborate, viral emoji reaction strings. Perfect for social media and chat apps.">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Specific styles for the result container */
+        #emoji-output {
+            font-size: 1.5rem; /* Larger font for emojis */
+            word-break: break-word; /* Ensure long strings wrap */
+            min-height: 100px;
+            padding: 1rem;
+            background-color: var(--bg-card);
+            border: 1px dashed var(--accent-blue);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            line-height: 1.4;
+        }
+        .premium-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="../index.html" class="logo">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="./index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="text-align: center; padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem;">7️⃣ Text-to-Emoji Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
+                Convert plain text into a string of high-energy, viral emoji reactions. **Get noticed in the comments!**
+            </p>
+        </header>
+
+        <div class="tool-content">
+            <div class="card" id="control-card">
+                <h2>1. Enter Text</h2>
+                
+                <label for="text-input">Text to Convert (Max 50 Chars):</label>
+                <input type="text" id="text-input" placeholder="e.g., MIND BLOWN" maxlength="50">
+
+                <label for="style-select" style="margin-top: 1rem;">Emoji Style:</label>
+                <select id="style-select">
+                    <option value="fire">🔥 Fire / Energy</option>
+                    <option value="mindblown">🤯 Mind Blown / Shock</option>
+                    <option value="money">💰 Money / Success</option>
+                    <option value="laugh">😂 Laughing / Funny</option>
+                    <option value="mixed">✨ Random / Mixed</option>
+                </select>
+
+                <button id="generate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">GENERATE EMOJI STRING</button>
+            </div>
+
+            <div class="card result-card">
+                <h2>Generated Reaction</h2>
+                <div id="emoji-output">
+                    Enter text and choose a style to generate a viral reaction!
+                </div>
+                
+                <div class="security-info" style="margin-top: 1rem;">
+                    <button id="copy-btn" class="btn btn-secondary" style="width: 100%;" disabled>Copy to Clipboard</button>
+                    <p class="premium-hint">Need more styles? Check out the Premium Emoji Packs! (Wink, Rage, Love, etc.)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+            AD SPOT: Social Media Growth Tools / Viral Marketing Courses
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Text-to-Emoji Generator</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
+    
+    <script src="../js/common.js" defer></script>
+    <script src="../js/emoji-generator.js" defer></script>
+</body>
+</html>

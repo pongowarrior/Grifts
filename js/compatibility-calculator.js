@@ -5,9 +5,11 @@ const calculateButton = document.getElementById('calculate-btn');
 const scoreDisplay = document.getElementById('score-display');
 const resultMessage = document.getElementById('result-message');
 const shareButton = document.getElementById('share-btn');
+const heartEmoji = document.getElementById('heart-emoji');
+const downloadPdfButton = document.getElementById('download-pdf-btn');
 
-// --- Compatibility Algorithm ---
-// This is a simple, deterministic algorithm designed to be fun and viral.
+// --- Compatibility Algorithm (The Viral JS Trick) ---
+// Classic "Love Calculator" score reduction logic for fun, deterministic results.
 function calculateCompatibility(name1, name2) {
     // 1. Clean and standardize names
     const cleanName1 = name1.toLowerCase().replace(/[^a-z]/g, '');
@@ -16,75 +18,141 @@ function calculateCompatibility(name1, name2) {
     if (cleanName1.length === 0 || cleanName2.length === 0) {
         return 0;
     }
-
-    // 2. Base Score: Sum of unique characters in both names
+    
+    // 2. Combine and count letter frequencies
     const combinedName = cleanName1 + cleanName2;
-    const uniqueChars = new Set(combinedName.split(''));
-    let baseScore = uniqueChars.size * 2.5; // Scale up the score
+    const frequency = {};
+    for (const char of combinedName) {
+        frequency[char] = (frequency[char] || 0) + 1;
+    }
 
-    // 3. Bonus 1: Matching Letters (How many times a letter from one name is in the other)
-    let matchBonus = 0;
-    for (const char of cleanName1) {
-        if (cleanName2.includes(char)) {
-            matchBonus += 1.5;
+    // 3. Create the initial sequence string (e.g., "4112" from "adamnana")
+    let sequence = Object.values(frequency).join('');
+
+    // 4. Reduction Loop: Sum adjacent digits until the result is 2 digits or less.
+    while (sequence.length > 2) {
+        let newSequence = '';
+        for (let i = 0; i < sequence.length - 1; i++) {
+            // Sum adjacent digits
+            const digitSum = (parseInt(sequence[i]) + parseInt(sequence[i+1])).toString();
+            newSequence += digitSum;
+        }
+        sequence = newSequence;
+        
+        // Final forced reduction if it's still too long due to small sums (e.g., "121212")
+        if (sequence.length > 2 && sequence.length < combinedName.length) { 
+             const firstDigit = parseInt(sequence[0]);
+             const secondDigit = parseInt(sequence[1]);
+             sequence = (firstDigit + secondDigit).toString();
         }
     }
     
-    // 4. Bonus 2: Length Closeness (Closer lengths = higher score)
-    const lengthDiff = Math.abs(cleanName1.length - cleanName2.length);
-    let lengthBonus = Math.max(0, 15 - lengthDiff * 2); // Max 15 points
-
-    // 5. Final Raw Score Calculation
-    let finalScore = baseScore + matchBonus + lengthBonus;
-
-    // 6. Normalize and cap the score (0 to 100)
-    // The divisor is set to make scores often fall in the middle (30-80) for shareability
-    finalScore = Math.min(100, finalScore * 1.5); // Multiplier makes higher scores more common
-    finalScore = Math.max(0, finalScore);
+    // 5. Final Score is the resulting two-digit number.
+    let score = parseInt(sequence);
     
-    // Use the "LOVE" factor for a dramatic (and viral) twist!
-    const loveFactor = (combinedName.match(/[love]/g) || []).length * 5;
-    finalScore = Math.min(100, finalScore + loveFactor);
-
-    // Return the final score rounded to the nearest integer
-    return Math.round(finalScore);
+    // If the sequence is still one digit (e.g., '1'), convert to 10%
+    if (sequence.length === 1) {
+        score = score * 10;
+    }
+    
+    // If score is 100 or more, clamp it.
+    return Math.min(score, 99);
 }
 
-// --- Display Logic ---
+
+// --- Result Display and Visualization ---
+const scoreRanges = [
+    { min: 0, max: 20, emoji: '💔', color: '#ff4d4d', message: "Warning: Low Signal! The algorithms don't like this match. Time for a re-brand? Score: {S}%" }, // Red
+    { min: 21, max: 40, emoji: '🤔', color: '#ffcc00', message: "Potential Detected. There's a spark, but you'll need to work on your synergy. Score: {S}%" }, // Yellow
+    { min: 41, max: 70, emoji: '🤝', color: 'var(--accent-blue)', message: "Strong Connection! This partnership has excellent viral potential. Score: {S}%" }, // Blue
+    { min: 71, max: 99, emoji: '🔥', color: 'var(--accent-green)', message: "MAX VIRALITY! You are a perfect, algorithm-optimized match. Go dominate the feed! Score: {S}%" } // Green
+];
 
 function displayResult(score, name1, name2) {
-    scoreDisplay.textContent = `${score}%`;
-    let message;
-
-    // Set score display color based on result
-    if (score < 30) {
-        scoreDisplay.style.color = '#ff4d4d'; // Red
-        message = "Low compatibility. It might be a wild ride, but worth the clicks!";
-    } else if (score < 60) {
-        scoreDisplay.style.color = '#ffcc00'; // Yellow
-        message = "Moderate connection. You've got potential, go share it!";
-    } else if (score < 90) {
-        scoreDisplay.style.color = 'var(--accent-green)'; // Green
-        message = "High compatibility! A match made in viral heaven. Share this!";
-    } else {
-        scoreDisplay.style.color = 'var(--accent-blue)'; // Blue (Max Score)
-        message = "🔥 Perfect Match! This is a legendary score. Must share immediately.";
-    }
-
-    resultMessage.textContent = message;
+    const range = scoreRanges.find(r => score >= r.min && score <= r.max);
     
-    // Enable share button and set data
-    shareButton.style.display = 'block';
+    // 1. Apply Visual Effects (Color, Glow, Pulse)
+    scoreDisplay.textContent = `${score}%`;
+    scoreDisplay.style.color = range.color;
+    scoreDisplay.classList.add('score-glow');
+    
+    heartEmoji.textContent = range.emoji;
+    heartEmoji.classList.add('heart-pulse');
+    
+    // 2. Update Message
+    resultMessage.textContent = range.message.replace(/{S}/g, score);
+    
+    // 3. Prepare Share/PDF Data
     shareButton.dataset.name1 = name1;
     shareButton.dataset.name2 = name2;
     shareButton.dataset.score = score;
+    shareButton.style.display = 'block';
+    
+    downloadPdfButton.dataset.name1 = name1;
+    downloadPdfButton.dataset.name2 = name2;
+    downloadPdfButton.dataset.score = score;
+    downloadPdfButton.style.display = 'block';
+
+    showAlert(`Score calculated: ${score}%`, 'success');
+
+    // 4. Remove glow after a short period 
+    setTimeout(() => {
+        scoreDisplay.classList.remove('score-glow');
+    }, 1500);
 }
 
-// --- Event Listeners and Initialization ---
+
+// --- Monetization Hook: PDF Report Generation ---
+// This simulates a paid report download using the shared downloadFile function.
+function generatePDFReport(name1, name2, score) {
+    // The "micro-payment" is simulated: user clicks, and the content is generated.
+    
+    // Using .txt to avoid complex external PDF library (jsPDF) dependencies.
+    const filename = `Grifts-Report-${name1}-and-${name2}.txt`; 
+
+    const reportContent = `
+    
+        *** GRIFTS VIRAL COMPATIBILITY REPORT ***
+        
+        📈 Partnership Optimization Index: ${score}%
+        
+        -------------------------------------------
+        
+        Names Analyzed: ${name1} & ${name2}
+        
+        Algorithm Used: Love Sequence Reduction (LSR) V4.2 - *Highly Viral*
+        
+        -------------------------------------------
+        
+        --- DETAILED ANALYSIS ---
+        
+        **1. Viral Synergy:**
+        - Your combined digital footprint suggests high potential for collaborative content. 
+        - The algorithm predicts a ${score}% chance of hitting the "For You" page.
+        
+        **2. Content Clash Index:**
+        - ${score < 50 ? 'RED FLAG: Significant difference in online posting schedules. Requires synchronization.' : 'GREEN FLAG: Highly aligned posting habits. Minimal content overlap.'}
+        
+        **3. Suggested Action:**
+        - ${score >= 71 ? '✅ STATUS: GO-VIRAL - Immediately launch a joint content series titled "The Optimized Duo."' : 
+          score >= 41 ? '🟠 STATUS: OPTIMIZE - Find a common viral niche and run A/B tests on joint posts.' :
+          '❌ STATUS: RE-EVALUATE - Try analyzing your stage names or online aliases instead.'}
+          
+        *Disclaimer: This report is for entertainment and viral purposes only. Grifts.co.uk is not responsible for relationship outcomes or TikTok trends.*
+        
+    `;
+    
+    // Assumes downloadFile is available via common.js
+    downloadFile(reportContent, filename, 'text/plain');
+    showAlert('Paid Report (Text File) Generated! Check your downloads.', 'info');
+}
+
+// --- Initialization / Event Listeners ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Hide share button initially
+    // Initial hide
     shareButton.style.display = 'none';
+    downloadPdfButton.style.display = 'none';
     
     calculateButton.addEventListener('click', () => {
         const name1 = name1Input.value.trim();
@@ -93,8 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (name1.length === 0 || name2.length === 0) {
             showAlert('Please enter both names!', 'error');
             scoreDisplay.textContent = '0%';
+            scoreDisplay.style.color = 'var(--accent-green)'; 
+            scoreDisplay.classList.remove('score-glow');
+            heartEmoji.classList.remove('heart-pulse');
+            heartEmoji.textContent = '❤️';
             resultMessage.textContent = 'Enter two names and press calculate!';
             shareButton.style.display = 'none';
+            downloadPdfButton.style.display = 'none';
             return;
         }
 
@@ -102,24 +175,40 @@ document.addEventListener('DOMContentLoaded', () => {
         displayResult(score, name1, name2);
     });
 
-    // Share button logic (using Web Share API or manual clipboard copy)
+    // Share button logic
     shareButton.addEventListener('click', () => {
         const name1 = shareButton.dataset.name1;
         const name2 = shareButton.dataset.name2;
         const score = shareButton.dataset.score;
         
-        const shareText = `My compatibility score with ${name2} is ${score}%! Check your score at ${window.location.href} #CompatibilityCalculator #Grifts`;
+        const shareText = `My viral compatibility score with ${name2} is ${score}%! We are an optimized match! Check your score at ${window.location.href} #CompatibilityCalculator #Grifts`;
         
         // Use Web Share API if available (best for mobile)
         if (navigator.share) {
             navigator.share({
-                title: 'Compatibility Score',
+                title: 'Viral Compatibility Score',
                 text: shareText,
                 url: window.location.href,
-            }).catch((error) => console.log('Error sharing', error));
+            }).catch(() => {
+                // Fallback to copying to clipboard
+                copyToClipboard(shareText, shareButton);
+            });
         } else {
-            // Fallback to copying to clipboard
+            // Fallback to copying to clipboard (from common.js)
             copyToClipboard(shareText, shareButton);
+        }
+    });
+
+    // PDF Download Button Logic (Monetization Hook)
+    downloadPdfButton.addEventListener('click', () => {
+        const name1 = downloadPdfButton.dataset.name1;
+        const name2 = downloadPdfButton.dataset.name2;
+        const score = downloadPdfButton.dataset.score;
+        
+        if (name1 && name2 && score && typeof downloadFile === 'function') {
+            generatePDFReport(name1, name2, score);
+        } else {
+            showAlert('Calculate a score first to generate a report!', 'info');
         }
     });
 });
