@@ -41,51 +41,50 @@
             position: relative;
             margin-bottom: var(--spacing-md);
             background-color: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
+            border: 2px solid var(--accent-blue);
+            border-radius: var(--radius-sm);
         }
+
         #avatar-output-container svg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            display: block;
         }
 
         .control-group {
             margin-bottom: 1rem;
-            padding: 0.75rem 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        .control-group:last-child {
-            border-bottom: none;
         }
 
-        .control-label {
+        .control-group label {
             display: block;
+            margin-bottom: 0.25rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--accent-green);
-        }
-        
-        /* Range slider styling (simplified for cross-browser) */
-        input[type="range"] {
-            width: 100%;
-            margin: 0.5rem 0;
-        }
-        
-        .color-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
-        .color-selector input[type="color"] {
-            width: 40px;
+        .control-group input[type="range"] {
+            width: 100%;
+            margin: 0.5rem 0 0;
+        }
+
+        .color-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .color-inputs > div {
+            flex-grow: 1;
+        }
+
+        .color-inputs input[type="color"] {
+            width: 100%;
             height: 40px;
             padding: 0;
-            border: 2px solid var(--text-primary);
-            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
         }
     </style>
 </head>
@@ -105,47 +104,41 @@
 
     <main class="container">
         <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">🎨 Avatar Generator</h1>
+            <h1 style="font-size: 2.2rem;">🖼️ Avatar Generator</h1>
             <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Create a custom, high-quality profile picture for all your social media accounts. **Fully offline and free!**
+                Create a quick, customizable profile avatar for any platform. Perfect for placeholders or quick rebrands. **No watermarks, ever.**
             </p>
         </header>
 
         <div class="generator-container">
-            <div class="card controls-card">
+            <div class="card controls-card" id="generator-card">
                 <h2>1. Customize Features</h2>
                 
                 <div class="control-group">
-                    <label class="control-label" for="hair-style">Hair Style</label>
-                    <input type="range" id="hair-style" min="1" max="5" value="1">
-                    <p class="hint" id="hair-hint">Style 1</p>
-                </div>
-                
-                <div class="control-group">
-                    <label class="control-label" for="eyes-style">Eyes</label>
-                    <input type="range" id="eyes-style" min="1" max="5" value="1">
-                    <p class="hint" id="eyes-hint">Style 1</p>
+                    <label for="hair-style">Hair Style (<span id="hair-hint">1</span>/5):</label>
+                    <input type="range" id="hair-style" min="1" value="1"> 
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="mouth-style">Mouth</label>
-                    <input type="range" id="mouth-style" min="1" max="5" value="1">
-                    <p class="hint" id="mouth-hint">Style 1</p>
+                    <label for="eyes-style">Eyes Style (<span id="eyes-hint">1</span>/4):</label>
+                    <input type="range" id="eyes-style" min="1" value="1">
                 </div>
-                
+
                 <div class="control-group">
-                    <label class="control-label">Colors</label>
-                    <div class="color-selector">
-                        <span>Skin Tone:</span>
-                        <input type="color" id="skin-color" value="#ffd4b8">
+                    <label for="mouth-style">Mouth Style (<span id="mouth-hint">1</span>/6):</label>
+                    <input type="range" id="mouth-style" min="1" value="1">
+                </div>
+
+                <hr style="opacity: 0.2; margin: 1.5rem 0;">
+
+                <div class="control-group color-inputs">
+                    <div>
+                        <label for="skin-color">Skin Color:</label>
+                        <input type="color" id="skin-color" value="#00d9f5">
                     </div>
-                    <div class="color-selector" style="margin-top: 1rem;">
-                        <span>Hair Color:</span>
-                        <input type="color" id="hair-color" value="#6f4e37">
-                    </div>
-                    <div class="color-selector" style="margin-top: 1rem; opacity: 0.5; cursor: not-allowed;">
-                        <span>*Background (Premium):</span>
-                        <input type="color" disabled value="#00d9f5">
+                    <div>
+                        <label for="hair-color">Hair Color:</label>
+                        <input type="color" id="hair-color" value="#00f5a0">
                     </div>
                 </div>
 
@@ -156,11 +149,8 @@
                 <h2>2. Your Avatar</h2>
                 
                 <div id="avatar-output-container">
-                    <svg viewBox="0 0 100 100">
-                        <rect width="100" height="100" fill="var(--bg-dark)"/>
-                        <circle cx="50" cy="50" r="40" fill="#2c2c2c"/>
-                        <text x="50" y="55" font-size="6" fill="white" text-anchor="middle">Loading...</text>
-                    </svg>
+                    <svg viewBox="0 0 100 100" id="avatar-svg">
+                        </svg>
                 </div>
                 
                 <button id="download-btn" class="btn btn-primary" style="width: 100%;">⬇️ DOWNLOAD PNG</button>
@@ -180,7 +170,6 @@
     </footer>
     
     <script src="../js/common.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/svgtoimage@1.1.0/lib/svg-to-image.min.js"></script>
     <script src="../js/avatar-generator.js" defer></script>
 </body>
 </html>
