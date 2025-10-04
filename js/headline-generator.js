@@ -1,135 +1,185 @@
+/*
+File: js/headline-generator.js
+Description: A/B Headline Generator with enhanced features
+*/
+
 // DOM Elements
 const topicInput = document.getElementById('topic-input');
 const outcomeInput = document.getElementById('outcome-input');
 const generateButton = document.getElementById('generate-btn');
+const clearButton = document.getElementById('clear-btn');
 const resultsContainer = document.getElementById('headline-results');
 const copyAllButton = document.getElementById('copy-all-btn');
+const topicCounter = document.getElementById('topic-counter');
+const outcomeCounter = document.getElementById('outcome-counter');
 
-// --- Headline Templates (The core "grift" logic) ---
-// Use {TOPIC} and {OUTCOME} placeholders
+// --- Headline Templates ---
 const headlineTemplates = [
-    // 1. The Urgent Question
     "Can You *Really* {OUTCOME} with This {TOPIC}?",
-    
-    // 2. The Numbered List (always powerful)
     "Top 5 {TOPIC} Secrets That Guarantee {OUTCOME}",
-    
-    // 3. The Contrarian/Controversial
     "Why Your {TOPIC} Strategy is WRONG (And How to {OUTCOME} Instead)",
-    
-    // 4. The Direct Command/How-To
     "How I Used {TOPIC} to Instantly {OUTCOME}",
-    
-    // 5. The Fear/Problem Solver
     "Stop Failing At {TOPIC}: The Easiest Way to {OUTCOME}",
-    
-    // 6. The Aspirational/Ultimate
     "The ULTIMATE {TOPIC} Guide: Go From Zero to {OUTCOME}!",
-    
-    // 7. The Time-Bound/Efficiency
     "Get {OUTCOME} In Under 10 Minutes with This {TOPIC}",
-    
-    // 8. The Curiosity Gap
     "You Won't Believe What Happens When You Combine {TOPIC} and {OUTCOME}",
-    
-    // 9. The Simple Reveal
     "The 1 Simple Trick for {TOPIC} That Leads to {OUTCOME}",
-    
-    // 10. The Direct Claim
     "This is the ONLY {TOPIC} Method You Need to {OUTCOME}",
 ];
 
-// --- XSS Protection Helper (Enhancement #32) ---
-
-/**
- * Sanitizes user input by escaping HTML special characters
- * @param {string} str - The string to sanitize
- * @returns {string} - The sanitized string
- */
-function sanitizeInput(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+// --- Character Counter Updates ---
+function updateCharacterCounters() {
+    const topicRemaining = 50 - topicInput.value.length;
+    const outcomeRemaining = 50 - outcomeInput.value.length;
+    
+    topicCounter.textContent = `${topicRemaining} characters remaining`;
+    outcomeCounter.textContent = `${outcomeRemaining} characters remaining`;
+    
+    // Visual feedback for low character count
+    topicCounter.style.color = topicRemaining < 10 ? 'var(--accent-green)' : '';
+    outcomeCounter.style.color = outcomeRemaining < 10 ? 'var(--accent-green)' : '';
 }
 
 // --- Core Generation Function ---
-
 function generateHeadlines() {
-    // Sanitize inputs to prevent XSS (Enhancement #32)
-    const topic = sanitizeInput(topicInput.value.trim());
-    const outcome = sanitizeInput(outcomeInput.value.trim());
+    // Use sanitizeHTML from common.js instead of duplicating
+    const topic = sanitizeHTML(topicInput.value.trim());
+    const outcome = sanitizeHTML(outcomeInput.value.trim());
     
+    // Validation with user feedback
     if (topic.length === 0 || outcome.length === 0) {
-        resultsContainer.innerHTML = '<p style="text-align: center; color: #ffcc00;">Please enter both a Topic and a Desired Outcome.</p>';
+        resultsContainer.innerHTML = '<p style="text-align: center; color: var(--accent-blue);">⚠️ Please enter both a Topic and a Desired Outcome.</p>';
         copyAllButton.style.display = 'none';
+        
+        // Add visual feedback to empty fields
+        if (topic.length === 0) topicInput.style.borderColor = 'var(--accent-blue)';
+        if (outcome.length === 0) outcomeInput.style.borderColor = 'var(--accent-blue)';
+        
+        showAlert('Please fill in both fields', 'info');
         return;
     }
     
-    // Ensure copy button is visible
-    copyAllButton.style.display = 'block';
+    // Reset border colors
+    topicInput.style.borderColor = '';
+    outcomeInput.style.borderColor = '';
     
-    let html = '';
-    let generatedText = [];
+    // Save inputs to memory for persistence
+    saveToMemory('headline_topic', topicInput.value);
+    saveToMemory('headline_outcome', outcomeInput.value);
     
-    headlineTemplates.forEach((template, index) => {
-        // Replace placeholders with sanitized user input
-        const headline = template
-            .replaceAll('{TOPIC}', topic)
-            .replaceAll('{OUTCOME}', outcome);
+    // Show loading state (even if instant, good UX practice)
+    resultsContainer.innerHTML = '<div class="spinner"></div>';
+    copyAllButton.style.display = 'none';
+    
+    // Use setTimeout to allow spinner to render
+    setTimeout(() => {
+        let html = '';
+        let generatedText = [];
         
-        generatedText.push(`${index + 1}. ${headline}`);
+        headlineTemplates.forEach((template, index) => {
+            const headline = template
+                .replaceAll('{TOPIC}', topic)
+                .replaceAll('{OUTCOME}', outcome);
+            
+            generatedText.push(`${index + 1}. ${headline}`);
+            
+            html += `
+                <div class="headline-item">
+                    <span>${index + 1}. ${headline}</span>
+                    <button class="btn btn-sm copy-single-btn" data-headline="${headline.replace(/"/g, '&quot;')}" aria-label="Copy headline ${index + 1}">Copy</button>
+                </div>
+            `;
+        });
         
-        // Create HTML structure for each headline
-        // Note: headline is already safe because topic and outcome were sanitized
-        html += `
-            <div class="headline-item">
-                <span>${index + 1}. ${headline}</span>
-                <button class="btn btn-secondary copy-single-btn" data-headline="${headline}">Copy</button>
-            </div>
-        `;
-    });
+        resultsContainer.innerHTML = html;
+        copyAllButton.style.display = 'block';
+        copyAllButton.dataset.allHeadlines = generatedText.join('\n');
+        
+        attachCopyListeners();
+        showAlert('Headlines generated successfully!', 'success');
+    }, 100);
+}
+
+// --- Clear Function ---
+function clearInputs() {
+    topicInput.value = '';
+    outcomeInput.value = '';
+    resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Enter a topic and outcome to generate headlines.</p>';
+    copyAllButton.style.display = 'none';
     
-    // Safe to use innerHTML here because all content has been sanitized
-    resultsContainer.innerHTML = html;
+    // Clear from memory
+    clearMemory('headline_topic');
+    clearMemory('headline_outcome');
     
-    // Store all headlines in the copy button data attribute for "Copy All"
-    copyAllButton.dataset.allHeadlines = generatedText.join('\n');
+    // Reset character counters
+    updateCharacterCounters();
     
-    attachCopyListeners();
+    // Reset border colors
+    topicInput.style.borderColor = '';
+    outcomeInput.style.borderColor = '';
+    
+    topicInput.focus();
 }
 
 // --- Listener Attachment ---
-
 function attachCopyListeners() {
-    // Attach event listeners to the new 'Copy' buttons for single headlines
     document.querySelectorAll('.copy-single-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const headlineToCopy = e.currentTarget.dataset.headline;
-            // Use the shared function from common.js
             copyToClipboard(headlineToCopy, e.currentTarget);
         });
     });
 }
 
-
 // --- Main Initialization ---
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial content state
-    copyAllButton.style.display = 'none';
-    resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Enter a topic and outcome above, then click "Generate Headlines" to get started.</p>';
+    // Load saved inputs from memory
+    const savedTopic = loadFromMemory('headline_topic');
+    const savedOutcome = loadFromMemory('headline_outcome');
     
-    // 1. Generate button listener
+    if (savedTopic) topicInput.value = savedTopic;
+    if (savedOutcome) outcomeInput.value = savedOutcome;
+    
+    // Initialize character counters
+    updateCharacterCounters();
+    
+    // Generate button listener
     generateButton.addEventListener('click', generateHeadlines);
     
-    // 2. "Copy All" button listener
+    // Clear button listener
+    clearButton.addEventListener('click', clearInputs);
+    
+    // Copy All button listener
     copyAllButton.addEventListener('click', () => {
         const allHeadlines = copyAllButton.dataset.allHeadlines;
         if (allHeadlines) {
-            // Use the shared function from common.js
             copyToClipboard(allHeadlines, copyAllButton);
         } else {
             showAlert('Nothing to copy!', 'info');
         }
     });
+    
+    // Character counter updates
+    topicInput.addEventListener('input', updateCharacterCounters);
+    outcomeInput.addEventListener('input', updateCharacterCounters);
+    
+    // Enter key support
+    topicInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            outcomeInput.focus();
+        }
+    });
+    
+    outcomeInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            generateHeadlines();
+        }
+    });
+    
+    // Auto-generate if saved data exists
+    if (savedTopic && savedOutcome) {
+        generateHeadlines();
+    }
 });

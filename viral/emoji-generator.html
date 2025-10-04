@@ -5,105 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | Text-to-Emoji Generator - Viral</title>
     <meta name="description" content="Convert your text into elaborate, viral emoji reaction strings. Perfect for social media and chat apps.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="emoji generator, text to emoji, viral emoji strings, social media emojis, emoji reactions, comment generator">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/viral/emoji-generator.html">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/viral/emoji-generator.html">
+    <meta property="og:title" content="GRIFTS | Text-to-Emoji Generator">
+    <meta property="og:description" content="Convert your text into elaborate, viral emoji reaction strings. Perfect for social media and chat apps.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/viral/emoji-generator.html">
+    <meta name="twitter:title" content="GRIFTS | Text-to-Emoji Generator">
+    <meta name="twitter:description" content="Convert your text into elaborate, viral emoji reaction strings.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Component Styles -->
     <style>
-        /* Specific styles for the result container */
         #emoji-output {
-            font-size: 1.5rem; /* Larger font for emojis */
-            word-break: break-word; /* Ensure long strings wrap */
-            min-height: 100px;
-            padding: 1rem;
+            font-size: 1.5rem;
+            word-break: break-word;
+            min-height: 120px;
+            padding: 1.5rem;
             background-color: var(--bg-card);
-            border: 1px dashed var(--accent-blue);
+            border: 2px solid var(--accent-blue);
             border-radius: var(--radius-sm);
             text-align: center;
-            line-height: 1.4;
+            line-height: 1.6;
+            cursor: pointer;
+            transition: border-color var(--transition-normal);
         }
-        .premium-hint {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        #emoji-output:hover {
+            border-color: var(--accent-green);
+        }
+        .intensity-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .intensity-control input[type="range"] {
+            flex: 1;
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
             margin-top: 1rem;
+        }
+        #history-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .history-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition-normal);
+            font-size: 1.2rem;
             text-align: center;
         }
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .char-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
     </style>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Text-to-Emoji Generator",
+      "url": "https://grifts.co.uk/viral/emoji-generator.html",
+      "description": "Convert text into viral emoji reaction strings for social media",
+      "applicationCategory": "UtilityApplication",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "GRIFTS",
+        "url": "https://grifts.co.uk/"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
                 <li><a href="../influencer/index.html">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
-                <li><a href="./index.html">Viral</a></li>
+                <li><a href="../viral/index.html" aria-current="page">Viral</a></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">7️⃣ Text-to-Emoji Generator</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Convert plain text into a string of high-energy, viral emoji reactions. **Get noticed in the comments!**
+    <main id="main-content" class="container">
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">Text-to-Emoji Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Convert plain text into a string of high-energy, viral emoji reactions. <strong>Get noticed in the comments!</strong>
             </p>
         </header>
 
         <div class="tool-content">
             <div class="card" id="control-card">
-                <h2>1. Enter Text</h2>
+                <h2>Customize Your Emoji String</h2>
                 
-                <label for="text-input">Text to Convert (Max 50 Chars):</label>
-                <input type="text" id="text-input" placeholder="e.g., MIND BLOWN" maxlength="50">
+                <div class="input-group">
+                    <label for="text-input">Text to Convert:</label>
+                    <input type="text" id="text-input" placeholder="e.g., MIND BLOWN" maxlength="50" aria-describedby="char-counter">
+                    <p id="char-counter" class="char-counter">50 characters remaining</p>
+                </div>
 
-                <label for="style-select" style="margin-top: 1rem;">Emoji Style:</label>
-                <select id="style-select">
-                    <option value="fire">🔥 Fire / Energy</option>
-                    <option value="mindblown">🤯 Mind Blown / Shock</option>
-                    <option value="money">💰 Money / Success</option>
-                    <option value="laugh">😂 Laughing / Funny</option>
-                    <option value="mixed">✨ Random / Mixed</option>
-                </select>
+                <div class="input-group">
+                    <label for="style-select">Emoji Style:</label>
+                    <select id="style-select" aria-label="Choose emoji style">
+                        <option value="fire">Fire / Energy</option>
+                        <option value="mindblown">Mind Blown / Shock</option>
+                        <option value="money">Money / Success</option>
+                        <option value="laugh">Laughing / Funny</option>
+                        <option value="gaming">Gaming / Victory</option>
+                        <option value="hype">Hype / Excitement</option>
+                        <option value="mixed">Random / Mixed</option>
+                    </select>
+                </div>
 
-                <button id="generate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">GENERATE EMOJI STRING</button>
+                <div class="intensity-control">
+                    <label for="intensity-slider">Intensity:</label>
+                    <input type="range" id="intensity-slider" min="1" max="3" value="2" aria-label="Emoji intensity level" aria-valuemin="1" aria-valuemax="3" aria-valuenow="2">
+                    <span id="intensity-value">Medium</span>
+                </div>
+
+                <div class="quick-actions">
+                    <button id="generate-btn" class="btn btn-primary">Generate</button>
+                    <button id="surprise-btn" class="btn btn-secondary">Surprise Me</button>
+                </div>
             </div>
 
             <div class="card result-card">
                 <h2>Generated Reaction</h2>
-                <div id="emoji-output">
+                <div id="emoji-output" role="status" aria-live="polite" title="Click to copy">
                     Enter text and choose a style to generate a viral reaction!
                 </div>
                 
-                <div class="security-info" style="margin-top: 1rem;">
+                <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
                     <button id="copy-btn" class="btn btn-secondary" style="width: 100%;" disabled>Copy to Clipboard</button>
-                    <p class="premium-hint">Need more styles? Check out the Premium Emoji Packs! (Wink, Rage, Love, etc.)</p>
+                    <button id="favorite-btn" class="btn btn-secondary btn-sm" style="width: 100%;" disabled>Add to Favorites</button>
+                </div>
+
+                <div id="history-section" style="display: none;">
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;">Recent Generations</h3>
+                    <div id="history-list"></div>
+                    <button id="clear-history-btn" class="btn btn-sm btn-secondary" style="margin-top: 1rem;">Clear History</button>
                 </div>
             </div>
         </div>
 
-        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);" role="complementary" aria-label="Advertisement">
             AD SPOT: Social Media Growth Tools / Viral Marketing Courses
         </div>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | Text-to-Emoji Generator</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
     
-    <script src="../js/common.js" defer></script>
-    <script src="../js/emoji-generator.js" defer></script>
-    
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SE21EBPHDE');
-</script>
+    <script src="../js/common.js"></script>
+    <script src="../js/emoji-generator.js"></script>
 </body>
 </html>

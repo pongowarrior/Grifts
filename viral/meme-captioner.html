@@ -14,29 +14,217 @@
             margin: 0 auto;
             border: 1px solid var(--border-color);
             background-color: var(--bg-card);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
         }
         #meme-canvas {
-            display: block; /* Important to remove extra space below canvas */
-            /* Ensure the canvas scales responsively */
+            display: block;
             width: 100%; 
             height: auto;
+            cursor: crosshair;
+        }
+        
+        /* Control sections */
+        .control-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .control-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .control-section h3 {
+            font-size: 1rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Slider controls */
+        .slider-group {
+            margin-bottom: 1rem;
+        }
+        
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .slider-value {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--accent-blue);
+            transform: scale(1.2);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        input[type="range"]::-moz-range-thumb:hover {
+            background: var(--accent-blue);
+            transform: scale(1.2);
+        }
+        
+        /* Color picker */
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: none;
+        }
+        
+        /* Font selector */
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Button group */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .button-group .btn {
+            margin: 0;
+        }
+        
+        /* Template selector */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .template-btn {
+            aspect-ratio: 1;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .template-btn:hover {
+            border-color: var(--accent-green);
+            transform: scale(1.05);
+        }
+        
+        .template-btn.active {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
+        }
+        
+        .template-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem;
+            text-align: center;
+        }
+        
+        /* Share buttons */
+        .share-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .share-btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Keyboard shortcuts info */
+        .shortcuts-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .shortcuts-info kbd {
+            background: var(--bg-dark);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            border: 1px solid var(--border-color);
+            font-family: monospace;
+            font-size: 0.85em;
         }
     </style>
 </head>
 <body>
-    <nav>
-    <div class="container">
-        <a href="../index.html" class="logo">GRIFTS</a>
-        <ul class="nav-links">
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="../gaming/index.html">Gaming</a></li>
-            <li><a href="../influencer/index.html">Influencer</a></li>
-            <li><a href="../utilities/index.html">Utilities</a></li>
-            <li><a href="../viral/index.html">Viral</a></li>
-        </ul>
-    </div>
-</nav>
-        
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../gaming/index.html">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="../viral/index.html" aria-current="page">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main class="container">
         <header style="text-align: center; padding: 3rem 0 1rem;">
@@ -48,18 +236,110 @@
 
         <div class="tool-content">
             <div class="card" id="control-card">
-                <h2>1. Upload & Text</h2>
+                <h2>Controls</h2>
                 
-                <label for="image-upload">Upload Image:</label>
-                <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 1rem;">
+                <!-- Upload Section -->
+                <div class="control-section">
+                    <h3>1. Upload Image</h3>
+                    <label for="image-upload">Choose Image:</label>
+                    <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 0.5rem;">
+                    
+                    <div class="button-group">
+                        <button id="use-template-btn" class="btn btn-secondary btn-sm">Use Template</button>
+                        <button id="clear-image-btn" class="btn btn-secondary btn-sm">Clear Image</button>
+                    </div>
+                    
+                    <div id="template-selector" class="template-grid" style="display: none; margin-top: 1rem;">
+                        <!-- Templates will be populated by JS -->
+                    </div>
+                </div>
 
-                <label for="top-text">Top Caption:</label>
-                <input type="text" id="top-text" placeholder="ENTER TOP TEXT HERE" maxlength="80">
+                <!-- Text Section -->
+                <div class="control-section">
+                    <h3>2. Add Text</h3>
+                    <label for="top-text">Top Caption:</label>
+                    <input type="text" id="top-text" placeholder="TOP TEXT" maxlength="100">
 
-                <label for="bottom-text" style="margin-top: 1rem;">Bottom Caption:</label>
-                <input type="text" id="bottom-text" placeholder="ENTER BOTTOM TEXT HERE" maxlength="80">
+                    <label for="bottom-text" style="margin-top: 1rem;">Bottom Caption:</label>
+                    <input type="text" id="bottom-text" placeholder="BOTTOM TEXT" maxlength="100">
+                    
+                    <div class="button-group">
+                        <button id="clear-text-btn" class="btn btn-secondary btn-sm">Clear Text</button>
+                        <button id="swap-text-btn" class="btn btn-secondary btn-sm">Swap Top/Bottom</button>
+                    </div>
+                </div>
 
-                <button id="draw-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Update Preview</button>
+                <!-- Style Section -->
+                <div class="control-section">
+                    <h3>3. Text Style</h3>
+                    
+                    <label for="font-select">Font:</label>
+                    <select id="font-select">
+                        <option value="Impact">Impact (Classic)</option>
+                        <option value="Arial Black">Arial Black</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                    
+                    <div class="slider-group" style="margin-top: 1rem;">
+                        <label>
+                            <span>Font Size:</span>
+                            <span class="slider-value" id="size-value">8%</span>
+                        </label>
+                        <input type="range" id="font-size" min="3" max="15" value="8" step="0.5">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label>
+                            <span>Outline Thickness:</span>
+                            <span class="slider-value" id="outline-value">0.8%</span>
+                        </label>
+                        <input type="range" id="outline-width" min="0.2" max="2" value="0.8" step="0.1">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <label for="text-color">Text Color:</label>
+                            <input type="color" id="text-color" value="#ffffff">
+                        </div>
+                        <div>
+                            <label for="outline-color">Outline Color:</label>
+                            <input type="color" id="outline-color" value="#000000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position Section -->
+                <div class="control-section">
+                    <h3>4. Text Position</h3>
+                    
+                    <div class="slider-group">
+                        <label>
+                            <span>Top Text Position:</span>
+                            <span class="slider-value" id="top-pos-value">10%</span>
+                        </label>
+                        <input type="range" id="top-position" min="5" max="45" value="10" step="1">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label>
+                            <span>Bottom Text Position:</span>
+                            <span class="slider-value" id="bottom-pos-value">95%</span>
+                        </label>
+                        <input type="range" id="bottom-position" min="55" max="98" value="95" step="1">
+                    </div>
+                    
+                    <button id="reset-position-btn" class="btn btn-secondary btn-sm" style="width: 100%;">Reset Positions</button>
+                </div>
+
+                <!-- Keyboard Shortcuts -->
+                <div class="shortcuts-info">
+                    <strong>Shortcuts:</strong><br>
+                    <kbd>Enter</kbd> Update Preview | 
+                    <kbd>Ctrl+S</kbd> Download | 
+                    <kbd>Ctrl+C</kbd> Copy Image
+                </div>
             </div>
 
             <div class="card result-card">
@@ -68,8 +348,26 @@
                     <canvas id="meme-canvas"></canvas>
                 </div>
                 
-                <div class="security-info" style="margin-top: 1rem;">
-                    <button id="download-btn" class="btn btn-secondary" style="width: 100%;" disabled>Download PNG (With Watermark)</button>
+                <div style="margin-top: 1rem;">
+                    <button id="download-btn" class="btn btn-primary" style="width: 100%;" disabled>Download Meme (PNG)</button>
+                    
+                    <div class="share-buttons">
+                        <button id="copy-btn" class="btn btn-secondary share-btn" disabled>Copy Image</button>
+                        <button id="share-twitter-btn" class="btn btn-secondary share-btn" disabled>Share on X</button>
+                    </div>
+                    
+                    <label style="display: flex; align-items: center; margin-top: 1rem; cursor: pointer;">
+                        <input type="checkbox" id="watermark-toggle" checked style="margin-right: 0.5rem;">
+                        <span style="font-size: 0.9rem;">Include GRIFTS.CO.UK watermark</span>
+                    </label>
+                    
+                    <div class="slider-group" style="margin-top: 1rem;">
+                        <label>
+                            <span>Image Quality:</span>
+                            <span class="slider-value" id="quality-value">90%</span>
+                        </label>
+                        <input type="range" id="quality-slider" min="50" max="100" value="90" step="5">
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,23 +377,23 @@
         </div>
     </main>
 
-    <footer>
-    <div class="container">
-        <p><strong>GRIFTS</strong> | Meme Captioner</p>
-        <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
-    </div>
-</footer>
+    <footer role="contentinfo">
+        <div class="container">
+            <p><strong>GRIFTS</strong> | Meme Captioner</p>
+            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+        </div>
+    </footer>
     
     <script src="../js/common.js" defer></script>
     <script src="../js/meme-captioner.js" defer></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SE21EBPHDE');
-</script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </body>
 </html>

@@ -5,16 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | Gaming Tools - Optimization & Competitive Edge</title>
     <meta name="description" content="Niche, browser-based tools for competitive gamers, including build calculators and save file management.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="gaming calculator, build optimizer, RPG calculator, MMO tools, save file manager, gaming utilities">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/gaming/">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/gaming/">
+    <meta property="og:title" content="GRIFTS | Gaming Tools - Optimization & Competitive Edge">
+    <meta property="og:description" content="Niche, browser-based tools for competitive gamers, including build calculators and save file management.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/gaming/">
+    <meta name="twitter:title" content="GRIFTS | Gaming Tools - Optimization & Competitive Edge">
+    <meta name="twitter:description" content="Niche, browser-based tools for competitive gamers, including build calculators and save file management.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Scripts -->
     <script src="../js/common.js" defer></script>
+    
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "GRIFTS Gaming Tools",
+      "url": "https://grifts.co.uk/gaming/",
+      "description": "Free gaming optimization tools including build calculators and save file management for competitive gamers",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "GRIFTS",
+        "url": "https://grifts.co.uk/"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="./index.html">Gaming</a></li>
+                <li><a href="../gaming/index.html" aria-current="page">Gaming</a></li>
                 <li><a href="../influencer/index.html">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
                 <li><a href="../viral/index.html">Viral</a></li>
@@ -22,46 +85,49 @@
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">🎮 Gaming Tools</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Optimize your gear, calculate peak DPS, and manage competitive assets. **Maximize your edge.**
+    <main id="main-content" class="container">
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">Gaming Tools</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Optimize your gear, calculate peak DPS, and manage competitive assets. <strong>Maximize your edge.</strong>
             </p>
         </header>
 
-        <div class="ad-space">Ad Space: High CPM Gaming Slot</div>
-
-        <h2 class="section-title">Available Tools</h2>
-        <div class="tool-grid">
-            
-            <a href="./build-calculator.html" class="card">
-                <h3 style="color: var(--accent-green);">Build Calculator (Priority!)</h3>
-                <p style="color: var(--text-secondary);">An advanced, customizable calculator for optimizing complex RPG/MMO builds and stats.</p>
-            </a>
-
-            <a href="./save-archive.html" class="card">
-                <h3 style="color: var(--accent-blue);">Save Archive</h3>
-                <p style="color: var(--text-secondary);">Securely store and share game configurations, keybinds, and text-based save files in-browser.</p>
-            </a>
-
+        <div class="ad-space" role="complementary" aria-label="Advertisement">
+            Ad Space: High CPM Gaming Slot
         </div>
+
+        <section aria-labelledby="tools-heading">
+            <h2 id="tools-heading" class="section-title">Available Tools</h2>
+            <div class="tool-grid">
+                
+                <a href="build-calculator.html" class="card" aria-label="Build Calculator - Priority tool">
+                    <h3>Build Calculator</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Priority Tool</p>
+                    <p style="color: var(--text-secondary);">An advanced, customizable calculator for optimizing complex RPG/MMO builds and stats.</p>
+                </a>
+
+                <a href="save-archive.html" class="card" aria-label="Save Archive tool">
+                    <h3>Save Archive</h3>
+                    <p style="color: var(--text-secondary);">Securely store and share game configurations, keybinds, and text-based save files in-browser.</p>
+                </a>
+
+            </div>
+        </section>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | Gaming Tools</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-SE21EBPHDE');
-</script>
 </body>
 </html>

@@ -5,27 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | A/B Headline Generator - Influencer</title>
     <meta name="description" content="Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles to maximize views.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="headline generator, A/B testing, clickbait headlines, content creator tools, YouTube titles, blog headlines">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/influencer/headline-generator.html">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/influencer/headline-generator.html">
+    <meta property="og:title" content="GRIFTS | A/B Headline Generator">
+    <meta property="og:description" content="Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles to maximize views.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/influencer/headline-generator.html">
+    <meta name="twitter:title" content="GRIFTS | A/B Headline Generator">
+    <meta name="twitter:description" content="Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "A/B Headline Generator",
+      "url": "https://grifts.co.uk/influencer/headline-generator.html",
+      "description": "Generate 10 highly-varied, clickbait-style headlines for A/B testing",
+      "applicationCategory": "UtilityApplication",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "GRIFTS",
+        "url": "https://grifts.co.uk/"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
-                <li><a href="./index.html">Influencer</a></li>
+                <li><a href="../influencer/index.html" aria-current="page">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
                 <li><a href="../viral/index.html">Viral</a></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">✨ A/B Headline Generator</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Generate ten unique, high-conversion headlines for videos, blogs, and articles. A/B test them to find your winner and **boost your click-through rate.**
+    <main id="main-content" class="container">
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">A/B Headline Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Generate ten unique, high-conversion headlines for videos, blogs, and articles. A/B test them to find your winner and <strong>boost your click-through rate.</strong>
             </p>
         </header>
 
@@ -34,52 +96,63 @@
                 <h2>Content Focus</h2>
                 
                 <div class="input-group">
-                    <label for="topic-input">Primary Topic / Keyword (e.g., *Elden Ring Build*):</label>
-                    <input type="text" id="topic-input" placeholder="What is your content about?" maxlength="50">
-                    <p class="hint">Keep it specific for best results.</p>
+                    <label for="topic-input">Primary Topic / Keyword:</label>
+                    <input 
+                        type="text" 
+                        id="topic-input" 
+                        placeholder="e.g., Elden Ring Build" 
+                        maxlength="50"
+                        aria-describedby="topic-hint"
+                    >
+                    <p id="topic-hint" class="hint">Keep it specific for best results. <span id="topic-counter">50 characters remaining</span></p>
                 </div>
 
                 <div class="input-group">
-                    <label for="outcome-input">Desired Outcome / Benefit (e.g., *Get Max DPS*):</label>
-                    <input type="text" id="outcome-input" placeholder="What does the viewer gain?" maxlength="50">
-                    <p class="hint">Use power words like 'Max,' 'Ultimate,' or 'Fastest.'</p>
+                    <label for="outcome-input">Desired Outcome / Benefit:</label>
+                    <input 
+                        type="text" 
+                        id="outcome-input" 
+                        placeholder="e.g., Get Max DPS" 
+                        maxlength="50"
+                        aria-describedby="outcome-hint"
+                    >
+                    <p id="outcome-hint" class="hint">Use power words like 'Max,' 'Ultimate,' or 'Fastest.' <span id="outcome-counter">50 characters remaining</span></p>
                 </div>
                 
-                <button id="generate-btn" class="btn btn-primary" style="margin-top: 1.5rem;">GENERATE HEADLINES</button>
-
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button id="generate-btn" class="btn btn-primary" style="flex: 1;">Generate Headlines</button>
+                    <button id="clear-btn" class="btn btn-secondary" style="flex: 0 0 auto;">Clear</button>
+                </div>
             </div>
 
             <div class="card result-card" style="margin-top: var(--spacing-md);">
                 <h2>Generated Headlines</h2>
-                <div id="headline-results">
+                <div id="headline-results" role="region" aria-live="polite">
                     <p style="text-align: center; color: var(--text-secondary);">Enter a topic and outcome to generate headlines.</p>
                 </div>
-                <button id="copy-all-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">Copy All Headlines</button>
+                <button id="copy-all-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%; display: none;">Copy All Headlines</button>
             </div>
         </div>
 
-        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
+        <div class="ad-space" style="border: 1px dashed var(--accent-blue);" role="complementary" aria-label="Affiliate recommendation">
             AFFILIATE SPOT: Recommended A/B Testing Tools or SEO Services
         </div>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | A/B Headline Generator</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
     
-    <script src="../js/common.js" defer></script>
-    <script src="../js/headline-generator.js" defer></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SE21EBPHDE');
-</script>
+    <script src="../js/common.js"></script>
+    <script src="../js/headline-generator.js"></script>
 </body>
 </html>

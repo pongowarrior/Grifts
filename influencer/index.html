@@ -5,73 +5,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | Influencer Tools - Content & Monetization</title>
     <meta name="description" content="Free tools for content creators to generate viral headlines, manage content hooks, and organize wishlists.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="headline generator, content creator tools, viral headlines, content hooks, wishlist creator, influencer tools, monetization tools">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/influencer/">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/influencer/">
+    <meta property="og:title" content="GRIFTS | Influencer Tools - Content & Monetization">
+    <meta property="og:description" content="Free tools for content creators to generate viral headlines, manage content hooks, and organize wishlists.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/influencer/">
+    <meta name="twitter:title" content="GRIFTS | Influencer Tools - Content & Monetization">
+    <meta name="twitter:description" content="Free tools for content creators to generate viral headlines, manage content hooks, and organize wishlists.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Scripts -->
     <script src="../js/common.js" defer></script>
+    
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "GRIFTS Influencer Tools",
+      "url": "https://grifts.co.uk/influencer/",
+      "description": "Free content creation tools including headline generators, content hook databases, and wishlist creators for influencers and creators",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "GRIFTS",
+        "url": "https://grifts.co.uk/"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
-                <li><a href="./index.html">Influencer</a></li>
+                <li><a href="../influencer/index.html" aria-current="page">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
                 <li><a href="../viral/index.html">Viral</a></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">✨ Influencer Tools</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Tools built to drive traffic, increase engagement, and convert views into revenue. **Monetize your reach.**
+    <main id="main-content" class="container">
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">Influencer Tools</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Tools built to drive traffic, increase engagement, and convert views into revenue. <strong>Monetize your reach.</strong>
             </p>
         </header>
 
-        <div class="ad-space">Ad Space: Creator Economy Sponsor</div>
-
-        <h2 class="section-title">Available Tools</h2>
-        <div class="tool-grid">
-            
-            <a href="./headline-generator.html" class="card">
-                <h3 style="color: var(--accent-green);">A/B Headline Generator (Priority!)</h3>
-                <p style="color: var(--text-secondary);">Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles.</p>
-            </a>
-
-            <a href="./content-hook-db.html" class="card">
-                <h3 style="color: var(--accent-blue);">Content Hook Database</h3>
-                <p style="color: var(--text-secondary);">A searchable, in-browser database of 100+ proven content hooks for short-form video.</p>
-            </a>
-
-            <a href="./wishlist-creator.html" class="card">
-                <h3 style="color: var(--accent-green);">Wishlist Creator</h3>
-                <p style="color: var(--text-secondary);">Generate shareable, mobile-optimized digital wishlists for product gifting or reviews.</p>
-            </a>
-
-            <a href="../viral/poll-widget.html" class="card">
-                <h3 style="color: var(--accent-blue);">Poll Widget Generator</h3>
-                <p style="color: var(--text-secondary);">Create embeddable, customizable poll widgets to drive site engagement and data capture.</p>
-            </a>
-            
+        <div class="ad-space" role="complementary" aria-label="Advertisement">
+            Ad Space: Creator Economy Sponsor
         </div>
+
+        <section aria-labelledby="tools-heading">
+            <h2 id="tools-heading" class="section-title">Available Tools</h2>
+            <div class="tool-grid">
+                
+                <a href="headline-generator.html" class="card" aria-label="A/B Headline Generator - Priority tool">
+                    <h3>A/B Headline Generator</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Priority Tool</p>
+                    <p style="color: var(--text-secondary);">Generate 10 highly-varied, clickbait-style headlines for A/B testing videos and articles.</p>
+                </a>
+
+                <a href="content-hook-db.html" class="card" aria-label="Content Hook Database tool">
+                    <h3>Content Hook Database</h3>
+                    <p style="color: var(--text-secondary);">A searchable, in-browser database of 100+ proven content hooks for short-form video.</p>
+                </a>
+
+                <a href="wishlist-creator.html" class="card" aria-label="Wishlist Creator tool">
+                    <h3>Wishlist Creator</h3>
+                    <p style="color: var(--text-secondary);">Generate shareable, mobile-optimized digital wishlists for product gifting or reviews.</p>
+                </a>
+
+                <a href="poll-widget.html" class="card" aria-label="Poll Widget Generator tool">
+                    <h3>Poll Widget Generator</h3>
+                    <p style="color: var(--text-secondary);">Create embeddable, customizable poll widgets to drive site engagement and data capture.</p>
+                </a>
+                
+            </div>
+        </section>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | Influencer Tools</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-SE21EBPHDE');
-</script>
 </body>
 </html>

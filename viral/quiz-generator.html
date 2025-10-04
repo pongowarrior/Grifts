@@ -4,146 +4,355 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | Viral Quiz Generator - Which Persona Are You?</title>
-    <meta name="description" content="Instantly generate a fun, shareable personality quiz. Get a result, share it, and drive engagement!">
+    <meta name="description" content="Take fun, shareable personality quizzes. Get a result card, share it, and drive engagement!">
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .quiz-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
-            text-align: center;
+        }
+        
+        /* Quiz Selection Screen */
+        .quiz-selection {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .quiz-option {
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .quiz-option h3 {
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-option p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
         
         /* Quiz Card Styling */
         .quiz-card {
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-md);
+            min-height: 400px;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+        
+        .question-counter {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
         
         .question-text {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--accent-green);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.4;
+            animation: fadeIn 0.4s ease;
         }
         
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Answer List */
         .answer-list {
             list-style: none;
             padding: 0;
+            margin-bottom: 2rem;
         }
 
-        /* Styling for a selectable button/answer */
         .answer-btn {
             width: 100%;
-            padding: 1rem;
+            padding: 1.2rem;
             margin-bottom: 0.75rem;
             background-color: var(--bg-dark);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--border-color);
             color: var(--text-primary);
             text-align: left;
-            transition: all var(--transition-normal);
+            transition: all 0.3s;
             cursor: pointer;
             border-radius: var(--radius-sm);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(0, 245, 160, 0.1);
+            transition: width 0.3s;
         }
 
         .answer-btn:hover {
             border-color: var(--accent-blue);
-            background-color: rgba(0, 217, 245, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .answer-btn:hover::before {
+            width: 100%;
         }
         
         .answer-btn.selected {
-            border: 2px solid var(--accent-green);
+            border-color: var(--accent-green);
             background-color: rgba(0, 245, 160, 0.15);
             font-weight: bold;
         }
         
-        /* Result Screen Styling */
+        .answer-btn.selected::before {
+            width: 100%;
+        }
+        
+        /* Result Screen */
         #quiz-result {
             display: none;
-            margin-top: 2rem;
+            text-align: center;
         }
         
         #result-title {
             font-size: 2.5rem;
-            color: var(--accent-blue);
             margin-bottom: 1rem;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
         #result-description {
             font-size: 1.1rem;
             margin-bottom: 2rem;
             color: var(--text-secondary);
+            line-height: 1.6;
         }
         
-        #result-image-placeholder {
-            min-height: 200px;
-            background-color: var(--bg-card);
-            border: 1px dashed var(--accent-green);
+        /* Result Card Canvas */
+        .result-card-container {
+            margin: 2rem 0;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+        
+        #result-canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        
+        /* Share Buttons Grid */
+        .share-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .share-grid .btn {
+            margin: 0;
+        }
+        
+        /* Statistics */
+        .quiz-stats {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 245, 160, 0.05);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--accent-green);
+        }
+        
+        .quiz-stats h3 {
+            font-size: 1rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-bar {
+            margin-bottom: 1rem;
+        }
+        
+        .stat-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        
+        .stat-bar-fill {
+            height: 20px;
+            background: var(--bg-dark);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .stat-bar-progress {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 0.6s ease;
+        }
+        
+        /* Settings Toggle */
+        .quiz-settings {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+        }
+        
+        .quiz-settings label {
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-style: italic;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .quiz-settings input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
                 <li><a href="../influencer/index.html">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
-                <li><a href="./index.html">Viral</a></li>
+                <li><a href="../viral/index.html" aria-current="page">Viral</a></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container">
+    <main id="main-content" class="container">
         <header style="text-align: center; padding: 3rem 0 1rem;">
             <h1 style="font-size: 2.2rem;">✨ Viral Quiz Generator</h1>
             <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Find out: **Which Legendary Creature Are You?** Answer the questions and get a profile picture-ready result!
+                Take fun, shareable personality quizzes. Get a custom result card and share your persona with the world!
             </p>
         </header>
 
         <div class="quiz-container">
-            <div class="card quiz-card" id="quiz-card">
+            <!-- Quiz Selection Screen -->
+            <div id="quiz-selection-screen" class="card">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Choose Your Quiz</h2>
+                <div class="quiz-selection" id="quiz-selection">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="card quiz-card" id="quiz-card" style="display: none;">
+                <!-- Start Screen -->
                 <div id="quiz-start">
-                    <h2 style="color: var(--accent-green);">Ready to discover your destiny?</h2>
-                    <p style="margin: 1.5rem 0; color: var(--text-secondary);">This quiz has 5 quick questions. Your answers determine your final legendary creature persona!</p>
+                    <h2 style="color: var(--accent-green); text-align: center;" id="quiz-title-start"></h2>
+                    <p style="margin: 1.5rem 0; color: var(--text-secondary); text-align: center;" id="quiz-description-start"></p>
+                    
+                    <div class="quiz-settings">
+                        <label>
+                            <input type="checkbox" id="shuffle-questions">
+                            <span>Shuffle question order</span>
+                        </label>
+                    </div>
+                    
                     <button id="start-btn" class="btn btn-primary" style="width: 100%;">START QUIZ</button>
+                    <button id="back-to-selection-btn" class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem;">Choose Different Quiz</button>
                 </div>
                 
+                <!-- Quiz Content -->
                 <div id="quiz-content" style="display: none;">
-                    <p class="hint" id="question-counter"></p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                    </div>
+                    
+                    <p class="question-counter" id="question-counter"></p>
                     <p class="question-text" id="question-text"></p>
                     
-                    <ul class="answer-list" id="answer-list">
-                        </ul>
+                    <ul class="answer-list" id="answer-list"></ul>
 
-                    <button id="next-btn" class="btn btn-primary" style="margin-top: 1rem;" disabled>Next Question</button>
+                    <button id="next-btn" class="btn btn-primary" style="width: 100%;" disabled>Next Question</button>
                 </div>
             </div>
             
-            <div id="quiz-result" class="card quiz-card">
+            <!-- Result Screen -->
+            <div id="quiz-result" class="card quiz-card" style="display: none;">
                 <h2 id="result-title"></h2>
-                <div id="result-image-placeholder">
-                    <p>Your result image placeholder</p>
+                
+                <div class="result-card-container">
+                    <canvas id="result-canvas" width="600" height="600"></canvas>
                 </div>
+                
                 <p id="result-description"></p>
                 
-                <button id="share-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">🔗 Share My Result!</button>
-                <button id="restart-btn" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Restart Quiz</button>
+                <div class="share-grid">
+                    <button id="download-result-btn" class="btn btn-primary">Download Card</button>
+                    <button id="share-twitter-btn" class="btn btn-secondary">Share on X</button>
+                    <button id="copy-url-btn" class="btn btn-secondary">Copy Link</button>
+                    <button id="restart-btn" class="btn btn-secondary">New Quiz</button>
+                </div>
+                
+                <div class="quiz-stats" id="quiz-stats">
+                    <h3>📊 Result Distribution</h3>
+                    <div id="stats-content"></div>
+                </div>
             </div>
         </div>
 
         <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
-            AD SPOT: Merch Store / Fantasy Game Affiliate Link
+            AD SPOT: Quiz Platform / Personality Test Affiliate
         </div>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
             <p><strong>GRIFTS</strong> | Viral Quiz Generator</p>
             <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
@@ -152,14 +361,14 @@
     
     <script src="../js/common.js" defer></script>
     <script src="../js/quiz-generator.js" defer></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SE21EBPHDE');
-</script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </body>
 </html>

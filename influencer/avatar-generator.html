@@ -3,9 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRIFTS | Avatar / Cartoon Generator - Influencer</title>
+    <title>GRIFTS | Avatar Generator - Viral Tools</title>
     <meta name="description" content="Generate a fun, customized avatar for your profile picture. Pick features, colors, and download instantly.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="avatar generator, profile picture creator, cartoon avatar, character generator, free avatar maker">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/viral/avatar-generator.html">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/viral/avatar-generator.html">
+    <meta property="og:title" content="GRIFTS | Avatar Generator">
+    <meta property="og:description" content="Generate a fun, customized avatar for your profile picture. Pick features, colors, and download instantly.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/viral/avatar-generator.html">
+    <meta name="twitter:title" content="GRIFTS | Avatar Generator">
+    <meta name="twitter:description" content="Generate a fun, customized avatar for your profile picture. Pick features, colors, and download instantly.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Component Styles -->
     <style>
         .generator-container {
             max-width: 900px;
@@ -34,10 +69,9 @@
             padding: var(--spacing-md);
         }
 
-        /* Styling for the output area */
         #avatar-output-container {
             width: 100%;
-            padding-bottom: 100%; /* Makes the container square for the SVG */
+            padding-bottom: 100%;
             position: relative;
             margin-bottom: var(--spacing-md);
             background-color: var(--bg-card);
@@ -60,73 +94,117 @@
 
         .control-group label {
             display: block;
-            margin-bottom: 0.25rem;
-            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .control-group input[type="range"] {
             width: 100%;
             margin: 0.5rem 0 0;
+            cursor: pointer;
         }
 
         .color-inputs {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
-        }
-
-        .color-inputs > div {
-            flex-grow: 1;
         }
 
         .color-inputs input[type="color"] {
             width: 100%;
-            height: 40px;
+            height: 44px;
             padding: 0;
-            border: none;
+            border: 1px solid var(--border-color);
             cursor: pointer;
             border-radius: var(--radius-sm);
         }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .download-options {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .download-options button {
+            flex: 1;
+        }
     </style>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Avatar Generator",
+      "url": "https://grifts.co.uk/viral/avatar-generator.html",
+      "description": "Generate customized avatars for profile pictures with instant download",
+      "applicationCategory": "UtilityApplication",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "GRIFTS",
+        "url": "https://grifts.co.uk/"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
 </head>
 <body>
-    <nav>
+    <!-- Skip to main content link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="../index.html" class="logo">GRIFTS</a>
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
-                <li><a href="./index.html">Influencer</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
-                <li><a href="../viral/index.html">Viral</a></li>
+                <li><a href="../viral/index.html" aria-current="page">Viral</a></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">🖼️ Avatar Generator</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Create a quick, customizable profile avatar for any platform. Perfect for placeholders or quick rebrands. **No watermarks, ever.**
+    <main id="main-content" class="container">
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">Avatar Generator</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Create a quick, customizable profile avatar for any platform. Perfect for placeholders or quick rebrands. <strong>No watermarks, ever.</strong>
             </p>
         </header>
 
         <div class="generator-container">
-            <div class="card controls-card" id="generator-card">
-                <h2>1. Customize Features</h2>
+            <div class="card controls-card">
+                <h2>Customize Features</h2>
                 
                 <div class="control-group">
                     <label for="hair-style">Hair Style (<span id="hair-hint">1</span>/5):</label>
-                    <input type="range" id="hair-style" min="1" value="1"> 
+                    <input type="range" id="hair-style" min="1" max="5" value="1" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1">
                 </div>
 
                 <div class="control-group">
                     <label for="eyes-style">Eyes Style (<span id="eyes-hint">1</span>/4):</label>
-                    <input type="range" id="eyes-style" min="1" value="1">
+                    <input type="range" id="eyes-style" min="1" max="4" value="1" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
                 </div>
 
                 <div class="control-group">
                     <label for="mouth-style">Mouth Style (<span id="mouth-hint">1</span>/6):</label>
-                    <input type="range" id="mouth-style" min="1" value="1">
+                    <input type="range" id="mouth-style" min="1" max="6" value="1" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
                 </div>
 
                 <hr style="opacity: 0.2; margin: 1.5rem 0;">
@@ -134,51 +212,62 @@
                 <div class="control-group color-inputs">
                     <div>
                         <label for="skin-color">Skin Color:</label>
-                        <input type="color" id="skin-color" value="#00d9f5">
+                        <input type="color" id="skin-color" value="#00d9f5" aria-label="Choose skin color">
                     </div>
                     <div>
                         <label for="hair-color">Hair Color:</label>
-                        <input type="color" id="hair-color" value="#00f5a0">
+                        <input type="color" id="hair-color" value="#00f5a0" aria-label="Choose hair color">
                     </div>
                 </div>
 
-                <button id="randomize-btn" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">🎲 RANDOMIZE</button>
+                <hr style="opacity: 0.2; margin: 1.5rem 0;">
+
+                <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Quick Presets:</h3>
+                <div class="preset-buttons">
+                    <button class="btn btn-sm btn-secondary" data-preset="cool">Cool</button>
+                    <button class="btn btn-sm btn-secondary" data-preset="warm">Warm</button>
+                    <button class="btn btn-sm btn-secondary" data-preset="neon">Neon</button>
+                    <button class="btn btn-sm btn-secondary" data-preset="classic">Classic</button>
+                </div>
+
+                <button id="randomize-btn" class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Randomize</button>
             </div>
             
             <div class="card output-card">
-                <h2>2. Your Avatar</h2>
+                <h2>Your Avatar</h2>
                 
-                <div id="avatar-output-container">
-                    <svg viewBox="0 0 100 100" id="avatar-svg">
-                        </svg>
+                <div id="avatar-output-container" role="img" aria-label="Generated avatar preview">
+                    <svg viewBox="0 0 100 100" id="avatar-svg" xmlns="http://www.w3.org/2000/svg"></svg>
                 </div>
                 
-                <button id="download-btn" class="btn btn-primary" style="width: 100%;">⬇️ DOWNLOAD PNG</button>
+                <div class="download-options">
+                    <button id="download-png-btn" class="btn btn-primary">Download PNG</button>
+                    <button id="download-svg-btn" class="btn btn-secondary">Download SVG</button>
+                </div>
+                
+                <button id="copy-svg-btn" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.5rem;">Copy SVG Code</button>
             </div>
         </div>
 
-        <div class="ad-space" style="border: 1px dashed var(--accent-green); margin-top: var(--spacing-lg);">
+        <div class="ad-space" style="border: 1px dashed var(--accent-green); margin-top: var(--spacing-lg);" role="complementary" aria-label="Advertisement">
             AD SPOT: Design Software / Profile Pic Services
         </div>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | Avatar Generator</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
     
-    <script src="../js/common.js" defer></script>
-    <script src="../js/avatar-generator.js" defer></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SE21EBPHDE');
-</script>
+    <script src="../js/common.js"></script>
+    <script src="../js/avatar-generator.js"></script>
 </body>
 </html>
