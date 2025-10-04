@@ -23,26 +23,62 @@ function clearMemory(key = null) {
     }
 }
 
-// --- 2. Copy to Clipboard Utility ---
+// --- 2. Copy to Clipboard Utility (with fallback) ---
 function copyToClipboard(text, buttonElement = null) {
-    navigator.clipboard.writeText(text).then(() => {
-        showAlert('Copied to clipboard!', 'success');
-        
-        if (buttonElement) {
-            const originalText = buttonElement.textContent;
-            buttonElement.textContent = '✅ Copied!';
-            buttonElement.style.background = 'var(--accent-green)';
-            buttonElement.style.color = 'var(--bg-dark)';
-            
-            setTimeout(() => {
-                buttonElement.textContent = originalText;
-                buttonElement.style.background = '';
-                buttonElement.style.color = '';
-            }, 2000);
+    // Modern clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showAlert('Copied to clipboard!', 'success');
+            updateButtonFeedback(buttonElement);
+        }).catch(() => {
+            fallbackCopy(text, buttonElement);
+        });
+    } else {
+        // Fallback for older browsers
+        fallbackCopy(text, buttonElement);
+    }
+}
+
+// Fallback copy method for older browsers
+function fallbackCopy(text, buttonElement = null) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showAlert('Copied to clipboard!', 'success');
+            updateButtonFeedback(buttonElement);
+        } else {
+            showAlert('Failed to copy', 'error');
         }
-    }).catch(() => {
+    } catch (err) {
         showAlert('Failed to copy', 'error');
-    });
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Helper function for button visual feedback
+function updateButtonFeedback(buttonElement) {
+    if (buttonElement) {
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = '✅ Copied!';
+        buttonElement.style.background = 'var(--accent-green)';
+        buttonElement.style.color = 'var(--bg-dark)';
+        
+        setTimeout(() => {
+            buttonElement.textContent = originalText;
+            buttonElement.style.background = '';
+            buttonElement.style.color = '';
+        }, 2000);
+    }
 }
 
 // --- 3. Alert/Notification System ---
@@ -132,9 +168,12 @@ function downloadFile(content, filename, mimeType = 'text/plain') {
     showAlert(`Downloaded ${filename}`, 'success');
 }
 
-// --- 5. ID Generator Utility ---
+// --- 5. ID Generator Utility (with timestamp for collision prevention) ---
 function generateId(length = 8) {
-    return Math.random().toString(36).substring(2, length + 2).toUpperCase();
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substring(2);
+    const combined = (timestamp + randomPart).substring(0, length);
+    return combined.toUpperCase();
 }
 
 // --- 6. Debounce Utility ---
@@ -150,9 +189,108 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+// --- 8. Loading State Utility ---
+function showLoading(message = 'Loading...') {
+    // Remove existing loader if present
+    hideLoading();
+    
+    const loader = document.createElement('div');
+    loader.id = 'global-loader';
+    loader.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        ">
+            <div style="text-align: center;">
+                <div style="
+                    border: 4px solid var(--border-color);
+                    border-top: 4px solid var(--accent-green);
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 1rem;
+                "></div>
+                <p style="color: var(--text-primary); font-size: 1rem;">${message}</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loader);
+}
 
-// --- 7. Smooth Scrolling Initialization (runs on page load) ---
+function hideLoading() {
+    const loader = document.getElementById('global-loader');
+    if (loader) {
+        loader.remove();
+    }
+}
+// --- 9. Form Validation Utilities ---
+
+/**
+ * Validates email format
+ * @param {string} email - The email address to validate
+ * @returns {boolean} - True if valid email format
+ */
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+/**
+ * Validates URL format
+ * @param {string} url - The URL to validate
+ * @returns {boolean} - True if valid URL format
+ */
+function validateURL(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Validates phone number (basic international format)
+ * @param {string} phone - The phone number to validate
+ * @returns {boolean} - True if valid phone format
+ */
+function validatePhone(phone) {
+    const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+    return phone.length >= 10 && phoneRegex.test(phone);
+}
+
+/**
+ * Checks if string is empty or only whitespace
+ * @param {string} str - The string to check
+ * @returns {boolean} - True if empty/whitespace only
+ */
+function isEmpty(str) {
+    return !str || str.trim().length === 0;
+}
+
+/**
+ * Sanitizes string for safe HTML insertion
+ * @param {string} str - The string to sanitize
+ * @returns {string} - Sanitized string
+ */
+function sanitizeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+// --- 7. Initialization (Smooth Scrolling & Mobile Menu) ---
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 7a. Smooth Scrolling ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -162,10 +300,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-});
-
-// --- 8. Enhanced Mobile Menu Toggle ---
-document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- 7b. Mobile Menu Toggle ---
     const nav = document.querySelector('nav .container');
     if (!nav) return;
     
