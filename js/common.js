@@ -27,13 +27,13 @@ function clearMemory(key = null) {
 function copyToClipboard(text, buttonElement = null) {
     navigator.clipboard.writeText(text).then(() => {
         showAlert('Copied to clipboard!', 'success');
-
+        
         if (buttonElement) {
             const originalText = buttonElement.textContent;
             buttonElement.textContent = '✅ Copied!';
             buttonElement.style.background = 'var(--accent-green)';
             buttonElement.style.color = 'var(--bg-dark)';
-
+            
             setTimeout(() => {
                 buttonElement.textContent = originalText;
                 buttonElement.style.background = '';
@@ -50,7 +50,7 @@ function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
-
+    
     let alertStyle = `
         position: fixed;
         top: 100px;
@@ -63,7 +63,7 @@ function showAlert(message, type = 'info') {
         box-shadow: var(--shadow-lg);
         font-weight: bold;
     `;
-
+    
     if (type === 'success') {
         alertStyle += `
             background: rgba(0, 245, 160, 0.2);
@@ -83,10 +83,10 @@ function showAlert(message, type = 'info') {
             color: var(--accent-blue);
         `;
     }
-
+    
     alertDiv.style.cssText = alertStyle;
     document.body.appendChild(alertDiv);
-
+    
     setTimeout(() => {
         alertDiv.style.animation = 'slideOut 0.3s ease-out';
         setTimeout(() => alertDiv.remove(), 300);
@@ -104,7 +104,7 @@ function downloadFile(content, filename, mimeType = 'text/plain') {
     // 1. Determine the source (Data URL for images, Blob for text/data)
     let url;
     let removeUrl = false; // Flag to revoke URL if we create one
-
+    
     if (content.startsWith('data:')) {
         // If it's a Data URL (like an image from Canvas/QR Code), use it directly
         url = content;
@@ -119,7 +119,7 @@ function downloadFile(content, filename, mimeType = 'text/plain') {
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
-
+    
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -154,7 +154,7 @@ function debounce(func, wait) {
 // --- 7. Smooth Scrolling Initialization (runs on page load) ---
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
@@ -163,44 +163,84 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-// --- 8. Mobile Menu Toggle ---
+
+// --- 8. Enhanced Mobile Menu Toggle ---
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('nav .container');
     if (!nav) return;
     
-    // Create hamburger button
-    const hamburger = document.createElement('button');
-    hamburger.className = 'mobile-menu-toggle';
-    hamburger.innerHTML = '☰';
-    hamburger.style.cssText = `
-        display: none;
-        background: none;
-        border: none;
-        color: var(--accent-green);
-        font-size: 1.8rem;
-        cursor: pointer;
-        padding: 0.5rem;
-    `;
-    
-    nav.appendChild(hamburger);
-    
     const navLinks = document.querySelector('.nav-links');
     if (!navLinks) return;
     
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-    });
+    // Create hamburger button with animated bars
+    const hamburger = document.createElement('button');
+    hamburger.className = 'mobile-menu-toggle';
+    hamburger.setAttribute('aria-label', 'Toggle navigation menu');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.innerHTML = `
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    `;
     
-    // Show/hide hamburger based on screen size
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    function handleMobile(e) {
-        if (e.matches) {
-            hamburger.style.display = 'block';
-        } else {
-            hamburger.style.display = 'none';
-            navLinks.classList.remove('active');
+    // Insert hamburger before nav links
+    nav.insertBefore(hamburger, navLinks);
+    
+    // Toggle menu function
+    function toggleMenu() {
+        const isActive = navLinks.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        hamburger.setAttribute('aria-expanded', isActive);
+        
+        // Prevent body scroll when menu is open on mobile
+        if (window.innerWidth <= 767) {
+            document.body.style.overflow = isActive ? 'hidden' : '';
         }
     }
-    mediaQuery.addListener(handleMobile);
-    handleMobile(mediaQuery);
+    
+    // Hamburger click handler
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navLinks.classList.contains('active') &&
+            !nav.contains(e.target)) {
+            toggleMenu();
+        }
+    });
+    
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+            toggleMenu();
+            hamburger.focus();
+        }
+    });
+    
+    // Close menu when clicking a nav link
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (navLinks.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+    });
+    
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            // Close menu and reset body overflow if resizing to desktop
+            if (window.innerWidth > 767 && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            }
+        }, 250);
+    });
 });

@@ -7,13 +7,13 @@ Description: Global styles, dark theme, neon accents, and mobile component patte
 /* --- 1. CSS Variables (The Grifts Design System) --- */
 :root {
     /* Colors */
-    --bg-dark: #0a0a0a; /* Mandatory background color */
-    --bg-card: rgba(255, 255, 255, 0.03); /* Subtle card background */
+    --bg-dark: #0a0a0a;
+    --bg-card: rgba(255, 255, 255, 0.03);
     --border-color: rgba(255, 255, 255, 0.1);
-    --text-primary: #ffffff; /* White text */
+    --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
-    --accent-green: #00f5a0; /* Primary neon accent */
-    --accent-blue: #00d9f5; /* Secondary neon accent */
+    --accent-green: #00f5a0;
+    --accent-blue: #00d9f5;
     --gradient-primary: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
 
     /* Spacing */
@@ -24,12 +24,12 @@ Description: Global styles, dark theme, neon accents, and mobile component patte
     /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 15px;
-    --radius-full: 50px; /* For buttons/pills */
+    --radius-full: 50px;
 
     /* Shadows & Effects */
     --shadow-md: 0 5px 20px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 15px rgba(0, 245, 160, 0.3); /* Green glow effect */
+    --shadow-glow: 0 0 15px rgba(0, 245, 160, 0.3);
     --transition-normal: 0.3s ease;
 }
 
@@ -49,7 +49,7 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-primary);
     line-height: 1.6;
-    padding-top: 60px; /* Account for fixed header */
+    padding-top: 60px;
     min-height: 100vh;
 }
 
@@ -69,6 +69,12 @@ a:hover {
     color: var(--accent-blue);
 }
 
+a:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 .container {
     width: 90%;
     max-width: 1200px;
@@ -82,8 +88,9 @@ nav {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: rgba(10, 10, 10, 0.9); /* Subtle transparent dark background */
-    backdrop-filter: blur(5px); /* Navigation blur backdrop */
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 1000;
     border-bottom: 1px solid var(--border-color);
 }
@@ -100,12 +107,67 @@ nav .container {
     font-weight: 900;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* Gradient logo text */
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    z-index: 1002;
 }
 
 .nav-links {
     list-style: none;
-    display: none; /* Hidden on mobile by default */
+    display: none;
+}
+
+.nav-links a {
+    font-weight: 500;
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1002;
+    transition: transform var(--transition-normal);
+}
+
+.mobile-menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+.mobile-menu-toggle:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 3px;
+    background: var(--accent-green);
+    border-radius: 10px;
+    transition: all var(--transition-normal);
+    transform-origin: center;
+    display: block;
+}
+
+/* Hamburger Animation */
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
 }
 
 /* Desktop Navigation */
@@ -116,37 +178,52 @@ nav .container {
     }
 }
 
-/* Mobile Menu Toggle */
+/* Mobile Menu */
 @media (max-width: 767px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
     .nav-links {
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 60px;
         left: 0;
         right: 0;
+        bottom: 0;
         background-color: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         flex-direction: column;
-        padding: 1rem;
+        padding: 2rem 1rem;
         border-bottom: 1px solid var(--border-color);
-        transform: translateY(-100%);
+        transform: translateX(-100%);
         opacity: 0;
         pointer-events: none;
         transition: all 0.3s ease;
+        overflow-y: auto;
     }
     
     .nav-links.active {
         display: flex;
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
         pointer-events: all;
     }
     
     .nav-links li {
-        padding: 0.75rem 0;
+        padding: 1rem 0;
         border-bottom: 1px solid var(--border-color);
+        text-align: center;
     }
     
     .nav-links li:last-child {
         border-bottom: none;
+    }
+    
+    .nav-links a {
+        display: block;
+        font-size: 1.2rem;
+        padding: 0.5rem;
     }
 }
 
@@ -182,26 +259,33 @@ nav .container {
 }
 
 .card:hover {
-    transform: translateY(-5px); /* Hover lift effect */
+    transform: translateY(-5px);
     box-shadow: var(--shadow-glow);
 }
 
+.card:focus-within {
+    box-shadow: var(--shadow-glow);
+}
+
+/* --- 5. Buttons --- */
 .btn {
-    display: block;
-    width: 100%;
-    padding: 1rem;
+    display: inline-block;
+    padding: 1rem 2rem;
     border: none;
-    border-radius: var(--radius-full); /* 50px border-radius */
+    border-radius: var(--radius-full);
     cursor: pointer;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all var(--transition-normal);
-    min-height: 44px; /* Mobile touch-friendly min size */
+    min-height: 44px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 .btn-primary {
-    background: var(--gradient-primary); /* Gradient backgrounds */
+    background: var(--gradient-primary);
     color: var(--bg-dark);
 }
 
@@ -214,14 +298,38 @@ nav .container {
 .btn:hover {
     opacity: 0.85;
     box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
 }
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 3px;
+}
+
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* --- 5. Ad Space & Monetization Placeholders --- */
+/* Full width button variant */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Small button for inline use */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+}
+
+/* --- 6. Ad Space & Monetization Placeholders --- */
 .ad-space {
     text-align: center;
     margin: var(--spacing-lg) 0;
@@ -234,14 +342,20 @@ nav .container {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: var(--radius-sm);
 }
 
-/* --- 6. Footer --- */
+/* --- 7. Footer --- */
 footer {
     border-top: 1px solid var(--border-color);
     padding: var(--spacing-lg) 0 var(--spacing-md);
     text-align: center;
     color: var(--text-secondary);
+    margin-top: var(--spacing-lg);
+}
+
+.footer-links {
+    margin: 1rem 0;
 }
 
 .footer-links a {
@@ -250,24 +364,38 @@ footer {
     transition: color var(--transition-normal);
 }
 
-/* --- 7. Alert System Styles (For common.js) --- */
+.footer-links a:hover {
+    color: var(--accent-green);
+}
+
+/* --- 8. Alert System Styles --- */
 @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from { 
+        transform: translateX(100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
 }
 
 @keyframes slideOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
+    from { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+    to { 
+        transform: translateX(100%); 
+        opacity: 0; 
+    }
 }
 
 .alert {
     animation-fill-mode: forwards;
 }
 
-/* Add to the end of your existing css/style.css */
-
-/* --- 8. Tool-Specific Layout (For password generator and similar forms) --- */
+/* --- 9. Tool-Specific Layout --- */
 
 .tool-content {
     display: grid;
@@ -279,18 +407,11 @@ footer {
 
 @media (min-width: 768px) {
     .tool-content {
-        grid-template-columns: 1fr 1fr; /* Two columns on desktop */
+        grid-template-columns: 1fr 1fr;
     }
     .result-card {
-        order: -1; /* Place the result on the left visually */
+        order: -1;
     }
-}
-
-.card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
 }
 
 .input-group {
@@ -324,19 +445,24 @@ footer {
 
 .checkbox-group input[type="checkbox"] {
     margin-right: 0.75rem;
-    /* Custom checkbox styling can be added here if needed, but browser defaults are fine */
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
 }
 
 .hint {
     font-size: 0.85rem;
     margin-top: 0.5rem;
     opacity: 0.8;
+    color: var(--text-secondary);
 }
 
-/* Form Input Styling */
+/* --- 10. Form Input Styling --- */
 input[type="text"],
 input[type="number"],
 input[type="email"],
+input[type="url"],
+input[type="password"],
 input[type="file"],
 textarea,
 select {
@@ -348,7 +474,7 @@ select {
     border-radius: var(--radius-sm);
     font-family: inherit;
     font-size: 1rem;
-    transition: border-color var(--transition-normal);
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 input:focus,
@@ -356,7 +482,13 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--accent-green);
-    box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 245, 160, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
 }
 
 label {
@@ -366,7 +498,12 @@ label {
     font-weight: 600;
 }
 
-/* Result Box Styles */
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* --- 11. Result Box Styles --- */
 .result-box {
     display: flex;
     gap: 0.5rem;
@@ -381,28 +518,30 @@ label {
     border: 1px solid var(--accent-green);
     color: var(--accent-green);
     border-radius: var(--radius-sm);
-    font-family: monospace; /* For clear character display */
+    font-family: monospace;
     cursor: default;
+    word-break: break-all;
 }
 
-/* Security Strength Indicator */
+/* --- 12. Security Strength Indicator --- */
 .security-info {
     margin-top: 1rem;
 }
+
 #strength-bar {
     height: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     overflow: hidden;
+    margin-top: 0.5rem;
 }
+
 #strength-fill {
     height: 100%;
     transition: width 0.3s ease-in-out, background-color 0.3s;
 }
 
-/* Add to the end of your existing css/style.css */
-
-/* --- 9. Headline Generator Specific Styles --- */
+/* --- 13. Headline Generator Specific Styles --- */
 
 .headline-item {
     display: flex;
@@ -411,6 +550,7 @@ label {
     padding: 0.75rem 0.5rem;
     margin-bottom: 0.5rem;
     border-bottom: 1px dashed var(--border-color);
+    gap: 1rem;
 }
 
 .headline-item:last-child {
@@ -422,16 +562,125 @@ label {
     flex-grow: 1;
     font-size: 1.1rem;
     color: var(--text-primary);
-    padding-right: 1rem;
     line-height: 1.4;
 }
 
-/* Button specific to the headline item for copy */
 .headline-item .btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    min-width: auto;
 }
 
+/* --- 14. Utility Classes --- */
 
+.text-center {
+    text-align: center;
+}
 
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+/* --- 15. Loading Spinner --- */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 2rem auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 10, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* --- 16. Accessibility Improvements --- */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Skip to content link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent-green);
+    color: var(--bg-dark);
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* --- 17. Responsive Images --- */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- 18. Print Styles --- */
+@media print {
+    nav,
+    .ad-space,
+    .mobile-menu-toggle,
+    .btn {
+        display: none !important;
+    }
+    
+    body {
+        padding-top: 0;
+        background: white;
+        color: black;
+    }
+}

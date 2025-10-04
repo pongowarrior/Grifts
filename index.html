@@ -5,16 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS - Free Tools for Creators, Gamers & Hustlers</title>
     <meta name="description" content="100% free, browser-based tools for content creators, serious gamers, and side hustlers. No sign-ups, no BS.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="free tools, content creator tools, gaming calculators, influencer tools, viral content generators">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/">
+    <meta property="og:title" content="GRIFTS - Free Tools for Creators, Gamers & Hustlers">
+    <meta property="og:description" content="100% free, browser-based tools for content creators, serious gamers, and side hustlers. No sign-ups, no BS.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://grifts.co.uk/">
+    <meta name="twitter:title" content="GRIFTS - Free Tools for Creators, Gamers & Hustlers">
+    <meta name="twitter:description" content="100% free, browser-based tools for content creators, serious gamers, and side hustlers.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/twitter-card.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+    
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Scripts -->
     <script src="js/common.js" defer></script>
+    
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GRIFTS",
+      "url": "https://grifts.co.uk/",
+      "description": "Free, browser-based tools for content creators, gamers, and hustlers",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://grifts.co.uk/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <nav>
+    <nav role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a href="index.html" class="logo">GRIFTS</a>
+            <a href="index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html" aria-current="page">Home</a></li>
                 <li><a href="gaming/index.html">Gaming</a></li>
                 <li><a href="influencer/index.html">Influencer</a></li>
                 <li><a href="utilities/index.html">Utilities</a></li>
@@ -23,65 +72,100 @@
         </div>
     </nav>
 
-    <main class="container">
-        <header style="text-align: center; padding: 4rem 0 2rem;">
-            <h1 style="font-size: 2.5rem;">GRIND HARDER, GRIFT SMARTER.</h1>
+    <main id="main-content" class="container">
+        <!-- Hero Section -->
+        <header class="text-center" style="padding: 4rem 0 2rem;">
+            <h1 style="font-size: 2.5rem; line-height: 1.2;">GRIND HARDER, GRIFT SMARTER.</h1>
             <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 1rem auto;">
-                The only suite of **free, no-BS, browser-based tools** specialized for revenue-generating creators, competitive gamers, and ambitious hustlers.
+                The only suite of <strong>free, no-BS, browser-based tools</strong> specialized for revenue-generating creators, competitive gamers, and ambitious hustlers.
             </p>
         </header>
 
-        <div class="ad-space">
+        <!-- Ad Space -->
+        <div class="ad-space" role="complementary" aria-label="Advertisement">
             Advertisement (Google AdSense Banner)
         </div>
 
-        <h2 class="section-title" style="margin-top: 4rem;">Select Your Category</h2>
-        <div class="tool-grid">
+        <!-- Category Grid Section -->
+        <section aria-labelledby="categories-heading">
+            <h2 id="categories-heading" class="section-title" style="margin-top: 4rem;">Select Your Category</h2>
+            <div class="tool-grid">
 
-            <a href="gaming/index.html" class="card">
-                <h3>🎮 Gaming Tools</h3>
-                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Optimize Your Build</p>
-                <p style="color: var(--text-secondary);">Calculators, DPS optimization, and niche utilities for competitive players. (2 Tools)</p>
-            </a>
+                <a href="gaming/index.html" class="card" aria-label="Gaming Tools - 2 tools available">
+                    <h3>🎮 Gaming Tools</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Optimize Your Build</p>
+                    <p style="color: var(--text-secondary);">Calculators, DPS optimization, and niche utilities for competitive players. <span class="sr-only">2 tools available</span><span aria-hidden="true">(2 Tools)</span></p>
+                </a>
 
-            <a href="influencer/index.html" class="card">
-                <h3>✨ Influencer Tools</h3>
-                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Generate Virality</p>
-                <p style="color: var(--text-secondary);">Headline testers, hook databases, and content idea generators to boost your views. (4 Tools)</p>
-            </a>
+                <a href="influencer/index.html" class="card" aria-label="Influencer Tools - 4 tools available">
+                    <h3>✨ Influencer Tools</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Generate Virality</p>
+                    <p style="color: var(--text-secondary);">Headline testers, hook databases, and content idea generators to boost your views. <span class="sr-only">4 tools available</span><span aria-hidden="true">(4 Tools)</span></p>
+                </a>
 
-            <a href="utilities/index.html" class="card">
-                <h3>⚙️ Utilities</h3>
-                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Hustle Smarter</p>
-                <p style="color: var(--text-secondary);">Invoice creation, secure passwords, resume building, and essential quick tools. (5 Tools)</p>
-            </a>
+                <a href="utilities/index.html" class="card" aria-label="Utility Tools - 5 tools available">
+                    <h3>⚙️ Utilities</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Hustle Smarter</p>
+                    <p style="color: var(--text-secondary);">Invoice creation, secure passwords, resume building, and essential quick tools. <span class="sr-only">5 tools available</span><span aria-hidden="true">(5 Tools)</span></p>
+                </a>
 
-            <a href="viral/index.html" class="card">
-                <h3>🚀 Viral Tools</h3>
-                <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Get Shared</p>
-                <p style="color: var(--text-secondary);">Meme captioners, compatibility calculators, and challenge generators. (8 Tools)</p>
-            </a>
+                <a href="viral/index.html" class="card" aria-label="Viral Tools - 8 tools available">
+                    <h3>🚀 Viral Tools</h3>
+                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Get Shared</p>
+                    <p style="color: var(--text-secondary);">Meme captioners, compatibility calculators, and challenge generators. <span class="sr-only">8 tools available</span><span aria-hidden="true">(8 Tools)</span></p>
+                </a>
 
-        </div>
+            </div>
+        </section>
         
-        <div class="ad-space" style="border: 1px dashed var(--accent-green);">
+        <!-- Affiliate Ad Space -->
+        <div class="ad-space" style="border: 1px dashed var(--accent-green);" role="complementary" aria-label="Affiliate recommendation">
             AFFILIATE SPOT: Recommended Gear/Software
         </div>
 
+        <!-- Features Section -->
+        <section aria-labelledby="features-heading" class="mt-3">
+            <h2 id="features-heading" class="section-title">Why Choose GRIFTS?</h2>
+            <div class="tool-grid">
+                <div class="card">
+                    <h3>🔒 100% Privacy</h3>
+                    <p style="color: var(--text-secondary);">All tools run entirely in your browser. No data collection, no tracking, no accounts needed.</p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Instant Access</h3>
+                    <p style="color: var(--text-secondary);">No sign-ups, no downloads. Just click and use. Tools load instantly and work offline.</p>
+                </div>
+                <div class="card">
+                    <h3>💯 Forever Free</h3>
+                    <p style="color: var(--text-secondary);">No hidden fees, no premium tiers, no BS. All features unlocked for everyone, always.</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
             <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
-            <p>100% free, browser-based tools. No sign-ups. No BS.</p>
-            <div class="footer-links">
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
                 <a href="/privacy.html">Privacy</a>
                 <a href="/contact.html">Contact</a>
                 <a href="/about.html">About</a>
-            </div>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SE21EBPHDE');
+</script>
 
 </body>
 </html>
