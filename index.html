@@ -20,7 +20,8 @@
     <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
     
     <!-- DNS Prefetch for external resources -->
-<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -35,10 +36,6 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#00f5a0">
 
-    <!-- DNS Prefetch for external resources -->
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    
     <!-- Stylesheet -->
     <link rel="preload" href="css/style.css" as="style">
     <link rel="stylesheet" href="css/style.css">
@@ -103,52 +100,52 @@
 
     <main id="main-content" class="container">
         <!-- Hero Section -->
-        <header class="text-center" style="padding: 4rem 0 2rem;">
-            <h1 style="font-size: 2.5rem; line-height: 1.2;">GRIND HARDER, GRIFT SMARTER.</h1>
-            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 1rem auto;">
+        <header class="hero text-center">
+            <h1 class="hero-title">GRIND HARDER, GRIFT SMARTER.</h1>
+            <p class="hero-subtitle">
                 The only suite of <strong>free, no-BS, browser-based tools</strong> specialized for revenue-generating creators, competitive gamers, and ambitious hustlers.
             </p>
         </header>
 
         <!-- Ad Space -->
-        <div class="ad-space" role="complementary" aria-label="Advertisement">
+        <div class="ad-space card ad-banner" role="complementary" aria-label="Advertisement">
             Advertisement (Google AdSense Banner)
         </div>
 
         <!-- Category Grid Section -->
         <section aria-labelledby="categories-heading">
-            <h2 id="categories-heading" class="section-title" style="margin-top: 4rem;">Select Your Category</h2>
+            <h2 id="categories-heading" class="section-title">Select Your Category</h2>
             <div class="tool-grid">
 
                 <a href="gaming/index.html" class="card" aria-label="Gaming Tools - 2 tools available">
                     <h3>🎮 Gaming Tools</h3>
-                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Optimize Your Build</p>
-                    <p style="color: var(--text-secondary);">Calculators, DPS optimization, and niche utilities for competitive players. <span class="sr-only">2 tools available</span><span aria-hidden="true">(2 Tools)</span></p>
+                    <p class="card-subtitle">Optimize Your Build</p>
+                    <p class="card-description">Calculators, DPS optimization, and niche utilities for competitive players. <span class="sr-only">2 tools available</span><span aria-hidden="true">(2 Tools)</span></p>
                 </a>
 
                 <a href="influencer/index.html" class="card" aria-label="Influencer Tools - 4 tools available">
                     <h3>✨ Influencer Tools</h3>
-                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Generate Virality</p>
-                    <p style="color: var(--text-secondary);">Headline testers, hook databases, and content idea generators to boost your views. <span class="sr-only">4 tools available</span><span aria-hidden="true">(4 Tools)</span></p>
+                    <p class="card-subtitle">Generate Virality</p>
+                    <p class="card-description">Headline testers, hook databases, and content idea generators to boost your views. <span class="sr-only">4 tools available</span><span aria-hidden="true">(4 Tools)</span></p>
                 </a>
 
                 <a href="utilities/index.html" class="card" aria-label="Utility Tools - 5 tools available">
                     <h3>⚙️ Utilities</h3>
-                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Hustle Smarter</p>
-                    <p style="color: var(--text-secondary);">Invoice creation, secure passwords, resume building, and essential quick tools. <span class="sr-only">5 tools available</span><span aria-hidden="true">(5 Tools)</span></p>
+                    <p class="card-subtitle">Hustle Smarter</p>
+                    <p class="card-description">Invoice creation, secure passwords, resume building, and essential quick tools. <span class="sr-only">5 tools available</span><span aria-hidden="true">(5 Tools)</span></p>
                 </a>
 
                 <a href="viral/index.html" class="card" aria-label="Viral Tools - 6 tools available">
                     <h3>🚀 Viral Tools</h3>
-                    <p style="color: var(--accent-green); font-weight: bold; margin-bottom: 0.5rem;">Get Shared</p>
-                    <p style="color: var(--text-secondary);">Meme captioners, compatibility calculators, and challenge generators. <span class="sr-only">6 tools available</span><span aria-hidden="true">(6 Tools)</span></p>
+                    <p class="card-subtitle">Get Shared</p>
+                    <p class="card-description">Meme captioners, compatibility calculators, and challenge generators. <span class="sr-only">6 tools available</span><span aria-hidden="true">(6 Tools)</span></p>
                 </a>
 
             </div>
         </section>
         
         <!-- Affiliate Ad Space -->
-        <div class="ad-space" style="border: 1px dashed var(--accent-green);" role="complementary" aria-label="Affiliate recommendation">
+        <div class="ad-space card ad-affiliate" role="complementary" aria-label="Affiliate recommendation">
             AFFILIATE SPOT: Recommended Gear/Software
         </div>
 
@@ -158,15 +155,15 @@
             <div class="tool-grid">
                 <div class="card">
                     <h3>🔒 100% Privacy</h3>
-                    <p style="color: var(--text-secondary);">All tools run entirely in your browser. No data collection, no tracking, no accounts needed.</p>
+                    <p class="card-description">All tools run entirely in your browser. No data collection, no tracking, no accounts needed.</p>
                 </div>
                 <div class="card">
                     <h3>⚡ Instant Access</h3>
-                    <p style="color: var(--text-secondary);">No sign-ups, no downloads. Just click and use. Tools load instantly and work offline.</p>
+                    <p class="card-description">No sign-ups, no downloads. Just click and use. Tools load instantly and work offline.</p>
                 </div>
                 <div class="card">
                     <h3>💯 Forever Free</h3>
-                    <p style="color: var(--text-secondary);">No hidden fees, no premium tiers, no BS. All features unlocked for everyone, always.</p>
+                    <p class="card-description">No hidden fees, no premium tiers, no BS. All features unlocked for everyone, always.</p>
                 </div>
             </div>
         </section>
@@ -178,10 +175,10 @@
             <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
             <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
             <nav class="footer-links" aria-label="Footer navigation">
-    <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
-    <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
-    <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
-</nav>
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
             <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>

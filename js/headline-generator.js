@@ -42,9 +42,12 @@ function updateCharacterCounters() {
 
 // --- Core Generation Function ---
 function generateHeadlines() {
-    // Use sanitizeHTML from common.js instead of duplicating
-    const topic = sanitizeHTML(topicInput.value.trim());
-    const outcome = sanitizeHTML(outcomeInput.value.trim());
+    // Use sanitize HTML with fallback
+    const rawTopic = topicInput.value.trim();
+    const rawOutcome = outcomeInput.value.trim();
+    
+    const topic = typeof sanitizeHTML === 'function' ? sanitizeHTML(rawTopic) : rawTopic;
+    const outcome = typeof sanitizeHTML === 'function' ? sanitizeHTML(rawOutcome) : rawOutcome;
     
     // Validation with user feedback
     if (topic.length === 0 || outcome.length === 0) {
@@ -55,7 +58,9 @@ function generateHeadlines() {
         if (topic.length === 0) topicInput.style.borderColor = 'var(--accent-blue)';
         if (outcome.length === 0) outcomeInput.style.borderColor = 'var(--accent-blue)';
         
-        showAlert('Please fill in both fields', 'info');
+        if (typeof showAlert === 'function') {
+            showAlert('Please fill in both fields', 'info');
+        }
         return;
     }
     
@@ -64,10 +69,12 @@ function generateHeadlines() {
     outcomeInput.style.borderColor = '';
     
     // Save inputs to memory for persistence
-    saveToMemory('headline_topic', topicInput.value);
-    saveToMemory('headline_outcome', outcomeInput.value);
+    if (typeof saveToMemory === 'function') {
+        saveToMemory('headline_topic', topicInput.value);
+        saveToMemory('headline_outcome', outcomeInput.value);
+    }
     
-    // Show loading state (even if instant, good UX practice)
+    // Show loading state
     resultsContainer.innerHTML = '<div class="spinner"></div>';
     copyAllButton.style.display = 'none';
     
@@ -96,7 +103,10 @@ function generateHeadlines() {
         copyAllButton.dataset.allHeadlines = generatedText.join('\n');
         
         attachCopyListeners();
-        showAlert('Headlines generated successfully!', 'success');
+        
+        if (typeof showAlert === 'function') {
+            showAlert('Headlines generated successfully!', 'success');
+        }
     }, 100);
 }
 
@@ -108,8 +118,10 @@ function clearInputs() {
     copyAllButton.style.display = 'none';
     
     // Clear from memory
-    clearMemory('headline_topic');
-    clearMemory('headline_outcome');
+    if (typeof clearMemory === 'function') {
+        clearMemory('headline_topic');
+        clearMemory('headline_outcome');
+    }
     
     // Reset character counters
     updateCharacterCounters();
@@ -126,7 +138,9 @@ function attachCopyListeners() {
     document.querySelectorAll('.copy-single-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const headlineToCopy = e.currentTarget.dataset.headline;
-            copyToClipboard(headlineToCopy, e.currentTarget);
+            if (typeof copyToClipboard === 'function') {
+                copyToClipboard(headlineToCopy, e.currentTarget);
+            }
         });
     });
 }
@@ -134,8 +148,13 @@ function attachCopyListeners() {
 // --- Main Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     // Load saved inputs from memory
-    const savedTopic = loadFromMemory('headline_topic');
-    const savedOutcome = loadFromMemory('headline_outcome');
+    let savedTopic = '';
+    let savedOutcome = '';
+    
+    if (typeof loadFromMemory === 'function') {
+        savedTopic = loadFromMemory('headline_topic') || '';
+        savedOutcome = loadFromMemory('headline_outcome') || '';
+    }
     
     if (savedTopic) topicInput.value = savedTopic;
     if (savedOutcome) outcomeInput.value = savedOutcome;
@@ -152,9 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Copy All button listener
     copyAllButton.addEventListener('click', () => {
         const allHeadlines = copyAllButton.dataset.allHeadlines;
-        if (allHeadlines) {
+        if (allHeadlines && typeof copyToClipboard === 'function') {
             copyToClipboard(allHeadlines, copyAllButton);
-        } else {
+        } else if (typeof showAlert === 'function') {
             showAlert('Nothing to copy!', 'info');
         }
     });

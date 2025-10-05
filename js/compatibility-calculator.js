@@ -1,7 +1,3 @@
-/*
-File: js/compatibility-calculator.js
-Description: Compatibility Calculator with modes, history, and safe algorithm
-*/
 
 // DOM Elements
 const name1Input = document.getElementById('name1-input');
@@ -93,9 +89,9 @@ function displayResult(score, name1, name2) {
     const ranges = scoreRanges[currentMode];
     const range = ranges.find(r => score >= r.min && score <= r.max);
     
-    // Sanitize names for display
-    const safeName1 = sanitizeHTML(name1);
-    const safeName2 = sanitizeHTML(name2);
+    // Sanitize names for display with fallback
+    const safeName1 = typeof sanitizeHTML === 'function' ? sanitizeHTML(name1) : name1;
+    const safeName2 = typeof sanitizeHTML === 'function' ? sanitizeHTML(name2) : name2;
     
     // Visual effects
     scoreDisplay.textContent = `${score}%`;
@@ -122,7 +118,9 @@ function displayResult(score, name1, name2) {
     // Add to history
     addToHistory(currentResult);
     
-    showAlert(`Score calculated: ${score}%`, 'success');
+    if (typeof showAlert === 'function') {
+        showAlert(`Score calculated: ${score}%`, 'success');
+    }
     
     // Remove glow after animation
     setTimeout(() => {
@@ -132,6 +130,10 @@ function displayResult(score, name1, name2) {
 
 // --- History Management ---
 function addToHistory(result) {
+    if (typeof loadFromMemory !== 'function' || typeof saveToMemory !== 'function') {
+        return;
+    }
+    
     let history = loadFromMemory('compatibility_history', []);
     
     // Avoid duplicates
@@ -151,6 +153,10 @@ function addToHistory(result) {
 }
 
 function renderHistory() {
+    if (typeof loadFromMemory !== 'function') {
+        return;
+    }
+    
     const history = loadFromMemory('compatibility_history', []);
     
     if (history.length === 0) {
@@ -194,7 +200,10 @@ function renderHistory() {
             
             // Display result
             displayResult(result.score, result.name1, result.name2);
-            showAlert('Loaded from history!', 'info');
+            
+            if (typeof showAlert === 'function') {
+                showAlert('Loaded from history!', 'info');
+            }
         });
     });
 }
@@ -247,7 +256,12 @@ Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString
     `.trim();
     
     const filename = `Grifts-${modeTitle}-Report-${name1}-${name2}.txt`;
-    downloadFile(reportContent, filename, 'text/plain');
+    
+    if (typeof downloadFile === 'function') {
+        downloadFile(reportContent, filename, 'text/plain');
+    } else if (typeof showAlert === 'function') {
+        showAlert('Download function not available', 'error');
+    }
 }
 
 // --- Share Function ---
@@ -267,13 +281,15 @@ async function shareResult() {
                 text: shareText,
                 url: shareURL
             });
-            showAlert('Shared successfully!', 'success');
+            if (typeof showAlert === 'function') {
+                showAlert('Shared successfully!', 'success');
+            }
         } catch (err) {
-            if (err.name !== 'AbortError') {
+            if (err.name !== 'AbortError' && typeof copyToClipboard === 'function') {
                 copyToClipboard(shareText, shareButton);
             }
         }
-    } else {
+    } else if (typeof copyToClipboard === 'function') {
         copyToClipboard(shareText, shareButton);
     }
 }
@@ -300,7 +316,10 @@ function loadFromURL() {
         
         const score = calculateCompatibility(name1, name2);
         displayResult(score, name1, name2);
-        showAlert('Viewing shared compatibility score!', 'info');
+        
+        if (typeof showAlert === 'function') {
+            showAlert('Viewing shared compatibility score!', 'info');
+        }
     }
 }
 
@@ -318,7 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const name2 = name2Input.value.trim();
         
         if (!name1 || !name2) {
-            showAlert('Please enter both names!', 'error');
+            if (typeof showAlert === 'function') {
+                showAlert('Please enter both names!', 'error');
+            }
             return;
         }
         
@@ -367,8 +388,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Clear history
     clearHistoryButton.addEventListener('click', () => {
-        clearMemory('compatibility_history');
-        renderHistory();
-        showAlert('History cleared!', 'success');
+        if (typeof clearMemory === 'function') {
+            clearMemory('compatibility_history');
+            renderHistory();
+        }
+        
+        if (typeof showAlert === 'function') {
+            showAlert('History cleared!', 'success');
+        }
     });
 });
