@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPS Calculator - GRIFTS Gaming Tools</title>
+    <meta name="description" content="Calculate damage per second (DPS) for gaming builds. Optimize your character's damage output with attack speed, crit rate, and damage modifiers.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="dps calculator, damage calculator, gaming calculator, dps optimizer, damage per second">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/gaming/dps-calculator.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/gaming/dps-calculator.html">
+    <meta property="og:title" content="DPS Calculator - GRIFTS Gaming Tools">
+    <meta property="og:description" content="Calculate damage per second for gaming builds with attack speed, crit rate, and damage modifiers.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DPS Calculator - GRIFTS">
+    <meta name="twitter:description" content="Optimize your gaming build's damage output.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Scripts -->
+    <script src="../js/common.js" defer></script>
+    <script src="../js/dps-calculator.js" defer></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
+</head>
+<body>
+    <!-- Skip to main content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html" aria-current="page">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="../viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        
+        <!-- Page Header -->
+        <header class="text-center" style="margin: 2rem 0;">
+            <h1>🎮 DPS Calculator</h1>
+            <p class="hero-subtitle" style="max-width: 700px; margin: 1rem auto;">
+                Calculate your damage per second (DPS) with precision. Factor in attack speed, critical hits, damage modifiers, and more to optimize your gaming build.
+            </p>
+        </header>
+
+        <!-- Ad Space -->
+        <div class="ad-space card" role="complementary" aria-label="Advertisement">
+            Advertisement Space
+        </div>
+
+        <!-- Main Calculator Layout -->
+        <div class="tool-content">
+            
+            <!-- Input Card -->
+            <div class="card">
+                <h2 style="margin-bottom: 1.5rem;">⚔️ Weapon & Attack Stats</h2>
+                
+                <div class="input-group">
+                    <label for="base-damage">Base Damage Per Hit</label>
+                    <input type="number" id="base-damage" value="100" min="0" step="1" 
+                           placeholder="100" aria-describedby="base-damage-hint">
+                    <p id="base-damage-hint" class="hint">The raw damage dealt by a single attack</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="attack-speed">Attacks Per Second</label>
+                    <input type="number" id="attack-speed" value="1.5" min="0.1" step="0.1" 
+                           placeholder="1.5" aria-describedby="attack-speed-hint">
+                    <p id="attack-speed-hint" class="hint">How many attacks you perform per second</p>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem;">💥 Critical Hit Stats</h3>
+
+                <div class="input-group">
+                    <label for="crit-chance">Critical Hit Chance (%)</label>
+                    <input type="number" id="crit-chance" value="25" min="0" max="100" step="1" 
+                           placeholder="25" aria-describedby="crit-chance-hint">
+                    <p id="crit-chance-hint" class="hint">Percentage chance to land a critical hit (0-100)</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="crit-multiplier">Critical Hit Multiplier</label>
+                    <input type="number" id="crit-multiplier" value="2" min="1" step="0.1" 
+                           placeholder="2" aria-describedby="crit-multiplier-hint">
+                    <p id="crit-multiplier-hint" class="hint">Damage multiplier for critical hits (e.g., 2 = 200% damage)</p>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem;">🔥 Damage Modifiers</h3>
+
+                <div class="input-group">
+                    <label for="damage-bonus">Additional Damage Bonus (%)</label>
+                    <input type="number" id="damage-bonus" value="0" min="0" step="1" 
+                           placeholder="0" aria-describedby="damage-bonus-hint">
+                    <p id="damage-bonus-hint" class="hint">Total % increase from buffs, skills, gear (additive)</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="armor-reduction">Enemy Armor/Resistance (%)</label>
+                    <input type="number" id="armor-reduction" value="0" min="0" max="100" step="1" 
+                           placeholder="0" aria-describedby="armor-reduction-hint">
+                    <p id="armor-reduction-hint" class="hint">% of damage reduced by enemy defenses</p>
+                </div>
+
+                <button class="btn btn-primary btn-block" id="calculate-btn" style="margin-top: 2rem;">
+                    Calculate DPS
+                </button>
+                
+                <button class="btn btn-secondary btn-block" id="reset-btn" style="margin-top: 0.5rem;">
+                    Reset to Defaults
+                </button>
+            </div>
+
+            <!-- Results Card -->
+            <div class="card result-card" id="results-card" style="display: none;">
+                <h2 style="margin-bottom: 1.5rem;">📊 DPS Analysis</h2>
+                
+                <div style="background: rgba(0, 245, 160, 0.1); border: 2px solid var(--accent-green); 
+                            border-radius: var(--radius-md); padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">TOTAL DPS</p>
+                    <p id="total-dps" style="font-size: 3rem; font-weight: 900; color: var(--accent-green); 
+                                             line-height: 1; margin: 0;">0</p>
+                    <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">damage per second</p>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">📈 Breakdown</h3>
+                
+                <div class="stats-breakdown">
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">Average Damage Per Hit</span>
+                        <strong id="avg-hit">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">Base DPS (no crits)</span>
+                        <strong id="base-dps">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">DPS from Critical Hits</span>
+                        <strong id="crit-dps">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">Effective Crit Chance</span>
+                        <strong id="effective-crit">0%</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                        <span style="opacity: 0.9;">Damage After Armor</span>
+                        <strong id="post-armor-dps">0</strong>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">💡 Optimization Tips</h3>
+                <div id="tips-container" style="background: rgba(0, 217, 245, 0.1); border-left: 3px solid var(--accent-blue); 
+                                                 padding: 1rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                    <!-- Tips will be dynamically inserted here -->
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1.5rem;">
+                    <button class="btn btn-sm btn-secondary" id="copy-results-btn">
+                        📋 Copy Results
+                    </button>
+                    <button class="btn btn-sm btn-secondary" id="share-build-btn">
+                        🔗 Share Build
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comparison Tool Section -->
+        <section class="card" style="margin-top: 2rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <h2 style="margin-bottom: 1rem;">⚖️ Build Comparison (Optional)</h2>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">
+                Save your current build to compare with alternative configurations. Perfect for testing gear upgrades or skill changes.
+            </p>
+            
+            <div style="display: grid; gap: 0.75rem;">
+                <button class="btn btn-secondary btn-block" id="save-build-btn">
+                    💾 Save Current Build
+                </button>
+                
+                <div id="saved-builds" style="margin-top: 1rem;">
+                    <!-- Saved builds will appear here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="card" style="margin-top: 2rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <h2 style="margin-bottom: 1rem;">ℹ️ How to Use This Calculator</h2>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">📝 Basic Formula</h3>
+            <p style="margin-bottom: 1rem; line-height: 1.7;">
+                <strong>DPS = (Base Damage × Attacks/Second) × (1 + Bonus%) × Crit Factor × (1 - Armor%)</strong>
+            </p>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">🎯 What Each Stat Means</h3>
+            <ul style="line-height: 1.8; padding-left: 1.5rem;">
+                <li><strong>Base Damage:</strong> The raw damage value shown on your weapon or ability</li>
+                <li><strong>Attack Speed:</strong> How many times you attack per second (e.g., 1.5 APS = attack every 0.67 seconds)</li>
+                <li><strong>Crit Chance:</strong> Probability (0-100%) that an attack will be a critical hit</li>
+                <li><strong>Crit Multiplier:</strong> How much extra damage crits deal (2.0 = double damage, 2.5 = 2.5x damage)</li>
+                <li><strong>Damage Bonus:</strong> Additional % increase from all sources (buffs, passives, gear)</li>
+                <li><strong>Armor/Resistance:</strong> How much damage the enemy reduces</li>
+            </ul>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">💪 Pro Tips</h3>
+            <ul style="line-height: 1.8; padding-left: 1.5rem;">
+                <li>Balance crit chance and crit multiplier for optimal DPS gains</li>
+                <li>Attack speed scales linearly with DPS - doubling APS doubles damage</li>
+                <li>High enemy armor makes % armor penetration extremely valuable</li>
+                <li>Save multiple builds to compare gear upgrades easily</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
+        </div>
+    </footer>
+
+</body>
+</html>
