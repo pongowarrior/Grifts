@@ -37,6 +37,9 @@ Version: 2.0 - Fixed inconsistencies and improved robustness
     
     /* Navigation Height - Single source of truth */
     --nav-height: 60px;
+    --focus-ring: 2px solid var(--accent-green);
+    --focus-offset: 2px;
+    --focus-radius: 2px;
     
 }
 
