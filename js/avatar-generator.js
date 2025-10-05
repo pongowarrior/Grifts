@@ -1,6 +1,7 @@
 /*
 File: js/avatar-generator.js
 Description: Avatar Generator with presets, memory persistence, and multiple download formats
+Version: 2.0 - Improved error handling, better randomization, loading states
 */
 
 // DOM Elements
@@ -18,6 +19,9 @@ const downloadSVGButton = document.getElementById('download-svg-btn');
 const copySVGButton = document.getElementById('copy-svg-btn');
 const avatarSVG = document.getElementById('avatar-svg');
 const presetButtons = document.querySelectorAll('[data-preset]');
+
+// State
+let isDownloading = false;
 
 // --- 1. SVG Component Definitions ---
 const svgComponents = {
@@ -56,15 +60,76 @@ const presets = {
     classic: { hair: 3, eyes: 1, mouth: 1, skinColor: '#fad390', hairColor: '#4a4a4a' }
 };
 
-// --- 3. Core Rendering Logic ---
+// --- 3. Helper Functions ---
+
+/**
+ * Generate random color with minimum brightness to avoid near-black colors
+ * @param {number} minBrightness - Minimum brightness (0-255)
+ * @returns {string} Hex color
+ */
+function randomColor(minBrightness = 50) {
+    let color;
+    let brightness;
+    
+    do {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        
+        // Calculate perceived brightness
+        brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        
+        if (brightness >= minBrightness) {
+            color = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+            return color;
+        }
+    } while (brightness < minBrightness);
+    
+    return '#6eb5ff'; // Fallback
+}
+
+/**
+ * Get random integer between 1 and max (inclusive)
+ */
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max) + 1;
+}
+
+/**
+ * Validate if element exists before accessing
+ */
+function validateElements() {
+    const required = [
+        hairRange, eyesRange, mouthRange, 
+        skinColorInput, hairColorInput, 
+        avatarSVG, randomizeButton
+    ];
+    
+    const missing = required.filter(el => !el);
+    if (missing.length > 0) {
+        console.error('Missing required DOM elements');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Check if user is typing in an input field
+ */
+function isUserTyping() {
+    const activeTag = document.activeElement?.tagName;
+    return activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+}
+
+// --- 4. Core Rendering Logic ---
 
 /**
  * Constructs the full SVG string from selected components and colors
  */
 function getSVGString() {
-    const hairStyle = hairRange.value;
-    const eyesStyle = eyesRange.value;
-    const mouthStyle = mouthRange.value;
+    const hairStyle = parseInt(hairRange.value);
+    const eyesStyle = parseInt(eyesRange.value);
+    const mouthStyle = parseInt(mouthRange.value);
     const skinColor = skinColorInput.value;
     const hairColor = hairColorInput.value;
     
@@ -72,13 +137,23 @@ function getSVGString() {
     svgContent += `<rect width="100" height="100" fill="#0a0a0a"/>`;
     svgContent += svgComponents.head(skinColor);
     
+    // Safely get hair component
     const hairFunction = svgComponents.hair[hairStyle];
-    if (hairFunction) {
+    if (hairFunction && typeof hairFunction === 'function') {
         svgContent += hairFunction(hairColor);
     }
     
-    svgContent += svgComponents.eyes[eyesStyle];
-    svgContent += svgComponents.mouth[mouthStyle];
+    // Safely get eyes component
+    const eyesComponent = svgComponents.eyes[eyesStyle];
+    if (eyesComponent) {
+        svgContent += eyesComponent;
+    }
+    
+    // Safely get mouth component
+    const mouthComponent = svgComponents.mouth[mouthStyle];
+    if (mouthComponent) {
+        svgContent += mouthComponent;
+    }
     
     return svgContent;
 }
@@ -87,49 +162,63 @@ function getSVGString() {
  * Renders the avatar and saves settings to memory
  */
 function renderAvatar() {
-    const svgString = getSVGString();
-    avatarSVG.innerHTML = svgString;
-    
-    // Update hints
-    hairHint.textContent = hairRange.value;
-    eyesHint.textContent = eyesRange.value;
-    mouthHint.textContent = mouthRange.value;
-    
-    // Update ARIA values
-    hairRange.setAttribute('aria-valuenow', hairRange.value);
-    eyesRange.setAttribute('aria-valuenow', eyesRange.value);
-    mouthRange.setAttribute('aria-valuenow', mouthRange.value);
-    
-    // Save current state to memory
-    saveAvatarSettings();
+    try {
+        const svgString = getSVGString();
+        avatarSVG.innerHTML = svgString;
+        
+        // Update hints if they exist
+        if (hairHint) hairHint.textContent = hairRange.value;
+        if (eyesHint) eyesHint.textContent = eyesRange.value;
+        if (mouthHint) mouthHint.textContent = mouthRange.value;
+        
+        // Update ARIA values
+        hairRange.setAttribute('aria-valuenow', hairRange.value);
+        eyesRange.setAttribute('aria-valuenow', eyesRange.value);
+        mouthRange.setAttribute('aria-valuenow', mouthRange.value);
+        
+        // Save current state to memory
+        saveAvatarSettings();
+    } catch (error) {
+        console.error('Render error:', error);
+        showAlert('Failed to render avatar', 'error');
+    }
 }
 
 /**
  * Saves current avatar settings to memory
  */
 function saveAvatarSettings() {
-    const settings = {
-        hair: hairRange.value,
-        eyes: eyesRange.value,
-        mouth: mouthRange.value,
-        skinColor: skinColorInput.value,
-        hairColor: hairColorInput.value
-    };
-    saveToMemory('avatar_settings', settings);
+    try {
+        const settings = {
+            hair: hairRange.value,
+            eyes: eyesRange.value,
+            mouth: mouthRange.value,
+            skinColor: skinColorInput.value,
+            hairColor: hairColorInput.value,
+            timestamp: Date.now()
+        };
+        saveToMemory('avatar_settings', settings);
+    } catch (error) {
+        console.error('Save error:', error);
+    }
 }
 
 /**
  * Loads avatar settings from memory
  */
 function loadAvatarSettings() {
-    const settings = loadFromMemory('avatar_settings');
-    if (settings) {
-        hairRange.value = settings.hair || 1;
-        eyesRange.value = settings.eyes || 1;
-        mouthRange.value = settings.mouth || 1;
-        skinColorInput.value = settings.skinColor || '#00d9f5';
-        hairColorInput.value = settings.hairColor || '#00f5a0';
-        return true;
+    try {
+        const settings = loadFromMemory('avatar_settings');
+        if (settings) {
+            hairRange.value = settings.hair || 1;
+            eyesRange.value = settings.eyes || 1;
+            mouthRange.value = settings.mouth || 1;
+            skinColorInput.value = settings.skinColor || '#00d9f5';
+            hairColorInput.value = settings.hairColor || '#00f5a0';
+            return true;
+        }
+    } catch (error) {
+        console.error('Load error:', error);
     }
     return false;
 }
@@ -139,7 +228,12 @@ function loadAvatarSettings() {
  */
 function applyPreset(presetName) {
     const preset = presets[presetName];
-    if (preset) {
+    if (!preset) {
+        showAlert('Preset not found', 'error');
+        return;
+    }
+    
+    try {
         hairRange.value = preset.hair;
         eyesRange.value = preset.eyes;
         mouthRange.value = preset.mouth;
@@ -147,6 +241,10 @@ function applyPreset(presetName) {
         hairColorInput.value = preset.hairColor;
         renderAvatar();
         showAlert(`Applied ${presetName} preset!`, 'success');
+        trackEvent('avatar_preset_applied', { preset: presetName });
+    } catch (error) {
+        console.error('Preset error:', error);
+        showAlert('Failed to apply preset', 'error');
     }
 }
 
@@ -154,40 +252,64 @@ function applyPreset(presetName) {
  * Randomizes the controls and triggers a re-render
  */
 function randomizeAvatar() {
-    const maxHair = Object.keys(svgComponents.hair).length;
-    const maxEyes = Object.keys(svgComponents.eyes).length;
-    const maxMouth = Object.keys(svgComponents.mouth).length;
-    
-    const getRandom = (max) => Math.floor(Math.random() * max) + 1;
-    const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-    
-    hairRange.value = getRandom(maxHair);
-    eyesRange.value = getRandom(maxEyes);
-    mouthRange.value = getRandom(maxMouth);
-    skinColorInput.value = randomColor();
-    hairColorInput.value = randomColor();
-    
-    renderAvatar();
-    showAlert('Avatar randomized!', 'success');
+    try {
+        const maxHair = Object.keys(svgComponents.hair).length;
+        const maxEyes = Object.keys(svgComponents.eyes).length;
+        const maxMouth = Object.keys(svgComponents.mouth).length;
+        
+        hairRange.value = getRandomInt(maxHair);
+        eyesRange.value = getRandomInt(maxEyes);
+        mouthRange.value = getRandomInt(maxMouth);
+        skinColorInput.value = randomColor(80);  // Minimum brightness 80
+        hairColorInput.value = randomColor(50);   // Minimum brightness 50
+        
+        renderAvatar();
+        showAlert('Avatar randomized!', 'success');
+        trackEvent('avatar_randomized');
+    } catch (error) {
+        console.error('Randomize error:', error);
+        showAlert('Failed to randomize avatar', 'error');
+    }
 }
 
-// --- 4. Download Functions ---
+// --- 5. Download Functions ---
 
 /**
  * Downloads the current SVG as a PNG file
  */
-function downloadAvatarPNG() {
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
-    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
+async function downloadAvatarPNG() {
+    if (isDownloading) {
+        showAlert('Download in progress...', 'info');
+        return;
+    }
     
-    const img = new Image();
-    img.onload = () => {
+    isDownloading = true;
+    downloadPNGButton.disabled = true;
+    downloadPNGButton.textContent = 'Converting...';
+    
+    try {
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        
+        const img = new Image();
+        
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = () => reject(new Error('Failed to load SVG'));
+            img.src = svgUrl;
+        });
+        
         const canvas = document.createElement('canvas');
         const size = 512;
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+            throw new Error('Canvas context not available');
+        }
+        
         ctx.drawImage(img, 0, 0, size, size);
         
         const pngDataUrl = canvas.toDataURL('image/png');
@@ -195,50 +317,86 @@ function downloadAvatarPNG() {
         downloadFile(pngDataUrl, filename, 'image/png');
         
         URL.revokeObjectURL(svgUrl);
-    };
-    img.onerror = (err) => {
-        console.error("Failed to load SVG:", err);
-        showAlert('Download failed: SVG to PNG conversion error.', 'error');
-        URL.revokeObjectURL(svgUrl);
-    };
-    img.src = svgUrl;
+        trackEvent('avatar_downloaded', { format: 'png' });
+        
+    } catch (error) {
+        console.error('PNG download error:', error);
+        showAlert('Download failed. Please try SVG format instead.', 'error');
+    } finally {
+        isDownloading = false;
+        downloadPNGButton.disabled = false;
+        downloadPNGButton.textContent = 'Download PNG';
+    }
 }
 
 /**
  * Downloads the current SVG as an SVG file
  */
 function downloadAvatarSVG() {
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
-    const filename = `grifts-avatar-${generateId(6)}.svg`;
-    downloadFile(svgString, filename, 'image/svg+xml');
+    try {
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
+        const filename = `grifts-avatar-${generateId(6)}.svg`;
+        downloadFile(svgString, filename, 'image/svg+xml');
+        trackEvent('avatar_downloaded', { format: 'svg' });
+    } catch (error) {
+        console.error('SVG download error:', error);
+        showAlert('Download failed', 'error');
+    }
 }
 
 /**
  * Copies SVG code to clipboard
  */
-function copySVGCode() {
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
-    copyToClipboard(svgString, copySVGButton);
-}
-
-// --- 5. Keyboard Shortcuts ---
-function handleKeyboardShortcuts(e) {
-    // R for randomize, D for download PNG
-    if (e.key === 'r' || e.key === 'R') {
-        if (document.activeElement.tagName !== 'INPUT') {
-            e.preventDefault();
-            randomizeAvatar();
-        }
-    } else if (e.key === 'd' || e.key === 'D') {
-        if (document.activeElement.tagName !== 'INPUT') {
-            e.preventDefault();
-            downloadAvatarPNG();
-        }
+async function copySVGCode() {
+    try {
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${getSVGString()}</svg>`;
+        await copyToClipboard(svgString, copySVGButton);
+        trackEvent('avatar_copied');
+    } catch (error) {
+        console.error('Copy error:', error);
+        showAlert('Failed to copy SVG', 'error');
     }
 }
 
-// --- 6. Initialization ---
+// --- 6. Keyboard Shortcuts ---
+function handleKeyboardShortcuts(e) {
+    // Don't trigger shortcuts while typing
+    if (isUserTyping()) return;
+    
+    const key = e.key.toLowerCase();
+    
+    switch(key) {
+        case 'r':
+            e.preventDefault();
+            randomizeAvatar();
+            break;
+        case 'd':
+            e.preventDefault();
+            downloadAvatarPNG();
+            break;
+        case 's':
+            e.preventDefault();
+            downloadAvatarSVG();
+            break;
+        case 'c':
+            if (e.ctrlKey || e.metaKey) {
+                // Let default Ctrl+C work
+                return;
+            }
+            e.preventDefault();
+            copySVGCode();
+            break;
+    }
+}
+
+// --- 7. Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Validate required elements
+    if (!validateElements()) {
+        showAlert('Page initialization failed', 'error');
+        return;
+    }
+    
     // Load saved settings or randomize
     const hasSettings = loadAvatarSettings();
     if (!hasSettings) {
@@ -252,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eyesRange.addEventListener('input', renderAvatar);
     mouthRange.addEventListener('input', renderAvatar);
     
-    // Debounced color inputs
+    // Debounced color inputs for performance
     const debouncedRender = debounce(renderAvatar, 150);
     skinColorInput.addEventListener('input', debouncedRender);
     hairColorInput.addEventListener('input', debouncedRender);
@@ -263,14 +421,21 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadSVGButton.addEventListener('click', downloadAvatarSVG);
     copySVGButton.addEventListener('click', copySVGCode);
     
-    // Preset buttons
-    presetButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const presetName = e.currentTarget.dataset.preset;
-            applyPreset(presetName);
+    // Preset buttons (with null check)
+    if (presetButtons && presetButtons.length > 0) {
+        presetButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const presetName = e.currentTarget.dataset.preset;
+                if (presetName) {
+                    applyPreset(presetName);
+                }
+            });
         });
-    });
+    }
     
     // Keyboard shortcuts
     document.addEventListener('keydown', handleKeyboardShortcuts);
+    
+    // Track initial load
+    trackEvent('avatar_generator_loaded');
 });

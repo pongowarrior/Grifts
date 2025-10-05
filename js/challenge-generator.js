@@ -1,6 +1,7 @@
 /*
 File: js/challenge-generator.js
 Description: Random Challenge Generator with categories, history, and favorites
+Version: 2.0 - Enhanced security, error handling, and analytics
 */
 
 // DOM Elements
@@ -54,6 +55,60 @@ const challengeDatabase = [
 // --- Helper Functions ---
 
 /**
+ * Validates required DOM elements exist
+ */
+function validateElements() {
+    const required = [
+        generateButton, shareButton, copyButton, 
+        favoriteButton, challengeOutput
+    ];
+    
+    const missing = required.filter(el => !el);
+    if (missing.length > 0) {
+        console.error('Missing required DOM elements');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validates challenge database
+ */
+function validateDatabase() {
+    if (!Array.isArray(challengeDatabase) || challengeDatabase.length === 0) {
+        console.error('Challenge database is invalid or empty');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Sanitizes text to prevent XSS
+ * @param {string} text - Text to sanitize
+ * @returns {string} Sanitized text
+ */
+function sanitizeText(text) {
+    if (typeof text !== 'string') return '';
+    
+    // Remove any HTML tags and limit length
+    const cleaned = text.replace(/<[^>]*>/g, '').substring(0, 500);
+    return cleaned.trim();
+}
+
+/**
+ * Validates challenge object
+ * @param {Object} challenge - Challenge to validate
+ * @returns {boolean}
+ */
+function isValidChallenge(challenge) {
+    return challenge 
+        && typeof challenge.text === 'string' 
+        && challenge.text.length > 0
+        && typeof challenge.category === 'string'
+        && typeof challenge.platform === 'string';
+}
+
+/**
  * Gets challenges filtered by category
  */
 function getChallengesByCategory(category) {
@@ -67,31 +122,63 @@ function getChallengesByCategory(category) {
  * Gets a random challenge from filtered list
  */
 function getRandomChallenge(category) {
-    const filteredChallenges = getChallengesByCategory(category);
-    const randomIndex = Math.floor(Math.random() * filteredChallenges.length);
-    return filteredChallenges[randomIndex];
+    try {
+        const filteredChallenges = getChallengesByCategory(category);
+        
+        if (filteredChallenges.length === 0) {
+            throw new Error('No challenges found for this category');
+        }
+        
+        const randomIndex = Math.floor(Math.random() * filteredChallenges.length);
+        return filteredChallenges[randomIndex];
+    } catch (error) {
+        console.error('Random challenge error:', error);
+        return null;
+    }
 }
 
 /**
- * Displays a challenge with metadata
+ * Displays a challenge with metadata - SECURE VERSION
  */
 function displayChallenge(challenge) {
+    if (!isValidChallenge(challenge)) {
+        showAlert('Invalid challenge data', 'error');
+        return;
+    }
+    
     currentChallenge = challenge;
     
-    challengeOutput.innerHTML = `
-        <div>${challenge.text}</div>
-        <div class="challenge-meta">
-            <span class="challenge-tag">${challenge.category.toUpperCase()}</span>
-            <span class="challenge-tag">Best for: ${challenge.platform}</span>
-        </div>
-    `;
+    // SECURE: Use DOM creation instead of innerHTML
+    challengeOutput.innerHTML = ''; // Clear first
+    
+    const textDiv = document.createElement('div');
+    textDiv.textContent = challenge.text; // SAFE - uses textContent
+    textDiv.style.marginBottom = '1rem';
+    textDiv.style.fontSize = '1.1rem';
+    
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'challenge-meta';
+    
+    const categoryTag = document.createElement('span');
+    categoryTag.className = 'challenge-tag';
+    categoryTag.textContent = challenge.category.toUpperCase();
+    
+    const platformTag = document.createElement('span');
+    platformTag.className = 'challenge-tag';
+    platformTag.textContent = `Best for: ${challenge.platform}`;
+    
+    metaDiv.appendChild(categoryTag);
+    metaDiv.appendChild(platformTag);
+    
+    challengeOutput.appendChild(textDiv);
+    challengeOutput.appendChild(metaDiv);
     
     // Enable action buttons
     shareButton.disabled = false;
     copyButton.disabled = false;
     favoriteButton.disabled = false;
     
-    // Update URL
+    // Update URL safely
     updateURL(challenge);
     
     // Add to history
@@ -102,98 +189,156 @@ function displayChallenge(challenge) {
  * Generates a new challenge
  */
 function generateChallenge(preloadedChallenge = null) {
-    let challenge;
-    
-    if (preloadedChallenge) {
-        challenge = preloadedChallenge;
-    } else {
-        challenge = getRandomChallenge(currentCategory);
+    try {
+        let challenge;
+        
+        if (preloadedChallenge && isValidChallenge(preloadedChallenge)) {
+            challenge = preloadedChallenge;
+        } else {
+            challenge = getRandomChallenge(currentCategory);
+        }
+        
+        if (!challenge) {
+            showAlert('Failed to generate challenge', 'error');
+            return;
+        }
+        
+        displayChallenge(challenge);
+        showAlert('New challenge generated!', 'success');
+        trackEvent('challenge_generated', { category: currentCategory });
+    } catch (error) {
+        console.error('Generate challenge error:', error);
+        showAlert('Failed to generate challenge', 'error');
     }
-    
-    displayChallenge(challenge);
-    showAlert('New challenge generated!', 'success');
 }
 
 /**
- * Updates URL with current challenge
+ * Updates URL with current challenge - SAFE VERSION
  */
 function updateURL(challenge) {
-    const encoded = encodeURIComponent(challenge.text);
-    const newURL = `${window.location.pathname}?c=${encoded}`;
-    window.history.pushState({ challenge }, '', newURL);
+    try {
+        // Only store challenge ID or index, not full text
+        const challengeIndex = challengeDatabase.findIndex(c => c.text === challenge.text);
+        
+        if (challengeIndex !== -1) {
+            const newURL = `${window.location.pathname}?id=${challengeIndex}`;
+            window.history.pushState({ challenge }, '', newURL);
+        }
+    } catch (error) {
+        console.error('URL update error:', error);
+    }
 }
 
 /**
  * Adds challenge to history
  */
 function addToHistory(challenge) {
-    let history = loadFromMemory('challenge_history', []);
-    
-    // Avoid duplicates at the front
-    history = history.filter(h => h.text !== challenge.text);
-    
-    // Add to front
-    history.unshift(challenge);
-    
-    // Keep only last 10
-    if (history.length > 10) {
-        history = history.slice(0, 10);
+    try {
+        let history = loadFromMemory('challenge_history', []);
+        
+        // Validate and sanitize before saving
+        if (!isValidChallenge(challenge)) return;
+        
+        // Avoid duplicates at the front
+        history = history.filter(h => h.text !== challenge.text);
+        
+        // Add to front
+        history.unshift(challenge);
+        
+        // Keep only last 10
+        if (history.length > 10) {
+            history = history.slice(0, 10);
+        }
+        
+        saveToMemory('challenge_history', history);
+        renderHistory();
+    } catch (error) {
+        console.error('History add error:', error);
     }
-    
-    saveToMemory('challenge_history', history);
-    renderHistory();
 }
 
 /**
- * Renders history list
+ * Renders history list - SECURE VERSION
  */
 function renderHistory() {
-    const history = loadFromMemory('challenge_history', []);
-    
-    if (history.length === 0) {
-        historySection.style.display = 'none';
-        return;
-    }
-    
-    historySection.style.display = 'block';
-    
-    historyList.innerHTML = history.map((challenge, index) => `
-        <div class="history-item" data-index="${index}">
-            <strong>${challenge.text}</strong>
-            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                ${challenge.category.toUpperCase()} • ${challenge.platform}
-            </div>
-        </div>
-    `).join('');
-    
-    // Add click listeners
-    document.querySelectorAll('.history-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            const index = parseInt(e.currentTarget.dataset.index);
-            const challenge = history[index];
-            displayChallenge(challenge);
-            showAlert('Challenge loaded from history!', 'info');
+    try {
+        const history = loadFromMemory('challenge_history', []);
+        
+        if (!historySection || !historyList) return;
+        
+        if (history.length === 0) {
+            historySection.style.display = 'none';
+            return;
+        }
+        
+        historySection.style.display = 'block';
+        
+        // SECURE: Create DOM elements instead of innerHTML
+        historyList.innerHTML = ''; // Clear first
+        
+        history.forEach((challenge, index) => {
+            if (!isValidChallenge(challenge)) return;
+            
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.dataset.index = index;
+            item.style.cursor = 'pointer';
+            
+            const textStrong = document.createElement('strong');
+            textStrong.textContent = challenge.text; // SAFE
+            
+            const metaDiv = document.createElement('div');
+            metaDiv.style.marginTop = '0.5rem';
+            metaDiv.style.fontSize = '0.8rem';
+            metaDiv.style.color = 'var(--text-secondary)';
+            metaDiv.textContent = `${challenge.category.toUpperCase()} • ${challenge.platform}`;
+            
+            item.appendChild(textStrong);
+            item.appendChild(metaDiv);
+            
+            historyList.appendChild(item);
         });
-    });
+        
+        // Add click listeners
+        document.querySelectorAll('.history-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const index = parseInt(e.currentTarget.dataset.index);
+                const challenge = history[index];
+                if (isValidChallenge(challenge)) {
+                    displayChallenge(challenge);
+                    showAlert('Challenge loaded from history!', 'info');
+                    trackEvent('challenge_history_loaded');
+                }
+            });
+        });
+    } catch (error) {
+        console.error('History render error:', error);
+    }
 }
 
 /**
  * Adds challenge to favorites
  */
 function addToFavorites() {
-    if (!currentChallenge) return;
+    if (!currentChallenge || !isValidChallenge(currentChallenge)) return;
     
-    let favorites = loadFromMemory('challenge_favorites', []);
-    
-    // Check if already favorited
-    if (favorites.some(f => f.text === currentChallenge.text)) {
-        showAlert('Already in favorites!', 'info');
-        return;
+    try {
+        let favorites = loadFromMemory('challenge_favorites', []);
+        
+        // Check if already favorited
+        if (favorites.some(f => f.text === currentChallenge.text)) {
+            showAlert('Already in favorites!', 'info');
+            return;
+        }
+        
+        favorites.push(currentChallenge);
+        saveToMemory('challenge_favorites', favorites);
+        showAlert('Added to favorites!', 'success');
+        trackEvent('challenge_favorited', { category: currentChallenge.category });
+    } catch (error) {
+        console.error('Favorite error:', error);
+        showAlert('Failed to add to favorites', 'error');
     }
-    
-    favorites.push(currentChallenge);
-    saveToMemory('challenge_favorites', favorites);
-    showAlert('Added to favorites!', 'success');
 }
 
 /**
@@ -202,48 +347,63 @@ function addToFavorites() {
 async function shareChallenge() {
     if (!currentChallenge) return;
     
-    const shareURL = window.location.href;
-    const shareText = `Check out this viral challenge: "${currentChallenge.text}" - Try it yourself: ${shareURL}`;
-    
-    // Try Web Share API first (mobile friendly)
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: 'Viral Challenge',
-                text: shareText,
-                url: shareURL
-            });
-            showAlert('Challenge shared!', 'success');
-        } catch (err) {
-            // User cancelled or error occurred
-            if (err.name !== 'AbortError') {
-                copyToClipboard(shareText, shareButton);
+    try {
+        const shareURL = window.location.href;
+        const shareText = `Check out this viral challenge: "${currentChallenge.text}" - Try it yourself: ${shareURL}`;
+        
+        // Try Web Share API first (mobile friendly)
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Viral Challenge',
+                    text: shareText,
+                    url: shareURL
+                });
+                showAlert('Challenge shared!', 'success');
+                trackEvent('challenge_shared', { method: 'native' });
+            } catch (err) {
+                // User cancelled or error occurred
+                if (err.name !== 'AbortError') {
+                    await copyToClipboard(shareText, shareButton);
+                    trackEvent('challenge_shared', { method: 'clipboard' });
+                }
             }
+        } else {
+            // Fallback to clipboard
+            await copyToClipboard(shareText, shareButton);
+            trackEvent('challenge_shared', { method: 'clipboard' });
         }
-    } else {
-        // Fallback to clipboard
-        copyToClipboard(shareText, shareButton);
+    } catch (error) {
+        console.error('Share error:', error);
+        showAlert('Failed to share challenge', 'error');
     }
 }
 
 /**
- * Loads challenge from URL parameter
+ * Loads challenge from URL parameter - SECURE VERSION
  */
 function loadChallengeFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const challengeParam = params.get('c');
-
-    if (challengeParam) {
-        const loadedText = decodeURIComponent(challengeParam);
-        // Find the challenge in database or create a simple one
-        const challenge = challengeDatabase.find(c => c.text === loadedText) || {
-            text: loadedText,
-            category: 'all',
-            platform: 'All'
-        };
-        generateChallenge(challenge);
-        showAlert('Loaded challenge from shared link!', 'info');
-    } else {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const challengeId = params.get('id');
+        
+        if (challengeId) {
+            const id = parseInt(challengeId, 10);
+            
+            // Validate ID is within bounds
+            if (!isNaN(id) && id >= 0 && id < challengeDatabase.length) {
+                const challenge = challengeDatabase[id];
+                generateChallenge(challenge);
+                showAlert('Loaded challenge from shared link!', 'info');
+                trackEvent('challenge_loaded_from_url');
+                return;
+            }
+        }
+        
+        // If no valid URL param, generate random
+        generateChallenge();
+    } catch (error) {
+        console.error('URL load error:', error);
         generateChallenge();
     }
 }
@@ -252,20 +412,41 @@ function loadChallengeFromURL() {
  * Handles category filter changes
  */
 function handleCategoryChange(category) {
-    currentCategory = category;
-    
-    // Update active state
-    filterButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.category === category);
-    });
-    
-    // Generate new challenge with filter
-    generateChallenge();
+    try {
+        currentCategory = category;
+        
+        // Update active state
+        if (filterButtons && filterButtons.length > 0) {
+            filterButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+            });
+        }
+        
+        // Generate new challenge with filter
+        generateChallenge();
+        trackEvent('category_filter_changed', { category });
+    } catch (error) {
+        console.error('Category change error:', error);
+    }
+}
+
+/**
+ * Check if user is typing
+ */
+function isUserTyping() {
+    const activeTag = document.activeElement?.tagName;
+    return activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'BUTTON';
 }
 
 // --- Event Listeners and Initialization ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Validate setup
+    if (!validateElements() || !validateDatabase()) {
+        showAlert('Page initialization failed', 'error');
+        return;
+    }
+    
     // Load from URL or generate new
     loadChallengeFromURL();
     
@@ -282,6 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
     copyButton.addEventListener('click', () => {
         if (currentChallenge) {
             copyToClipboard(currentChallenge.text, copyButton);
+            trackEvent('challenge_copied');
         }
     });
     
@@ -289,25 +471,35 @@ document.addEventListener('DOMContentLoaded', () => {
     favoriteButton.addEventListener('click', addToFavorites);
     
     // Category filters
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const category = e.currentTarget.dataset.category;
-            handleCategoryChange(category);
+    if (filterButtons && filterButtons.length > 0) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const category = e.currentTarget.dataset.category;
+                if (category) {
+                    handleCategoryChange(category);
+                }
+            });
         });
-    });
+    }
     
     // Clear history button
-    clearHistoryButton.addEventListener('click', () => {
-        clearMemory('challenge_history');
-        renderHistory();
-        showAlert('History cleared!', 'success');
-    });
+    if (clearHistoryButton) {
+        clearHistoryButton.addEventListener('click', () => {
+            clearMemory('challenge_history');
+            renderHistory();
+            showAlert('History cleared!', 'success');
+            trackEvent('challenge_history_cleared');
+        });
+    }
     
     // Keyboard shortcut: Space to generate new
     document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'BUTTON') {
+        if (e.code === 'Space' && !isUserTyping()) {
             e.preventDefault();
             generateChallenge();
         }
     });
+    
+    // Track initial load
+    trackEvent('challenge_generator_loaded');
 });

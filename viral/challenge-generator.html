@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRIFTS | Random Challenge Generator - Viral</title>
-    <meta name="description" content="Instantly generate a fun, viral challenge idea for TikTok, Instagram Reels, or YouTube Shorts. Get trending now!">
+    <title>GRIFTS | Random Challenge Generator - Viral Content Ideas</title>
+    <meta name="description" content="Instantly generate fun, viral challenge ideas for TikTok, Instagram Reels, or YouTube Shorts. Get trending now with category filters!">
     
     <!-- SEO Meta Tags -->
     <meta name="keywords" content="viral challenge generator, TikTok challenges, Instagram Reels ideas, YouTube Shorts, content ideas, viral content">
@@ -47,6 +47,7 @@
             margin: 0 auto;
             text-align: center;
         }
+        
         #challenge-output {
             min-height: 150px;
             padding: 2rem;
@@ -64,6 +65,7 @@
             line-height: 1.4;
             color: var(--text-primary);
         }
+        
         .challenge-meta {
             display: flex;
             gap: 1rem;
@@ -71,6 +73,7 @@
             margin-top: 1rem;
             flex-wrap: wrap;
         }
+        
         .challenge-tag {
             font-size: 0.75rem;
             padding: 0.25rem 0.75rem;
@@ -80,12 +83,14 @@
             color: var(--accent-green);
             font-weight: normal;
         }
+        
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-sm);
+            gap: 0.75rem;
             margin-top: 1.5rem;
         }
+        
         .filter-group {
             display: flex;
             gap: 0.5rem;
@@ -93,6 +98,7 @@
             flex-wrap: wrap;
             margin-bottom: 1.5rem;
         }
+        
         .filter-btn {
             padding: 0.5rem 1rem;
             background: transparent;
@@ -102,20 +108,31 @@
             cursor: pointer;
             transition: all var(--transition-normal);
             font-size: 0.85rem;
+            font-family: inherit;
         }
+        
         .filter-btn.active {
             background: var(--accent-green);
             color: var(--bg-dark);
             border-color: var(--accent-green);
+            font-weight: 600;
         }
+        
         .filter-btn:hover {
             border-color: var(--accent-green);
         }
+        
+        .filter-btn:focus {
+            outline: 2px solid var(--accent-green);
+            outline-offset: 2px;
+        }
+        
         #history-section {
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 1px solid var(--border-color);
         }
+        
         .history-item {
             padding: 1rem;
             margin: 0.5rem 0;
@@ -126,8 +143,23 @@
             cursor: pointer;
             transition: background var(--transition-normal);
         }
+        
         .history-item:hover {
             background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .keyboard-hint {
+            background: rgba(0, 245, 160, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .keyboard-hint strong {
+            color: var(--accent-green);
         }
     </style>
     
@@ -178,7 +210,7 @@
         <header class="text-center" style="padding: 3rem 0 1rem;">
             <h1 style="font-size: 2.2rem; line-height: 1.2;">Random Challenge Generator</h1>
             <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
-                Need an idea for your next viral short-form video? Click the button for an instant, trending content challenge.
+                Need an idea for your next viral short-form video? Click the button for an instant, trending content challenge. <strong>Filter by category or get random ideas!</strong>
             </p>
         </header>
 
@@ -187,35 +219,94 @@
                 <h2>Get a Viral Challenge</h2>
                 
                 <div class="filter-group" role="group" aria-label="Challenge category filters">
-                    <button class="filter-btn active" data-category="all">All</button>
-                    <button class="filter-btn" data-category="dance">Dance</button>
-                    <button class="filter-btn" data-category="comedy">Comedy</button>
-                    <button class="filter-btn" data-category="educational">Educational</button>
-                    <button class="filter-btn" data-category="transformation">Transformation</button>
+                    <button class="filter-btn active" data-category="all" aria-label="Show all challenge categories">All</button>
+                    <button class="filter-btn" data-category="dance" aria-label="Filter dance challenges">Dance</button>
+                    <button class="filter-btn" data-category="comedy" aria-label="Filter comedy challenges">Comedy</button>
+                    <button class="filter-btn" data-category="educational" aria-label="Filter educational challenges">Educational</button>
+                    <button class="filter-btn" data-category="transformation" aria-label="Filter transformation challenges">Transformation</button>
                 </div>
+                
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Tip: Click a category to auto-generate challenges from that type
+                </p>
 
                 <div id="challenge-output" role="status" aria-live="polite">
                     Click 'Generate' to get your next content idea!
                 </div>
                 
                 <div class="action-buttons">
-                    <button id="generate-btn" class="btn btn-primary">Generate Challenge</button>
-                    <button id="share-btn" class="btn btn-secondary" disabled aria-label="Share challenge via Web Share or copy to clipboard">Share Challenge</button>
-                    <button id="copy-btn" class="btn btn-secondary" disabled aria-label="Copy challenge text">Copy Text</button>
-                    <button id="favorite-btn" class="btn btn-secondary" disabled aria-label="Add to favorites">Add to Favorites</button>
+                    <button id="generate-btn" class="btn btn-primary" aria-label="Generate new challenge">
+                        Generate Challenge
+                    </button>
+                    <button id="share-btn" class="btn btn-secondary" disabled aria-label="Share challenge via Web Share or copy to clipboard">
+                        Share Challenge
+                    </button>
+                    <button id="copy-btn" class="btn btn-secondary" disabled aria-label="Copy challenge text to clipboard">
+                        Copy Text
+                    </button>
+                    <button id="favorite-btn" class="btn btn-secondary" disabled aria-label="Add challenge to favorites">
+                        Add to Favorites
+                    </button>
+                </div>
+                
+                <div class="keyboard-hint">
+                    <strong>Keyboard Shortcut:</strong> Press <strong>Space</strong> to generate a new challenge
                 </div>
 
                 <div id="history-section" style="display: none;">
                     <h3 style="font-size: 1rem; margin-bottom: 1rem;">Recent Challenges</h3>
                     <div id="history-list"></div>
-                    <button id="clear-history-btn" class="btn btn-sm btn-secondary" style="margin-top: 1rem;">Clear History</button>
+                    <button id="clear-history-btn" class="btn btn-sm btn-secondary" style="margin-top: 1rem;" aria-label="Clear challenge history">
+                        Clear History
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="ad-space" style="border: 1px dashed var(--accent-blue);" role="complementary" aria-label="Advertisement">
-            AD SPOT: Social Media Scheduler / TikTok Analytics Tools
+            AD SPOT: Social Media Scheduler / TikTok Analytics Tools / Content Creation Courses
         </div>
+        
+        <!-- Tips Section -->
+        <section class="card" style="margin-top: var(--spacing-3); max-width: 800px; margin-left: auto; margin-right: auto;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">How to Use Challenge Ideas</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8; text-align: left;">
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">Add Your Twist:</strong> Don't copy challenges exactly. Add your unique personality, humor, or perspective to make it yours.
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">Check Trending Sounds:</strong> Pair your challenge with a trending audio track for maximum reach. Timing is everything.
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">Tag Strategic Accounts:</strong> When sharing, tag creators in your niche who might duet or reshare your content.
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">Post Multiple Versions:</strong> Try the same challenge idea 2-3 times with different angles. The algorithm rewards persistence.
+                </p>
+                <p>
+                    <strong style="color: var(--accent-green);">Share & Challenge Others:</strong> Use the Share button to challenge friends or followers directly. User-generated content spreads faster.
+                </p>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section class="card" style="margin-top: var(--spacing-2); max-width: 800px; margin-left: auto; margin-right: auto;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Challenge Generator FAQ</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8; text-align: left;">
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">How do I share a specific challenge?</strong><br>
+                    Click "Share Challenge" to use native sharing on mobile, or copy the unique URL that's generated for each challenge.
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">Can I save challenges for later?</strong><br>
+                    Yes! Click "Add to Favorites" to save challenges. Your recent challenges are also auto-saved in History.
+                </p>
+                <p>
+                    <strong style="color: var(--accent-green);">What if I don't like the challenge?</strong><br>
+                    Just click "Generate Challenge" again or use category filters to find ideas that match your content style.
+                </p>
+            </div>
+        </section>
     </main>
 
     <footer role="contentinfo">
@@ -223,9 +314,9 @@
             <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
             <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
             <nav class="footer-links" aria-label="Footer navigation">
-                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
-                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
-                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">Privacy (Coming Soon)</a>
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">Contact (Coming Soon)</a>
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">About (Coming Soon)</a>
             </nav>
             <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
