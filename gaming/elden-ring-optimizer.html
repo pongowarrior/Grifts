@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elden Ring Build Optimizer - Free Character Planner | GRIFTS</title>
+    <meta name="description" content="Free Elden Ring build calculator with stat optimization, weapon scaling analysis, soft cap detection, and vigor breakpoints. Plan your perfect Tarnished build.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="elden ring build calculator, elden ring stat optimizer, elden ring weapon scaling, elden ring soft caps, elden ring build planner, tarnished build">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://grifts.co.uk/gaming/elden-ring-optimizer.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/gaming/elden-ring-optimizer.html">
+    <meta property="og:title" content="Elden Ring Build Optimizer - Free Character Planner">
+    <meta property="og:description" content="Optimize your Elden Ring character with weapon scaling analysis, soft cap detection, and stat allocation planning.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Elden Ring Build Optimizer - GRIFTS">
+    <meta name="twitter:description" content="Plan your perfect Tarnished with stat optimization and weapon scaling.">
+    <meta name="twitter:image" content="https://grifts.co.uk/assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00f5a0">
+
+    <!-- Stylesheet -->
+    <link rel="preload" href="../css/style.css" as="style">
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Scripts -->
+    <script src="../js/common.js" defer></script>
+    <script src="../js/elden-ring-optimizer.js" defer></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE21EBPHDE');
+    </script>
+</head>
+<body>
+    <!-- Skip to main content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html" aria-current="page">Gaming</a></li>
+                <li><a href="../influencer/index.html">Influencer</a></li>
+                <li><a href="../utilities/index.html">Utilities</a></li>
+                <li><a href="../viral/index.html">Viral</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        
+        <!-- Page Header -->
+        <header class="text-center" style="margin: 2rem 0;">
+            <h1>⚔️ Elden Ring Build Optimizer</h1>
+            <p class="hero-subtitle" style="max-width: 700px; margin: 1rem auto;">
+                Plan your perfect Tarnished with precision stat allocation, weapon scaling analysis, and soft cap detection. 
+                <strong>Free, fast, and built by the community.</strong>
+            </p>
+        </header>
+
+        <!-- Ad Space -->
+        <div class="ad-space card" role="complementary" aria-label="Advertisement">
+            Advertisement (Google AdSense - Gaming Peripherals)
+        </div>
+
+        <!-- Quick Class Selector -->
+        <section class="card" style="margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 1rem;">🎭 Starting Class</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem;">
+                <button class="btn btn-secondary btn-sm class-btn" data-class="vagabond">Vagabond</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="warrior">Warrior</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="hero">Hero</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="bandit">Bandit</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="astrologer">Astrologer</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="prophet">Prophet</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="samurai">Samurai</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="prisoner">Prisoner</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="confessor">Confessor</button>
+                <button class="btn btn-secondary btn-sm class-btn" data-class="wretch">Wretch</button>
+            </div>
+            <p class="hint" style="margin-top: 1rem; text-align: center;">
+                Select your starting class to see base stats, or start from scratch with Wretch
+            </p>
+        </section>
+
+        <!-- Main Calculator Layout -->
+        <div class="tool-content">
+            
+            <!-- Stats Input Card -->
+            <div class="card">
+                <h2 style="margin-bottom: 1.5rem;">📊 Character Stats</h2>
+                
+                <!-- Target Level -->
+                <div class="input-group">
+                    <label for="target-level">
+                        Target Level
+                        <span id="current-level-display" style="color: var(--accent-green); font-weight: 900; margin-left: 0.5rem;">1</span>
+                    </label>
+                    <input type="number" id="target-level" value="150" min="1" max="713" step="1" 
+                           placeholder="150" aria-describedby="target-level-hint">
+                    <p id="target-level-hint" class="hint">Common PvP meta: 125-150 | Co-op: 150 | Max: 713</p>
+                </div>
+
+                <!-- Vigor -->
+                <div class="input-group">
+                    <label for="vigor">
+                        Vigor (HP)
+                        <span class="stat-value" id="vigor-value">10</span>
+                        <span class="soft-cap-indicator" id="vigor-cap"></span>
+                    </label>
+                    <input type="range" id="vigor" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: var(--accent-green);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.6; margin-top: 0.25rem;">
+                        <span>1</span>
+                        <span>40 (1st cap)</span>
+                        <span>60 (2nd cap)</span>
+                        <span>99</span>
+                    </div>
+                    <p id="vigor-hp" class="hint" style="color: var(--accent-green); font-weight: 600;">HP: 0</p>
+                </div>
+
+                <!-- Mind -->
+                <div class="input-group">
+                    <label for="mind">
+                        Mind (FP)
+                        <span class="stat-value" id="mind-value">10</span>
+                        <span class="soft-cap-indicator" id="mind-cap"></span>
+                    </label>
+                    <input type="range" id="mind" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: var(--accent-blue);">
+                    <p id="mind-fp" class="hint" style="color: var(--accent-blue); font-weight: 600;">FP: 0</p>
+                </div>
+
+                <!-- Endurance -->
+                <div class="input-group">
+                    <label for="endurance">
+                        Endurance (Stamina)
+                        <span class="stat-value" id="endurance-value">10</span>
+                        <span class="soft-cap-indicator" id="endurance-cap"></span>
+                    </label>
+                    <input type="range" id="endurance" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: var(--accent-green);">
+                    <p id="endurance-stam" class="hint" style="font-weight: 600;">Stamina: 0 | Equip Load: 0</p>
+                </div>
+
+                <!-- Strength -->
+                <div class="input-group">
+                    <label for="strength">
+                        Strength
+                        <span class="stat-value" id="strength-value">10</span>
+                        <span class="soft-cap-indicator" id="strength-cap"></span>
+                    </label>
+                    <input type="range" id="strength" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: #ff6b6b;">
+                </div>
+
+                <!-- Dexterity -->
+                <div class="input-group">
+                    <label for="dexterity">
+                        Dexterity
+                        <span class="stat-value" id="dexterity-value">10</span>
+                        <span class="soft-cap-indicator" id="dexterity-cap"></span>
+                    </label>
+                    <input type="range" id="dexterity" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: #ffa500;">
+                </div>
+
+                <!-- Intelligence -->
+                <div class="input-group">
+                    <label for="intelligence">
+                        Intelligence
+                        <span class="stat-value" id="intelligence-value">10</span>
+                        <span class="soft-cap-indicator" id="intelligence-cap"></span>
+                    </label>
+                    <input type="range" id="intelligence" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: #00d9f5;">
+                </div>
+
+                <!-- Faith -->
+                <div class="input-group">
+                    <label for="faith">
+                        Faith
+                        <span class="stat-value" id="faith-value">10</span>
+                        <span class="soft-cap-indicator" id="faith-cap"></span>
+                    </label>
+                    <input type="range" id="faith" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: #ffd700;">
+                </div>
+
+                <!-- Arcane -->
+                <div class="input-group">
+                    <label for="arcane">
+                        Arcane
+                        <span class="stat-value" id="arcane-value">10</span>
+                        <span class="soft-cap-indicator" id="arcane-cap"></span>
+                    </label>
+                    <input type="range" id="arcane" min="1" max="99" value="10" 
+                           style="width: 100%; accent-color: #9b59b6;">
+                </div>
+
+                <button class="btn btn-primary btn-block" id="calculate-btn" style="margin-top: 2rem;">
+                    Optimize Build
+                </button>
+                
+                <button class="btn btn-secondary btn-block" id="reset-btn" style="margin-top: 0.5rem;">
+                    Reset Stats
+                </button>
+            </div>
+
+            <!-- Results Card -->
+            <div class="card result-card" id="results-card">
+                <h2 style="margin-bottom: 1.5rem;">📈 Build Analysis</h2>
+                
+                <!-- Level Summary -->
+                <div style="background: rgba(0, 245, 160, 0.1); border: 2px solid var(--accent-green); 
+                            border-radius: var(--radius-md); padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">CHARACTER LEVEL</p>
+                    <p id="result-level" style="font-size: 3rem; font-weight: 900; color: var(--accent-green); 
+                                             line-height: 1; margin: 0;">1</p>
+                    <p id="points-remaining" style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">Points Remaining: 0</p>
+                </div>
+
+                <!-- Core Stats Summary -->
+                <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">💪 Core Stats</h3>
+                <div class="stats-breakdown">
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">❤️ Total HP</span>
+                        <strong id="result-hp">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">💠 Total FP</span>
+                        <strong id="result-fp">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; 
+                                                  border-bottom: 1px solid var(--border-color);">
+                        <span style="opacity: 0.9;">⚡ Total Stamina</span>
+                        <strong id="result-stamina">0</strong>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                        <span style="opacity: 0.9;">🎒 Equip Load</span>
+                        <strong id="result-equip">0</strong>
+                    </div>
+                </div>
+
+                <!-- Soft Cap Warnings -->
+                <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">⚠️ Soft Cap Analysis</h3>
+                <div id="soft-cap-warnings" style="background: rgba(0, 217, 245, 0.1); border-left: 3px solid var(--accent-blue); 
+                                                 padding: 1rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                    <p style="margin: 0; opacity: 0.8;">Optimize your stats to see soft cap warnings...</p>
+                </div>
+
+                <!-- Optimization Tips -->
+                <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">💡 Optimization Tips</h3>
+                <div id="tips-container" style="background: rgba(0, 245, 160, 0.05); border-left: 3px solid var(--accent-green); 
+                                                 padding: 1rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                    <!-- Tips will be dynamically inserted here -->
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1.5rem;">
+                    <button class="btn btn-sm btn-secondary" id="copy-build-btn">
+                        📋 Copy Build
+                    </button>
+                    <button class="btn btn-sm btn-secondary" id="share-build-btn">
+                        🔗 Share URL
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Weapon Scaling Calculator -->
+        <section class="card" style="margin-top: 2rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <h2 style="margin-bottom: 1rem;">⚔️ Weapon Scaling Calculator</h2>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">
+                Calculate weapon damage with your current stats and weapon scaling grades.
+            </p>
+            
+            <div style="display: grid; gap: 1rem;">
+                <div class="input-group">
+                    <label for="weapon-base-damage">Weapon Base Damage</label>
+                    <input type="number" id="weapon-base-damage" value="100" min="0" placeholder="100">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem;">
+                    <div class="input-group">
+                        <label for="str-scaling">STR Scaling</label>
+                        <select id="str-scaling" style="padding: 0.5rem; background: var(--bg-dark); 
+                                                        border: 1px solid var(--border-color); color: var(--text-primary); 
+                                                        border-radius: var(--radius-sm);">
+                            <option value="0">-</option>
+                            <option value="0.25">E</option>
+                            <option value="0.5">D</option>
+                            <option value="0.75">C</option>
+                            <option value="1.0">B</option>
+                            <option value="1.4">A</option>
+                            <option value="1.75">S</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="dex-scaling">DEX Scaling</label>
+                        <select id="dex-scaling" style="padding: 0.5rem; background: var(--bg-dark); 
+                                                        border: 1px solid var(--border-color); color: var(--text-primary); 
+                                                        border-radius: var(--radius-sm);">
+                            <option value="0">-</option>
+                            <option value="0.25">E</option>
+                            <option value="0.5">D</option>
+                            <option value="0.75">C</option>
+                            <option value="1.0">B</option>
+                            <option value="1.4">A</option>
+                            <option value="1.75">S</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="int-scaling">INT Scaling</label>
+                        <select id="int-scaling" style="padding: 0.5rem; background: var(--bg-dark); 
+                                                        border: 1px solid var(--border-color); color: var(--text-primary); 
+                                                        border-radius: var(--radius-sm);">
+                            <option value="0">-</option>
+                            <option value="0.25">E</option>
+                            <option value="0.5">D</option>
+                            <option value="0.75">C</option>
+                            <option value="1.0">B</option>
+                            <option value="1.4">A</option>
+                            <option value="1.75">S</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="fth-scaling">FTH Scaling</label>
+                        <select id="fth-scaling" style="padding: 0.5rem; background: var(--bg-dark); 
+                                                        border: 1px solid var(--border-color); color: var(--text-primary); 
+                                                        border-radius: var(--radius-sm);">
+                            <option value="0">-</option>
+                            <option value="0.25">E</option>
+                            <option value="0.5">D</option>
+                            <option value="0.75">C</option>
+                            <option value="1.0">B</option>
+                            <option value="1.4">A</option>
+                            <option value="1.75">S</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="arc-scaling">ARC Scaling</label>
+                        <select id="arc-scaling" style="padding: 0.5rem; background: var(--bg-dark); 
+                                                        border: 1px solid var(--border-color); color: var(--text-primary); 
+                                                        border-radius: var(--radius-sm);">
+                            <option value="0">-</option>
+                            <option value="0.25">E</option>
+                            <option value="0.5">D</option>
+                            <option value="0.75">C</option>
+                            <option value="1.0">B</option>
+                            <option value="1.4">A</option>
+                            <option value="1.75">S</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" id="calc-weapon-btn">
+                    Calculate Weapon Damage
+                </button>
+                
+                <div id="weapon-result" style="display: none; text-align: center; padding: 1.5rem; 
+                                               background: rgba(255, 107, 107, 0.1); border: 2px solid #ff6b6b; 
+                                               border-radius: var(--radius-md); margin-top: 1rem;">
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">TOTAL WEAPON DAMAGE</p>
+                    <p id="weapon-total-damage" style="font-size: 2.5rem; font-weight: 900; color: #ff6b6b; 
+                                                        line-height: 1; margin: 0;">0</p>
+                    <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">
+                        Base: <span id="weapon-base-display">0</span> + Scaling: <span id="weapon-scaling-display">0</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="card" style="margin-top: 2rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <h2 style="margin-bottom: 1rem;">ℹ️ Elden Ring Soft Caps Guide</h2>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">📊 Soft Cap Breakdown</h3>
+            <ul style="line-height: 1.8; padding-left: 1.5rem;">
+                <li><strong>Vigor:</strong> 40 (1450 HP) → 60 (1900 HP) → Hard cap at 99</li>
+                <li><strong>Mind:</strong> 55 (FP 220) → Hard cap at 99</li>
+                <li><strong>Endurance:</strong> 50 (Stamina 155) → Hard cap at 99</li>
+                <li><strong>Strength:</strong> 20 → 55 → 80 (damage scaling caps)</li>
+                <li><strong>Dexterity:</strong> 20 → 55 → 80 (damage scaling caps)</li>
+                <li><strong>Intelligence:</strong> 20 → 50 → 80 (spell/weapon scaling)</li>
+                <li><strong>Faith:</strong> 20 → 50 → 80 (spell/weapon scaling)</li>
+                <li><strong>Arcane:</strong> 20 → 50 → 80 (item discovery, bleed/poison)</li>
+            </ul>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">💡 Build Planning Tips</h3>
+            <ul style="line-height: 1.8; padding-left: 1.5rem;">
+                <li>For PvP (meta 125-150): Prioritize Vigor (40-60) first for survivability</li>
+                <li>Two-handing weapons gives you 1.5x STR bonus (great for STR builds)</li>
+                <li>Quality builds (STR+DEX) shine at higher levels (150+)</li>
+                <li>Pure caster builds: 60 INT/FTH for maximum spell power</li>
+                <li>Endurance hard caps at 50 for stamina, but equip load continues to 99</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <span style="opacity: 0.5; cursor: not-allowed;">Privacy (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">Contact (Coming Soon)</span>
+                <span style="opacity: 0.5; cursor: not-allowed;">About (Coming Soon)</span>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
+        </div>
+    </footer>
+
+</body>
+</html>

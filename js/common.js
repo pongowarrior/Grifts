@@ -224,17 +224,25 @@ function displayNextAlert() {
         info: 'ℹ️'
     };
     
-    alertDiv.innerHTML = `
-        <span aria-hidden="true">${icons[type] || icons.info}</span>
-        <span>${sanitizeHTML(message)}</span>
-    `;
-    
+    // Create Icon Span
+    const iconSpan = document.createElement('span');
+    iconSpan.setAttribute('aria-hidden', 'true');
+    iconSpan.textContent = icons[type] || icons.info;
+
+    // Create Message Span and set message via textContent (SECURE)
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+
+    // Assemble the alertDiv
+    alertDiv.append(iconSpan, messageSpan);
+
     const colors = {
         success: { bg: 'rgba(0, 245, 160, 0.2)', border: 'var(--accent-green)', text: 'var(--accent-green)' },
         error: { bg: 'rgba(255, 0, 0, 0.2)', border: '#ff0000', text: '#ff6b6b' },
         warning: { bg: 'rgba(255, 165, 0, 0.2)', border: '#ffa500', text: '#ffc266' },
         info: { bg: 'rgba(0, 217, 245, 0.2)', border: 'var(--accent-blue)', text: 'var(--accent-blue)' }
     };
+
     
     const style = colors[type] || colors.info;
     
@@ -428,22 +436,14 @@ function isEmpty(str) {
  * @param {number} max - Maximum value
  * @returns {boolean}
  */
+
 function validateRange(num, min, max) {
+    if (num === null || num === undefined) return false;
+
     const n = Number(num);
     return !isNaN(n) && n >= min && n <= max;
 }
 
-/**
- * Sanitize HTML string (prevent XSS)
- * @param {string} str - String to sanitize
- * @returns {string}
- */
-function sanitizeHTML(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
 
 // ============================================================================
 // 6. ID AND STRING UTILITIES
@@ -575,14 +575,22 @@ function showLoading(message = 'Loading...') {
                     animation: spin 0.8s linear infinite;
                     margin: 0 auto 1.5rem;
                 "></div>
-                <p style="color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">${sanitizeHTML(message)}</p>
+                <p id="loader-message-content" style="color: var(--text-primary); font-size: 1.1rem; font-weight: 600;"></p>
             </div>
         </div>
     `;
     
     document.body.appendChild(loader);
+    
+    // SECURELY insert message using textContent after appending the loader
+    const messageElement = document.getElementById('loader-message-content');
+    if (messageElement) {
+        messageElement.textContent = message;
+    }
+    
     document.body.style.overflow = 'hidden';
 }
+
 
 /**
  * Hide loading overlay
@@ -722,13 +730,18 @@ function initMobileMenu() {
     hamburger.className = 'mobile-menu-toggle';
     hamburger.setAttribute('aria-label', 'Toggle navigation menu');
     hamburger.setAttribute('aria-expanded', 'false');
-    hamburger.innerHTML = `
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-    `;
+
+    const createLine = () => {
+        const span = document.createElement('span');
+        span.className = 'hamburger-line';
+        return span;
+    };
+
+    // Append the three lines using the helper function
+    hamburger.append(createLine(), createLine(), createLine());
     
     nav.insertBefore(hamburger, navLinks);
+
     
     // Toggle menu function
     const toggleMenu = () => {
