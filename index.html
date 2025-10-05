@@ -34,6 +34,10 @@
     
     <!-- Theme Color -->
     <meta name="theme-color" content="#00f5a0">
+
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
     
     <!-- Stylesheet -->
     <link rel="preload" href="css/style.css" as="style">
@@ -44,14 +48,32 @@
     
     <!-- Structured Data (JSON-LD) for SEO -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "GRIFTS",
-      "url": "https://grifts.co.uk/",
-      "description": "Free, browser-based tools for content creators, gamers, and hustlers"
-    }
-    </script>
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "GRIFTS",
+  "url": "https://grifts.co.uk/",
+  "description": "Free, browser-based tools for content creators, gamers, and hustlers",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Password Generator",
+    "Meme Captioner",
+    "Compatibility Calculator",
+    "Headline Generator",
+    "Resume Builder",
+    "QR Code Generator",
+    "Unit Converter",
+    "Quiz Generator"
+  ]
+}
+</script>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>

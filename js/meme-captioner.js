@@ -45,6 +45,7 @@ let recentMemes = []; // Store last 3 memes for quick access
 const MAX_RECENT = 3;
 
 // --- Meme Templates (Popular formats) ---
+// Note: External URLs may have CORS restrictions
 const templates = [
     { name: 'Drake', url: 'https://i.imgflip.com/30b1gx.jpg' },
     { name: 'Distracted', url: 'https://i.imgflip.com/1ur9b0.jpg' },
@@ -110,7 +111,6 @@ function setupEventListeners() {
 // --- 3. Slider Value Updates ---
 function updateSliderValue(e) {
     const slider = e.target;
-    const valueDisplay = document.getElementById(slider.id.replace('-', '-') + '-value');
     
     if (slider.id === 'font-size') {
         sizeValue.textContent = slider.value + '%';
@@ -139,7 +139,9 @@ function handleImageUpload(event) {
         return;
     }
 
-    showLoading('Loading image...');
+    if (typeof showLoading === 'function') {
+        showLoading('Loading image...');
+    }
     
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -147,17 +149,23 @@ function handleImageUpload(event) {
         img.onload = () => {
             currentImage = img;
             drawMeme();
-            hideLoading();
+            if (typeof hideLoading === 'function') {
+                hideLoading();
+            }
             showAlert('Image loaded successfully!', 'success');
         };
         img.onerror = () => {
-            hideLoading();
+            if (typeof hideLoading === 'function') {
+                hideLoading();
+            }
             showAlert('Failed to load image. Try a different file.', 'error');
         };
         img.src = e.target.result;
     };
     reader.onerror = () => {
-        hideLoading();
+        if (typeof hideLoading === 'function') {
+            hideLoading();
+        }
         showAlert('Failed to read file', 'error');
     };
     reader.readAsDataURL(file);
@@ -188,20 +196,27 @@ function toggleTemplateSelector() {
 }
 
 function loadTemplate(url) {
-    showLoading('Loading template...');
+    if (typeof showLoading === 'function') {
+        showLoading('Loading template...');
+    }
     
     const img = new Image();
-    img.crossOrigin = 'anonymous'; // For external images
+    img.crossOrigin = 'anonymous'; // Attempt CORS for external images
     img.onload = () => {
         currentImage = img;
         drawMeme();
-        hideLoading();
+        if (typeof hideLoading === 'function') {
+            hideLoading();
+        }
         toggleTemplateSelector();
         showAlert('Template loaded!', 'success');
     };
     img.onerror = () => {
-        hideLoading();
-        showAlert('Failed to load template. Using backup URL.', 'error');
+        if (typeof hideLoading === 'function') {
+            hideLoading();
+        }
+        showAlert('Template failed to load due to CORS restrictions. Upload your own image instead.', 'error');
+        toggleTemplateSelector();
     };
     img.src = url;
 }
@@ -213,9 +228,9 @@ function setupCanvas() {
     canvas.height = 600;
     
     // Draw placeholder
-    ctx.fillStyle = var('--bg-card') || '#1a1a1a';
+    ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = var('--text-secondary') || '#999';
+    ctx.fillStyle = '#999';
     ctx.font = '24px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('Upload an image or select a template', canvas.width / 2, canvas.height / 2);
@@ -235,6 +250,10 @@ function drawMeme() {
     canvas.width = currentImage.width;
     canvas.height = currentImage.height;
     canvasArea.style.maxWidth = `${currentImage.width}px`;
+    
+    // Make canvas responsive
+    canvas.style.maxWidth = '100%';
+    canvas.style.height = 'auto';
 
     // Draw image
     ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
@@ -338,21 +357,24 @@ function copyToClipboardImage() {
         return;
     }
 
+    // Check for full Clipboard API support
+    if (!navigator.clipboard || !navigator.clipboard.write || !window.ClipboardItem) {
+        showAlert('Image copying not supported in your browser. Use download instead.', 'error');
+        return;
+    }
+
     canvas.toBlob((blob) => {
-        if (navigator.clipboard && navigator.clipboard.write) {
-            const item = new ClipboardItem({ 'image/png': blob });
-            navigator.clipboard.write([item]).then(() => {
-                showAlert('Meme copied to clipboard!', 'success');
-            }).catch(() => {
-                showAlert('Failed to copy. Try downloading instead.', 'error');
-            });
-        } else {
-            showAlert('Clipboard not supported. Use download instead.', 'error');
-        }
+        const item = new ClipboardItem({ 'image/png': blob });
+        navigator.clipboard.write([item]).then(() => {
+            showAlert('Meme copied to clipboard!', 'success');
+        }).catch((err) => {
+            console.error('Copy failed:', err);
+            showAlert('Failed to copy. Try downloading instead.', 'error');
+        });
     });
 }
 
-// --- 11. Share to Twitter ---
+// --- 11. Share to Twitter (continued) ---
 function shareToTwitter() {
     if (!currentImage) {
         showAlert('Create a meme first', 'error');
@@ -405,13 +427,17 @@ function addToRecent(dataUrl) {
     if (recentMemes.length > MAX_RECENT) {
         recentMemes.pop();
     }
-    saveToMemory('recent-memes', recentMemes);
+    if (typeof saveToMemory === 'function') {
+        saveToMemory('recent-memes', recentMemes);
+    }
 }
 
 function loadRecent() {
-    const stored = loadFromMemory('recent-memes', []);
-    if (Array.isArray(stored)) {
-        recentMemes = stored;
+    if (typeof loadFromMemory === 'function') {
+        const stored = loadFromMemory('recent-memes', []);
+        if (Array.isArray(stored)) {
+            recentMemes = stored;
+        }
     }
 }
 
@@ -454,33 +480,37 @@ function setupKeyboardShortcuts() {
 
 // --- 15. Auto-save Settings ---
 function saveSettings() {
-    const settings = {
-        fontSize: fontSizeSlider.value,
-        outlineWidth: outlineWidthSlider.value,
-        font: fontSelect.value,
-        textColor: textColorPicker.value,
-        outlineColor: outlineColorPicker.value,
-        watermark: watermarkToggle.checked,
-        quality: qualitySlider.value
-    };
-    saveToMemory('meme-settings', settings);
+    if (typeof saveToMemory === 'function') {
+        const settings = {
+            fontSize: fontSizeSlider.value,
+            outlineWidth: outlineWidthSlider.value,
+            font: fontSelect.value,
+            textColor: textColorPicker.value,
+            outlineColor: outlineColorPicker.value,
+            watermark: watermarkToggle.checked,
+            quality: qualitySlider.value
+        };
+        saveToMemory('meme-settings', settings);
+    }
 }
 
 function loadSettings() {
-    const settings = loadFromMemory('meme-settings', null);
-    if (settings) {
-        fontSizeSlider.value = settings.fontSize || 8;
-        outlineWidthSlider.value = settings.outlineWidth || 0.8;
-        fontSelect.value = settings.font || 'Impact';
-        textColorPicker.value = settings.textColor || '#ffffff';
-        outlineColorPicker.value = settings.outlineColor || '#000000';
-        watermarkToggle.checked = settings.watermark !== false;
-        qualitySlider.value = settings.quality || 90;
-        
-        // Update displays
-        sizeValue.textContent = fontSizeSlider.value + '%';
-        outlineValue.textContent = outlineWidthSlider.value + '%';
-        qualityValue.textContent = qualitySlider.value + '%';
+    if (typeof loadFromMemory === 'function') {
+        const settings = loadFromMemory('meme-settings', null);
+        if (settings) {
+            fontSizeSlider.value = settings.fontSize || 8;
+            outlineWidthSlider.value = settings.outlineWidth || 0.8;
+            fontSelect.value = settings.font || 'Impact';
+            textColorPicker.value = settings.textColor || '#ffffff';
+            outlineColorPicker.value = settings.outlineColor || '#000000';
+            watermarkToggle.checked = settings.watermark !== false;
+            qualitySlider.value = settings.quality || 90;
+            
+            // Update displays
+            sizeValue.textContent = fontSizeSlider.value + '%';
+            outlineValue.textContent = outlineWidthSlider.value + '%';
+            qualityValue.textContent = qualitySlider.value + '%';
+        }
     }
 }
 
@@ -520,10 +550,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAutoSave();
     
     // Show helpful hint on first load
-    if (!loadFromMemory('meme-visited', false)) {
-        setTimeout(() => {
-            showAlert('Tip: Try our meme templates or upload your own image!', 'info');
-            saveToMemory('meme-visited', true);
-        }, 1000);
+    if (typeof loadFromMemory === 'function' && typeof saveToMemory === 'function') {
+        if (!loadFromMemory('meme-visited', false)) {
+            setTimeout(() => {
+                showAlert('Tip: Try our meme templates or upload your own image!', 'info');
+                saveToMemory('meme-visited', true);
+            }, 1000);
+        }
     }
 });

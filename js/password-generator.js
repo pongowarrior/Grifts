@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Option change listener (regenerates on change)
     const optionsElements = document.querySelectorAll('#generator-card input');
-    optionsElements.forEach(el => el.addEventListener('change', debounce(generatePassword, 200))); // Debounce prevents rapid fire
+    optionsElements.forEach(el => el.addEventListener('change', typeof debounce === 'function' ? debounce(generatePassword, 200) : generatePassword));// Debounce prevents rapid fire
 
     // 4. Copy to Clipboard listener
     copyButton.addEventListener('click', () => {

@@ -5,7 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIFTS | Meme Captioner - Viral</title>
     <meta name="description" content="Instantly add top/bottom text to any image, drag, resize, and download the perfect meme.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Meme Captioner | GRIFTS">
+    <meta property="og:description" content="Create viral memes in seconds. Add text to images with no design skills needed.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grifts.co.uk/viral/meme-captioner.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Meme Captioner | GRIFTS">
+    <meta name="twitter:description" content="Create viral memes in seconds. Add text to images instantly.">
+
+    <link rel="canonical" href="https://grifts.co.uk/viral/meme-captioner.html">
+    
     <link rel="stylesheet" href="../css/style.css">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Meme Captioner",
+      "url": "https://grifts.co.uk/viral/meme-captioner.html",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
     <style>
         /* CSS for the Meme Captioner */
         .canvas-area {
@@ -226,7 +257,7 @@
         </div>
     </nav>
 
-    <main class="container">
+    <main class="container" role="main">
         <header style="text-align: center; padding: 3rem 0 1rem;">
             <h1 style="font-size: 2.2rem;">🖼️ Meme Captioner</h1>
             <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
@@ -386,14 +417,5 @@
     
     <script src="../js/common.js" defer></script>
     <script src="../js/meme-captioner.js" defer></script>
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE21EBPHDE"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-SE21EBPHDE');
-    </script>
 </body>
 </html>
