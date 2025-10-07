@@ -3,23 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRIFTS | Meme Captioner - Viral</title>
-    <meta name="description" content="Instantly add top/bottom text to any image, drag, resize, and download the perfect meme.">
+    <title>GRIFTS | Meme Captioner - Create Viral Content</title>
+    <meta name="description" content="Instantly add top/bottom text to any image, drag, resize, and download the perfect viral meme.">
     
-    <!-- Open Graph -->
+    <meta name="keywords" content="meme maker, meme captioner, top text bottom text, viral image editor, free online meme generator">
+    <link rel="canonical" href="https://grifts.co.uk/viral/meme-captioner.html">
     <meta property="og:title" content="Meme Captioner | GRIFTS">
     <meta property="og:description" content="Create viral memes in seconds. Add text to images with no design skills needed.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://grifts.co.uk/viral/meme-captioner.html">
-
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Meme Captioner | GRIFTS">
-    <meta name="twitter:description" content="Create viral memes in seconds. Add text to images instantly.">
-
-    <link rel="canonical" href="https://grifts.co.uk/viral/meme-captioner.html">
     
+    <link rel="icon" href="/favicon.ico">
+    <meta name="theme-color" content="#00f5a0">
+
+    <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        .canvas-area {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px dashed var(--accent-blue);
+            background: var(--bg-card);
+            overflow: hidden;
+            border-radius: var(--radius-sm);
+        }
+        #meme-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .text-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-1);
+        }
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .slider-group input[type="range"] {
+            width: 100%;
+        }
+        .share-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+        .watermark-toggle-group {
+            display: flex;
+            align-items: center;
+            margin-top: var(--spacing-1);
+            cursor: pointer;
+        }
+        .watermark-toggle-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .template-grid button {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            height: 100px; /* Standardize size for grid */
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+        }
+    </style>
     
     <script type="application/ld+json">
     {
@@ -27,223 +89,13 @@
       "@type": "WebApplication",
       "name": "Meme Captioner",
       "url": "https://grifts.co.uk/viral/meme-captioner.html",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "description": "Create viral memes in seconds."
     }
     </script>
-    
-    <style>
-        /* CSS for the Meme Captioner */
-        .canvas-area {
-            position: relative;
-            max-width: 100%;
-            margin: 0 auto;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-card);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-        }
-        #meme-canvas {
-            display: block;
-            width: 100%; 
-            height: auto;
-            cursor: crosshair;
-        }
-        
-        /* Control sections */
-        .control-section {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .control-section:last-of-type {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .control-section h3 {
-            font-size: 1rem;
-            color: var(--accent-green);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Slider controls */
-        .slider-group {
-            margin-bottom: 1rem;
-        }
-        
-        .slider-group label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .slider-value {
-            color: var(--accent-green);
-            font-weight: bold;
-        }
-        
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--border-color);
-            outline: none;
-            -webkit-appearance: none;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb:hover {
-            background: var(--accent-blue);
-            transform: scale(1.2);
-        }
-        
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        input[type="range"]::-moz-range-thumb:hover {
-            background: var(--accent-blue);
-            transform: scale(1.2);
-        }
-        
-        /* Color picker */
-        input[type="color"] {
-            width: 60px;
-            height: 40px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            background: none;
-        }
-        
-        /* Font selector */
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        /* Button group */
-        .button-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .button-group .btn {
-            margin: 0;
-        }
-        
-        /* Template selector */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .template-btn {
-            aspect-ratio: 1;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .template-btn:hover {
-            border-color: var(--accent-green);
-            transform: scale(1.05);
-        }
-        
-        .template-btn.active {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
-        }
-        
-        .template-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.25rem;
-            text-align: center;
-        }
-        
-        /* Share buttons */
-        .share-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .share-btn {
-            flex: 1;
-            padding: 0.5rem;
-            font-size: 0.85rem;
-        }
-        
-        /* Keyboard shortcuts info */
-        .shortcuts-info {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-sm);
-            border-left: 3px solid var(--accent-blue);
-        }
-        
-        .shortcuts-info kbd {
-            background: var(--bg-dark);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            border: 1px solid var(--border-color);
-            font-family: monospace;
-            font-size: 0.85em;
-        }
-    </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <nav role="navigation" aria-label="Main navigation">
         <div class="container">
             <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
@@ -257,120 +109,49 @@
         </div>
     </nav>
 
-    <main class="container" role="main">
-        <header style="text-align: center; padding: 3rem 0 1rem;">
-            <h1 style="font-size: 2.2rem;">🖼️ Meme Captioner</h1>
-            <p style="color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto;">
-                Add text to any image in seconds. Create viral content, not complicated design accounts.
+    <main id="main-content" class="container">
+        <header class="text-center spacing-y-lg">
+            <h1 class="text-3xl">🖼️ Meme Captioner</h1>
+            <p class="text-secondary max-w-lg mx-auto mt-1">
+                Instantly add top/bottom text to any image. The fastest way to create a viral meme.
             </p>
+            <nav class="breadcrumb mt-2" aria-label="Breadcrumb">
+                <a href="../index.html">Home</a> / 
+                <a href="index.html">Viral</a> / 
+                <span aria-current="page">Meme Captioner</span>
+            </nav>
         </header>
 
-        <div class="tool-content">
-            <div class="card" id="control-card">
-                <h2>Controls</h2>
+        <div class="tool-content grid-2-col-lg">
+            <div class="card controls-card">
+                <h2>Text & Image Setup</h2>
                 
-                <!-- Upload Section -->
-                <div class="control-section">
-                    <h3>1. Upload Image</h3>
-                    <label for="image-upload">Choose Image:</label>
-                    <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 0.5rem;">
-                    
-                    <div class="button-group">
-                        <button id="use-template-btn" class="btn btn-secondary btn-sm">Use Template</button>
-                        <button id="clear-image-btn" class="btn btn-secondary btn-sm">Clear Image</button>
-                    </div>
-                    
-                    <div id="template-selector" class="template-grid" style="display: none; margin-top: 1rem;">
-                        <!-- Templates will be populated by JS -->
-                    </div>
+                <div class="input-group">
+                    <label for="image-upload" class="btn btn-secondary w-full" style="cursor: pointer; margin-bottom: 1rem;">
+                        Click to Upload Image
+                        <input type="file" id="image-upload" accept="image/*" class="sr-only">
+                    </label>
                 </div>
+                
+                <h3>Top Text</h3>
+                <input type="text" id="top-text" placeholder="TOP TEXT HERE" class="input-lg mb-1">
 
-                <!-- Text Section -->
-                <div class="control-section">
-                    <h3>2. Add Text</h3>
-                    <label for="top-text">Top Caption:</label>
-                    <input type="text" id="top-text" placeholder="TOP TEXT" maxlength="100">
+                <h3>Bottom Text</h3>
+                <input type="text" id="bottom-text" placeholder="BOTTOM TEXT HERE" class="input-lg">
 
-                    <label for="bottom-text" style="margin-top: 1rem;">Bottom Caption:</label>
-                    <input type="text" id="bottom-text" placeholder="BOTTOM TEXT" maxlength="100">
-                    
-                    <div class="button-group">
-                        <button id="clear-text-btn" class="btn btn-secondary btn-sm">Clear Text</button>
-                        <button id="swap-text-btn" class="btn btn-secondary btn-sm">Swap Top/Bottom</button>
-                    </div>
+                <div class="text-controls-grid">
+                    <button id="clear-text-btn" class="btn btn-sm btn-secondary">Clear Text</button>
+                    <button id="swap-text-btn" class="btn btn-sm btn-secondary">Swap</button>
+                    <button id="clear-image-btn" class="btn btn-sm btn-secondary">Clear Image</button>
                 </div>
-
-                <!-- Style Section -->
-                <div class="control-section">
-                    <h3>3. Text Style</h3>
-                    
-                    <label for="font-select">Font:</label>
-                    <select id="font-select">
-                        <option value="Impact">Impact (Classic)</option>
-                        <option value="Arial Black">Arial Black</option>
-                        <option value="Comic Sans MS">Comic Sans MS</option>
-                        <option value="Helvetica">Helvetica</option>
-                        <option value="Courier New">Courier New</option>
-                    </select>
-                    
-                    <div class="slider-group" style="margin-top: 1rem;">
-                        <label>
-                            <span>Font Size:</span>
-                            <span class="slider-value" id="size-value">8%</span>
-                        </label>
-                        <input type="range" id="font-size" min="3" max="15" value="8" step="0.5">
+                
+                <h3 class="mt-2">Meme Templates</h3>
+                <div id="template-buttons" class="template-grid">
+                    <button data-template="drake" title="Drake Hotline Bling">Drake</button>
+                    <button data-template="distracted" title="Distracted Boyfriend">Boyfriend</button>
+                    <button data-template="success" title="Success Kid">Success</button>
+                    <button data-template="rollsafe" title="Roll Safe">Roll Safe</button>
                     </div>
-                    
-                    <div class="slider-group">
-                        <label>
-                            <span>Outline Thickness:</span>
-                            <span class="slider-value" id="outline-value">0.8%</span>
-                        </label>
-                        <input type="range" id="outline-width" min="0.2" max="2" value="0.8" step="0.1">
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                        <div>
-                            <label for="text-color">Text Color:</label>
-                            <input type="color" id="text-color" value="#ffffff">
-                        </div>
-                        <div>
-                            <label for="outline-color">Outline Color:</label>
-                            <input type="color" id="outline-color" value="#000000">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Position Section -->
-                <div class="control-section">
-                    <h3>4. Text Position</h3>
-                    
-                    <div class="slider-group">
-                        <label>
-                            <span>Top Text Position:</span>
-                            <span class="slider-value" id="top-pos-value">10%</span>
-                        </label>
-                        <input type="range" id="top-position" min="5" max="45" value="10" step="1">
-                    </div>
-                    
-                    <div class="slider-group">
-                        <label>
-                            <span>Bottom Text Position:</span>
-                            <span class="slider-value" id="bottom-pos-value">95%</span>
-                        </label>
-                        <input type="range" id="bottom-position" min="55" max="98" value="95" step="1">
-                    </div>
-                    
-                    <button id="reset-position-btn" class="btn btn-secondary btn-sm" style="width: 100%;">Reset Positions</button>
-                </div>
-
-                <!-- Keyboard Shortcuts -->
-                <div class="shortcuts-info">
-                    <strong>Shortcuts:</strong><br>
-                    <kbd>Enter</kbd> Update Preview | 
-                    <kbd>Ctrl+S</kbd> Download | 
-                    <kbd>Ctrl+C</kbd> Copy Image
-                </div>
             </div>
 
             <div class="card result-card">
@@ -379,22 +160,73 @@
                     <canvas id="meme-canvas"></canvas>
                 </div>
                 
-                <div style="margin-top: 1rem;">
-                    <button id="download-btn" class="btn btn-primary" style="width: 100%;" disabled>Download Meme (PNG)</button>
+                <div class="controls-section mt-2">
+                    <h2>Advanced Controls</h2>
                     
-                    <div class="share-buttons">
-                        <button id="copy-btn" class="btn btn-secondary share-btn" disabled>Copy Image</button>
-                        <button id="share-twitter-btn" class="btn btn-secondary share-btn" disabled>Share on X</button>
+                    <div class="input-group">
+                        <label for="font-select">Font Style:</label>
+                        <select id="font-select" aria-label="Font Style Selection">
+                            <option value="Impact">Impact (Classic)</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Comic Sans MS">Comic Sans MS (The Joke)</option>
+                        </select>
+                    </div>
+
+                    <div class="text-controls-grid">
+                        <div class="input-group">
+                            <label for="text-color">Text Color:</label>
+                            <input type="color" id="text-color" value="#ffffff" aria-label="Text Color Picker">
+                        </div>
+                        <div class="input-group">
+                            <label for="outline-color">Outline Color:</label>
+                            <input type="color" id="outline-color" value="#000000" aria-label="Outline Color Picker">
+                        </div>
                     </div>
                     
-                    <label style="display: flex; align-items: center; margin-top: 1rem; cursor: pointer;">
-                        <input type="checkbox" id="watermark-toggle" checked style="margin-right: 0.5rem;">
-                        <span style="font-size: 0.9rem;">Include GRIFTS.CO.UK watermark</span>
+                    <div class="slider-group mt-1">
+                        <label for="font-size">
+                            <span>Font Size:</span>
+                            <span class="slider-value" id="size-value">90%</span>
+                        </label>
+                        <input type="range" id="font-size" min="50" max="150" value="90">
+                    </div>
+
+                    <div class="slider-group">
+                        <label for="outline-width">
+                            <span>Outline Width:</span>
+                            <span class="slider-value" id="outline-value">10%</span>
+                        </label>
+                        <input type="range" id="outline-width" min="0" max="20" value="10">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="top-position">Top Text Vertical Position:</label>
+                        <input type="range" id="top-position" min="5" max="50" value="10">
+                    </div>
+                    <div class="slider-group">
+                        <label for="bottom-position">Bottom Text Vertical Position:</label>
+                        <input type="range" id="bottom-position" min="5" max="50" value="10">
+                    </div>
+                </div>
+                
+                <div class="download-section mt-2">
+                    <h2>Download & Share</h2>
+                    
+                    <div class="share-controls">
+                        <button id="download-btn" class="btn btn-primary w-full" disabled>Download PNG</button>
+                        <button id="copy-btn" class="btn btn-secondary w-full" disabled>Copy Image</button>
+                        <button id="share-twitter-btn" class="btn btn-secondary share-btn w-full" disabled>Share on X</button>
+                    </div>
+                    
+                    <label class="watermark-toggle-group">
+                        <input type="checkbox" id="watermark-toggle" checked>
+                        <span class="text-sm">Include GRIFTS.CO.UK watermark</span>
                     </label>
                     
-                    <div class="slider-group" style="margin-top: 1rem;">
-                        <label>
-                            <span>Image Quality:</span>
+                    <div class="slider-group mt-1">
+                        <label for="quality-slider">
+                            <span>Image Quality (JPEG):</span>
                             <span class="slider-value" id="quality-value">90%</span>
                         </label>
                         <input type="range" id="quality-slider" min="50" max="100" value="90" step="5">
@@ -403,15 +235,17 @@
             </div>
         </div>
 
-        <div class="ad-space" style="border: 1px dashed var(--accent-blue);">
-            AD SPOT: Creative Software / Stock Photos
-        </div>
+        <section class="monetization-section" role="complementary" aria-label="Affiliate recommendation">
+            <div class="card ad-affiliate border-dashed border-accent-blue">
+                AD SPOT: Creative Software / Stock Photos
+            </div>
+        </section>
     </main>
 
     <footer role="contentinfo">
         <div class="container">
             <p><strong>GRIFTS</strong> | Meme Captioner</p>
-            <p style="margin-top: 2rem; opacity: 0.5;">© 2025 Grifts.co.uk</p>
+            <p class="mt-2 text-tertiary">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
     

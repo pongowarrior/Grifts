@@ -41,11 +41,30 @@
 <meta name="theme-color" content="#00f5a0">
 
 <!-- Stylesheet -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+    :root {
+        /* GRIFTS Dark Theme Variables */
+        --color-background: #0a0a0a;
+        --color-text-primary: #f5f5f5;
+        --color-accent: #00f5a0;
+    }
+    body {
+        background-color: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: sans-serif; /* Fallback until main CSS loads */
+        margin: 0;
+        min-height: 100vh;
+    }
+</style>
+
 <link rel="preload" href="css/style.css" as="style">
 <link rel="stylesheet" href="css/style.css">
 
-<!-- Scripts -->
 <script src="js/common.js" defer></script>
+
 
 <!-- Structured Data (JSON-LD) for SEO -->
 <script type="application/ld+json">
@@ -136,10 +155,22 @@
 
         <!-- Ad Space -->
         <div class="ad-space card ad-banner" role="complementary" aria-label="Advertisement">
-            Advertisement (Google AdSense Banner)
-        </div>
+    <h2 class="sr-only">Google Ad Placeholder</h2> Advertisement (Google AdSense Banner)
+</div>
+
+</div>
+
+
+
+
 
         <!-- Category Grid Section -->
+        </div>
+
+<section class="monetization-section">
+    <div class="card ad-affiliate">
+        </div>
+</section>
         <section aria-labelledby="categories-heading">
             <h2 id="categories-heading" class="section-title">Select Your Category</h2>
             <div class="tool-grid">
@@ -171,11 +202,6 @@
 
             </div>
         </section>
-        
-        <!-- Affiliate Ad Space -->
-        <div class="ad-space card ad-affiliate" role="complementary" aria-label="Affiliate recommendation">
-            AFFILIATE SPOT: Recommended Gear/Software
-        </div>
 
         <!-- Features Section -->
         <section aria-labelledby="features-heading" class="mt-3">

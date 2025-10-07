@@ -372,6 +372,51 @@ nav .container {
     border-radius: var(--radius-sm);
 }
 
+/* --- 6.1. Affiliate Monetization Spot Styles --- */
+
+.monetization-section {
+    padding: var(--spacing-2) 0; /* Add vertical padding */
+    max-width: 800px; /* Constrain width for better look on large screens */
+    margin: 0 auto; /* Center the section */
+}
+
+/* Ensure the ad card itself gets a bit more pop */
+.card.ad-affiliate {
+    border: 2px solid var(--accent-green); /* Highlight the affiliate spot */
+    background-color: rgba(0, 245, 160, 0.05); /* Soft green background */
+    padding: var(--spacing-2);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card.ad-affiliate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 245, 160, 0.4);
+}
+
+.card.ad-affiliate .card-title {
+    color: var(--accent-green);
+    margin-top: 0;
+}
+
+.affiliate-cta {
+    /* Style for the actual link button injected by JS */
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--gradient-primary);
+    color: var(--bg-dark); /* Ensure high contrast text */
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    margin-top: 1rem;
+    transition: opacity 0.2s;
+}
+
+.affiliate-cta:hover {
+    opacity: 0.9;
+}
+
+
 /* --- 7. Footer --- */
 footer {
     border-top: 1px solid var(--border-color);
@@ -534,14 +579,27 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]::-moz-range-thumb:hover {
     transform: scale(1.2);
 }
+input[type="range"]::-webkit-slider-thumb:focus {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 4px;
+}
+
+input[type="range"]::-moz-range-thumb:focus {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 4px;
+}
+
 
 input:focus,
 textarea:focus,
 select:focus {
-    outline: none;
-    border-color: var(--accent-green);
-    box-shadow: 0 0 0 3px rgba(0, 245, 160, 0.1);
+    /* IMPROVEMENT: Use clear outline for accessibility */
+    outline: var(--focus-ring); /* Uses 2px solid var(--accent-green) */
+    outline-offset: var(--focus-offset); /* Uses 2px offset */
+    border-color: var(--accent-green); /* Keep the border color change */
+    box-shadow: 0 0 0 3px rgba(0, 245, 160, 0.1); /* Keep the subtle glow */
 }
+
 
 input::placeholder,
 textarea::placeholder {
@@ -1008,4 +1066,68 @@ img {
 
 .breadcrumb span[aria-current] {
     color: var(--text-primary);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Add this to style.css */
+.emoji-output-box {
+    font-size: 1.5rem;
+    word-break: break-word;
+    min-height: 120px;
+    padding: var(--spacing-1-5); /* Assuming you have a 1.5rem variable */
+    background-color: var(--bg-card);
+    border: 2px solid var(--accent-blue);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    line-height: 1.6;
+    cursor: pointer;
+    transition: border-color var(--transition-normal);
+}
+.emoji-output-box:hover {
+    border-color: var(--accent-green);
+}
+.intensity-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    margin: var(--spacing-1) 0;
+}
+.intensity-control input[type="range"] {
+    flex: 1;
+}
+.char-counter {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+.history-item {
+    padding: var(--spacing-1);
+    margin: 0.5rem 0;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-normal);
+    font-size: 1.2rem;
+    text-align: center;
+}
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+/* Simple separator for history section */
+.tool-section-divider {
+    margin-top: var(--spacing-2);
+    padding-top: var(--spacing-2);
+    border-top: 1px solid var(--border-color);
 }

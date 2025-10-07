@@ -1,27 +1,20 @@
 /*
 File: js/emoji-generator.js
-Description: Text-to-Emoji Generator with intensity control, history, and favorites
+Description: Minimized Text-to-Emoji Generator.
+Dependencies: common.js (for memoryStore, copyToClipboard, showAlert, clearMemory)
 */
 
-// DOM Elements
+// DOM Elements & State
 const textInput = document.getElementById('text-input');
 const styleSelect = document.getElementById('style-select');
 const intensitySlider = document.getElementById('intensity-slider');
 const intensityValue = document.getElementById('intensity-value');
-const generateButton = document.getElementById('generate-btn');
-const surpriseButton = document.getElementById('surprise-btn');
-const copyButton = document.getElementById('copy-btn');
-const favoriteButton = document.getElementById('favorite-btn');
 const emojiOutput = document.getElementById('emoji-output');
-const charCounter = document.getElementById('char-counter');
 const historySection = document.getElementById('history-section');
 const historyList = document.getElementById('history-list');
-const clearHistoryButton = document.getElementById('clear-history-btn');
-
-// State
 let currentGeneration = null;
 
-// --- Emoji Database (Expanded) ---
+// --- Emoji Database & Config ---
 const emojiDatabase = {
     fire: {
         emojis: ['🔥', '💯', '✨', '⚡️', '🌶️', '💥'],
@@ -81,237 +74,177 @@ const emojiDatabase = {
     }
 };
 
-// Surprise phrases for random generation
-const surprisePhrases = [
-    "MIND BLOWN", "ABSOLUTE FIRE", "LET'S GO", "NO WAY", "VIRAL", 
-    "BUSSIN", "SHEESH", "GOAT", "W TAKE", "GRIND MODE"
-];
+const surprisePhrases = ["MIND BLOWN", "ABSOLUTE FIRE", "LET'S GO", "NO WAY", "VIRAL", "BUSSIN", "SHEESH", "GOAT", "W TAKE", "GRIND MODE"];
 
 // --- Helper Functions ---
-function getRandomElement(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 function updateCharCounter() {
     const remaining = 50 - textInput.value.length;
-    charCounter.textContent = `${remaining} characters remaining`;
-    charCounter.style.color = remaining < 10 ? 'var(--accent-green)' : '';
+    document.getElementById('char-counter').textContent = `${remaining} characters remaining`;
+    document.getElementById('char-counter').style.color = remaining < 10 ? 'var(--accent-green)' : '';
 }
 
 function updateIntensityLabel() {
     const value = parseInt(intensitySlider.value);
-    const labels = ['Low', 'Medium', 'High'];
-    intensityValue.textContent = labels[value - 1];
+    intensityValue.textContent = ['Low', 'Medium', 'High'][value - 1];
     intensitySlider.setAttribute('aria-valuenow', value);
 }
 
 function processTemplate(template, userText, emojiSet) {
-    const textReplacement = userText.toUpperCase();
-    let result = template.replace(/{TEXT}/g, textReplacement);
-    
-    // Replace {EMOJI} placeholders
+    let result = template.replace(/{TEXT}/g, userText.toUpperCase());
     while (result.includes('{EMOJI}')) {
         result = result.replace('{EMOJI}', getRandomElement(emojiSet));
     }
-    
     return result;
 }
 
 // --- Core Generation Logic ---
 function generateEmojiString(silent = false) {
     const text = textInput.value.trim();
-    const styleKey = styleSelect.value;
-    const intensity = parseInt(intensitySlider.value);
-    
     if (text.length < 2) {
-        if (!silent) {
-            showAlert('Please enter at least 2 characters of text.', 'info');
-        }
-        copyButton.disabled = true;
-        favoriteButton.disabled = true;
+        if (!silent) showAlert('Please enter at least 2 characters of text.', 'info');
+        document.getElementById('copy-btn').disabled = true;
+        document.getElementById('favorite-btn').disabled = true;
         emojiOutput.textContent = 'Enter text and choose a style to generate a viral reaction!';
         return;
     }
     
-    const styleData = emojiDatabase[styleKey];
-    if (!styleData) return;
-    
-    // Get templates based on intensity
-    const intensityKey = intensity === 1 ? 'low' : intensity === 2 ? 'medium' : 'high';
-    const templates = styleData.templates[intensityKey];
-    
-    const template = getRandomElement(templates);
+    const styleData = emojiDatabase[styleSelect.value];
+    const intensityKey = ['low', 'medium', 'high'][parseInt(intensitySlider.value) - 1];
+    const template = getRandomElement(styleData.templates[intensityKey]);
     const finalString = processTemplate(template, text, styleData.emojis);
     
-    // Display result
     emojiOutput.textContent = finalString;
     
-    // Store current generation
     currentGeneration = {
-        text: text,
-        style: styleKey,
-        intensity: intensity,
-        result: finalString,
-        timestamp: Date.now()
+        text, style: styleSelect.value, intensity: parseInt(intensitySlider.value),
+        result: finalString, timestamp: Date.now()
     };
     
-    // Enable buttons
-    copyButton.disabled = false;
-    favoriteButton.disabled = false;
+    document.getElementById('copy-btn').disabled = false;
+    document.getElementById('favorite-btn').disabled = false;
     
-    // Add to history
-    addToHistory(currentGeneration);
+    saveHistory(currentGeneration);
     
-    if (!silent) {
-        showAlert('Generated successfully!', 'success');
-    }
+    if (!silent) showAlert('Generated successfully!', 'success');
 }
 
-// --- Surprise Me Function ---
-function surpriseMe() {
-    // Random text
-    textInput.value = getRandomElement(surprisePhrases);
-    
-    // Random style
-    const styles = Object.keys(emojiDatabase);
-    styleSelect.value = getRandomElement(styles);
-    
-    // Random intensity
-    intensitySlider.value = Math.floor(Math.random() * 3) + 1;
-    updateIntensityLabel();
-    
-    // Generate
-    generateEmojiString();
-}
+// --- History/Favorites Management (GRIFTS Compliant) ---
 
-// --- History Management ---
-function addToHistory(generation) {
-    let history = loadFromMemory('emoji_history', []);
+/** Saves generation to history/favorites, handles memoryStore compliance. */
+function updateMemoryStore(key, newEntry) {
+    const storedData = memoryStore.getItem(key);
+    let items = storedData ? storedData.value : [];
     
-    // Avoid exact duplicates
-    history = history.filter(h => h.result !== generation.result);
-    
-    history.unshift(generation);
-    
-    // Keep last 10
-    if (history.length > 10) {
-        history = history.slice(0, 10);
+    // History logic: Remove old entry to bring it to the top, limit size
+    if (key === 'emoji_history') {
+        items = items.filter(item => item.result !== newEntry.result);
+        items.unshift(newEntry);
+        if (items.length > 10) items.pop();
+    } 
+    // Favorites logic: Prevent exact duplicates
+    else if (key === 'emoji_favorites') {
+        if (items.some(f => f.result === newEntry.result)) {
+            showAlert('Already in favorites!', 'info');
+            return;
+        }
+        items.push(newEntry);
     }
     
-    saveToMemory('emoji_history', history);
-    renderHistory();
+    memoryStore.setItem(key, items);
+    return true; // Used only for favorites success check
 }
 
 function renderHistory() {
-    const history = loadFromMemory('emoji_history', []);
+    const storedData = memoryStore.getItem('emoji_history');
+    const history = storedData ? storedData.value : [];
     
-    if (history.length === 0) {
-        historySection.style.display = 'none';
-        return;
-    }
+    historySection.style.display = history.length === 0 ? 'none' : 'block';
     
-    historySection.style.display = 'block';
-    
-    historyList.innerHTML = history.map((item, index) => `
-        <div class="history-item" data-index="${index}" title="Click to copy">
-            ${item.result}
-        </div>
+    historyList.innerHTML = history.map(item => `
+        <div class="history-item" title="Click to copy">${item.result}</div>
     `).join('');
     
-    // Add click listeners
+    // Attach copy listeners using event delegation
     document.querySelectorAll('.history-item').forEach(item => {
         item.addEventListener('click', (e) => {
-            const text = e.currentTarget.textContent.trim();
-            copyToClipboard(text);
+            if (typeof copyToClipboard === 'function') {
+                copyToClipboard(e.currentTarget.textContent.trim());
+            }
         });
     });
 }
 
-// --- Favorites Management ---
-function addToFavorites() {
-    if (!currentGeneration) return;
-    
-    let favorites = loadFromMemory('emoji_favorites', []);
-    
-    // Check if already favorited
-    if (favorites.some(f => f.result === currentGeneration.result)) {
-        showAlert('Already in favorites!', 'info');
-        return;
-    }
-    
-    favorites.push(currentGeneration);
-    saveToMemory('emoji_favorites', favorites);
-    showAlert('Added to favorites!', 'success');
-}
+const saveHistory = (entry) => {
+    updateMemoryStore('emoji_history', entry);
+    renderHistory();
+};
 
-// --- Initialization ---
+// --- Initialization & Event Listeners (Minimized) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Update counters
+    // A. Initial setup
     updateCharCounter();
     updateIntensityLabel();
-    
-    // Render history
     renderHistory();
-    
-    // Initial generation with default value
     textInput.value = 'HUSTLE';
     generateEmojiString(true);
+
+    // B. Group input listeners (Change events trigger regeneration)
+    [textInput, intensitySlider, styleSelect].forEach(element => {
+        element.addEventListener('input', () => {
+            if (element !== textInput) updateIntensityLabel(); // Only update label for slider
+            updateCharCounter();
+            if (textInput.value.trim().length >= 2) generateEmojiString(true);
+        });
+        if (element === styleSelect) {
+            element.addEventListener('change', () => generateEmojiString(true));
+        }
+    });
+
+    // C. Group button listeners
+    document.getElementById('generate-btn').addEventListener('click', () => generateEmojiString(false));
+    document.getElementById('surprise-btn').addEventListener('click', () => {
+        textInput.value = getRandomElement(surprisePhrases);
+        styleSelect.value = getRandomElement(Object.keys(emojiDatabase));
+        intensitySlider.value = Math.floor(Math.random() * 3) + 1;
+        generateEmojiString();
+    });
     
-    // Character counter
-    textInput.addEventListener('input', updateCharCounter);
-    
-    // Intensity slider
-    intensitySlider.addEventListener('input', () => {
-        updateIntensityLabel();
-        if (textInput.value.trim().length >= 2) {
-            generateEmojiString(true);
+    document.getElementById('copy-btn').addEventListener('click', () => {
+        if (emojiOutput.textContent && typeof copyToClipboard === 'function') {
+            copyToClipboard(emojiOutput.textContent, document.getElementById('copy-btn'));
         }
     });
     
-    // Style select change
-    styleSelect.addEventListener('change', () => {
-        if (textInput.value.trim().length >= 2) {
-            generateEmojiString(true);
+    document.getElementById('favorite-btn').addEventListener('click', () => {
+        if (currentGeneration) {
+            if (updateMemoryStore('emoji_favorites', currentGeneration)) {
+                showAlert('Added to favorites!', 'success');
+            }
         }
     });
-    
-    // Generate button
-    generateButton.addEventListener('click', () => generateEmojiString(false));
-    
-    // Surprise button
-    surpriseButton.addEventListener('click', surpriseMe);
-    
-    // Copy button
-    copyButton.addEventListener('click', () => {
-        const text = emojiOutput.textContent;
-        if (text) {
-            copyToClipboard(text, copyButton);
-        }
-    });
-    
-    // Favorite button
-    favoriteButton.addEventListener('click', addToFavorites);
-    
-    // Click output to copy
+
     emojiOutput.addEventListener('click', () => {
-        const text = emojiOutput.textContent;
-        if (text && !copyButton.disabled) {
-            copyToClipboard(text);
+        if (emojiOutput.textContent && !document.getElementById('copy-btn').disabled && typeof copyToClipboard === 'function') {
+            copyToClipboard(emojiOutput.textContent);
         }
     });
     
-    // Clear history
-    clearHistoryButton.addEventListener('click', () => {
-        clearMemory('emoji_history');
+    document.getElementById('clear-history-btn').addEventListener('click', () => {
+        if (typeof clearMemory === 'function') clearMemory('emoji_history');
         renderHistory();
         showAlert('History cleared!', 'success');
     });
-    
-    // Enter key support
+
+    // D. Keyboard shortcuts
     textInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             generateEmojiString(false);
         }
     });
+
+    // E. Accessibility
+    if (typeof focusAnnouncement === 'function') focusAnnouncement();
 });
