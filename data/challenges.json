@@ -1,0 +1,411 @@
+{
+  "challenges": [
+    {
+      "id": "dance_001",
+      "text": "Learn a trending TikTok dance and film yourself doing it in 3 different locations",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "medium",
+      "duration": "1 day"
+    },
+    {
+      "id": "fitness_001",
+      "text": "Do 100 pushups throughout the day (can be broken into sets)",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "1 day"
+    },
+    {
+      "id": "creative_001",
+      "text": "Create something using only items you find in your room right now",
+      "category": "creative",
+      "platform": "YouTube",
+      "difficulty": "easy",
+      "duration": "2 hours"
+    },
+    {
+      "id": "comedy_001",
+      "text": "Do a comedic impression of someone you know (keep it kind!)",
+      "category": "comedy",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "food_001",
+      "text": "Make a gourmet meal using only 3 ingredients",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "productivity_001",
+      "text": "Go 24 hours without checking social media",
+      "category": "productivity",
+      "platform": "Twitter",
+      "difficulty": "hard",
+      "duration": "1 day"
+    },
+    {
+      "id": "fitness_002",
+      "text": "Walk 10,000 steps before noon",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "half day"
+    },
+    {
+      "id": "creative_002",
+      "text": "Write and perform a 30-second rap about your day",
+      "category": "creative",
+      "platform": "TikTok",
+      "difficulty": "hard",
+      "duration": "2 hours"
+    },
+    {
+      "id": "dance_002",
+      "text": "Create your own 15-second dance move and name it",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "comedy_002",
+      "text": "Narrate your morning routine like a nature documentary",
+      "category": "comedy",
+      "platform": "YouTube",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "food_002",
+      "text": "Recreate your favorite restaurant dish at home",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "hard",
+      "duration": "2 hours"
+    },
+    {
+      "id": "productivity_002",
+      "text": "Complete a task you've been avoiding for over a month",
+      "category": "productivity",
+      "platform": "Twitter",
+      "difficulty": "hard",
+      "duration": "varies"
+    },
+    {
+      "id": "fitness_003",
+      "text": "Hold a plank for 2 minutes (or as long as you can)",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "5 minutes"
+    },
+    {
+      "id": "creative_003",
+      "text": "Draw a self-portrait without looking at the paper",
+      "category": "creative",
+      "platform": "Instagram",
+      "difficulty": "easy",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "dance_003",
+      "text": "Dance to a song from a completely different era than you normally listen to",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "comedy_003",
+      "text": "Act out a movie scene but replace all dialogue with animal sounds",
+      "category": "comedy",
+      "platform": "TikTok",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "food_003",
+      "text": "Try a cuisine you've never had before and rate it",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "productivity_003",
+      "text": "Wake up at 5 AM and document your morning",
+      "category": "productivity",
+      "platform": "YouTube",
+      "difficulty": "hard",
+      "duration": "morning"
+    },
+    {
+      "id": "fitness_004",
+      "text": "Try a new sport or physical activity you've never done",
+      "category": "fitness",
+      "platform": "YouTube",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "creative_004",
+      "text": "Write a short story in exactly 100 words",
+      "category": "creative",
+      "platform": "Twitter",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "dance_004",
+      "text": "Choreograph a dance to your favorite song from childhood",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "comedy_004",
+      "text": "Create a parody tutorial for something completely mundane",
+      "category": "comedy",
+      "platform": "YouTube",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "food_004",
+      "text": "Make a meal blindfolded (with supervision for safety!)",
+      "category": "food",
+      "platform": "YouTube",
+      "difficulty": "hard",
+      "duration": "1 hour"
+    },
+    {
+      "id": "productivity_004",
+      "text": "Organize one cluttered space in your home completely",
+      "category": "productivity",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "fitness_005",
+      "text": "Do a full-body workout using only bodyweight exercises",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "creative_005",
+      "text": "Create art using coffee, tea, or natural materials",
+      "category": "creative",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "dance_005",
+      "text": "Dance battle with yourself (film both sides)",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "comedy_005",
+      "text": "Give inanimate objects around you personalities and voices",
+      "category": "comedy",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "food_005",
+      "text": "Create a fusion dish combining two different cuisines",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "hard",
+      "duration": "2 hours"
+    },
+    {
+      "id": "productivity_005",
+      "text": "Learn a new skill in 1 hour using only YouTube tutorials",
+      "category": "productivity",
+      "platform": "YouTube",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "fitness_006",
+      "text": "Take the stairs instead of elevators for an entire day",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "easy",
+      "duration": "1 day"
+    },
+    {
+      "id": "creative_006",
+      "text": "Turn a random object into a musical instrument",
+      "category": "creative",
+      "platform": "TikTok",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "dance_006",
+      "text": "Create a dance using only your hands and arms",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "comedy_006",
+      "text": "Reenact a historical event but make it relatable to modern life",
+      "category": "comedy",
+      "platform": "YouTube",
+      "difficulty": "hard",
+      "duration": "2 hours"
+    },
+    {
+      "id": "food_006",
+      "text": "Cook a meal using only leftovers in your fridge",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    },
+    {
+      "id": "productivity_006",
+      "text": "Read 50 pages of a book in one sitting",
+      "category": "productivity",
+      "platform": "Twitter",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "fitness_007",
+      "text": "Try yoga or stretching for 20 minutes",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "easy",
+      "duration": "20 minutes"
+    },
+    {
+      "id": "creative_007",
+      "text": "Create a time-lapse video of you creating any artwork",
+      "category": "creative",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "dance_007",
+      "text": "Learn and perform a traditional dance from another culture",
+      "category": "dance",
+      "platform": "YouTube",
+      "difficulty": "hard",
+      "duration": "3 hours"
+    },
+    {
+      "id": "comedy_007",
+      "text": "Create a fake infomercial for a useless product",
+      "category": "comedy",
+      "platform": "YouTube",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "food_007",
+      "text": "Make a dessert without using any sugar",
+      "category": "food",
+      "platform": "Instagram",
+      "difficulty": "hard",
+      "duration": "1 hour"
+    },
+    {
+      "id": "productivity_007",
+      "text": "Write down 3 goals and create an action plan for each",
+      "category": "productivity",
+      "platform": "Twitter",
+      "difficulty": "easy",
+      "duration": "1 hour"
+    },
+    {
+      "id": "fitness_008",
+      "text": "Do 50 jumping jacks every hour for 8 hours",
+      "category": "fitness",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "1 day"
+    },
+    {
+      "id": "creative_008",
+      "text": "Create a comic strip about your week",
+      "category": "creative",
+      "platform": "Instagram",
+      "difficulty": "medium",
+      "duration": "2 hours"
+    },
+    {
+      "id": "dance_008",
+      "text": "Dance in public and convince a stranger to join you",
+      "category": "dance",
+      "platform": "TikTok",
+      "difficulty": "hard",
+      "duration": "1 hour"
+    },
+    {
+      "id": "comedy_008",
+      "text": "Lip sync to a dramatic movie scene with exaggerated expressions",
+      "category": "comedy",
+      "platform": "TikTok",
+      "difficulty": "easy",
+      "duration": "30 minutes"
+    },
+    {
+      "id": "food_008",
+      "text": "Create a full meal in under 15 minutes",
+      "category": "food",
+      "platform": "TikTok",
+      "difficulty": "hard",
+      "duration": "15 minutes"
+    },
+    {
+      "id": "productivity_008",
+      "text": "Spend 1 hour learning something completely outside your comfort zone",
+      "category": "productivity",
+      "platform": "YouTube",
+      "difficulty": "medium",
+      "duration": "1 hour"
+    }
+  ],
+  "categories": [
+    "dance",
+    "fitness",
+    "creative",
+    "comedy",
+    "food",
+    "productivity",
+    "fashion",
+    "beauty",
+    "tech",
+    "music"
+  ],
+  "difficulty_levels": [
+    "easy",
+    "medium",
+    "hard"
+  ],
+  "platforms": [
+    "TikTok",
+    "Instagram",
+    "YouTube",
+    "Twitter"
+  ]
+}

@@ -86,7 +86,7 @@ function generateResumePdf(resumeData) {
         doc.text(line, leftMargin, y);
         y += 5;
     });
-    y += 5; // Extra spacing after contact
+    y += 5;! // Extra spacing after contact
     
     // --- Experience Section ---
     doc.setFontSize(16);

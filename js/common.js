@@ -395,6 +395,40 @@ function validateEmail(email) {
 }
 
 /**
+ * Validate form with visual feedback
+ * @param {HTMLFormElement} form - Form to validate
+ * @returns {boolean} - Is form valid?
+ */
+function validateForm(form) {
+    let isValid = true;
+    const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
+    
+    inputs.forEach(input => {
+        const errorId = `${input.id}-error`;
+        let existingError = document.getElementById(errorId);
+        
+        // Remove old error
+        if (existingError) existingError.remove();
+        input.classList.remove('input-error');
+        
+        // Check validity
+        if (!input.checkValidity() || isEmpty(input.value)) {
+            isValid = false;
+            input.classList.add('input-error');
+            
+            const error = document.createElement('span');
+            error.id = errorId;
+            error.className = 'error-message';
+            error.textContent = input.validationMessage || 'This field is required';
+            error.setAttribute('role', 'alert');
+            input.parentNode.appendChild(error);
+        }
+    });
+    
+    return isValid;
+}
+
+/**
  * Validate URL format
  * @param {string} url - URL to validate
  * @returns {boolean}
@@ -589,6 +623,31 @@ function showLoading(message = 'Loading...') {
     }
     
     document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Sanitize HTML to prevent XSS (basic version)
+ * @param {string} html - HTML string to sanitize
+ * @returns {string} - Safe text
+ */
+function sanitizeHTML(html) {
+    const temp = document.createElement('div');
+    temp.textContent = html;
+    return temp.innerHTML;
+}
+
+/**
+ * Create safe DOM element with text content
+ * @param {string} tag - Element tag name
+ * @param {string} text - Text content
+ * @param {string} className - Optional class names
+ * @returns {HTMLElement}
+ */
+function createSafeElement(tag, text, className = '') {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    el.textContent = text;
+    return el;
 }
 
 

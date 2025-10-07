@@ -321,7 +321,7 @@ function calculateResult(first, second, op) {
             return first / second;
         default: return second;
     }
-}
+}&& 
 
 
 // --- Initialization ---\ndocument.addEventListener('DOMContentLoaded', () => {

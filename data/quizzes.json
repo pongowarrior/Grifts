@@ -1,0 +1,315 @@
+{
+  "quizzes": [
+    {
+      "id": "grifts_persona",
+      "title": "Which GRIFTS Persona Are You?",
+      "description": "Discover your grind style and unlock your potential",
+      "questions": [
+        {
+          "id": 1,
+          "text": "How do you approach a new challenge?",
+          "options": [
+            {
+              "text": "Research every detail before starting",
+              "points": { "strategist": 2, "creator": 1 }
+            },
+            {
+              "text": "Jump in and figure it out as I go",
+              "points": { "hustler": 2, "gamer": 1 }
+            },
+            {
+              "text": "Find someone who's done it and learn from them",
+              "points": { "creator": 2, "strategist": 1 }
+            },
+            {
+              "text": "Break it down into achievable steps",
+              "points": { "strategist": 2, "hustler": 1 }
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "text": "What's your ideal Saturday night?",
+          "options": [
+            {
+              "text": "Gaming session with friends online",
+              "points": { "gamer": 2, "creator": 1 }
+            },
+            {
+              "text": "Working on a side project",
+              "points": { "hustler": 2, "strategist": 1 }
+            },
+            {
+              "text": "Creating content or learning a new skill",
+              "points": { "creator": 2, "hustler": 1 }
+            },
+            {
+              "text": "Planning next week's goals and strategy",
+              "points": { "strategist": 2, "gamer": 1 }
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "text": "How do you handle failure?",
+          "options": [
+            {
+              "text": "Analyze what went wrong and adjust strategy",
+              "points": { "strategist": 2, "gamer": 1 }
+            },
+            {
+              "text": "Move on quickly and try something else",
+              "points": { "hustler": 2, "creator": 1 }
+            },
+            {
+              "text": "Document the experience and share lessons learned",
+              "points": { "creator": 2, "strategist": 1 }
+            },
+            {
+              "text": "Practice until I master it",
+              "points": { "gamer": 2, "hustler": 1 }
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "text": "What motivates you most?",
+          "options": [
+            {
+              "text": "Winning and being the best",
+              "points": { "gamer": 2, "hustler": 1 }
+            },
+            {
+              "text": "Financial freedom and independence",
+              "points": { "hustler": 2, "strategist": 1 }
+            },
+            {
+              "text": "Building something meaningful",
+              "points": { "creator": 2, "strategist": 1 }
+            },
+            {
+              "text": "Efficiency and optimization",
+              "points": { "strategist": 2, "gamer": 1 }
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "text": "How do you spend your free time online?",
+          "options": [
+            {
+              "text": "Playing competitive games",
+              "points": { "gamer": 2, "hustler": 1 }
+            },
+            {
+              "text": "Learning new business strategies",
+              "points": { "hustler": 2, "strategist": 1 }
+            },
+            {
+              "text": "Creating and sharing content",
+              "points": { "creator": 2, "hustler": 1 }
+            },
+            {
+              "text": "Reading guides and optimizing workflows",
+              "points": { "strategist": 2, "creator": 1 }
+            }
+          ]
+        }
+      ],
+      "results": {
+        "hustler": {
+          "title": "The Hustler",
+          "description": "You're all about action and results. While others are planning, you're already executing. Your strength is in your ability to pivot quickly and spot opportunities others miss.",
+          "traits": ["Action-oriented", "Adaptable", "Opportunistic", "Resilient"],
+          "recommended_tools": ["Invoice Generator", "Resume Builder", "Headline Generator"],
+          "tips": "Focus on speed over perfection. Your quick execution is your superpower."
+        },
+        "gamer": {
+          "title": "The Gamer",
+          "description": "You approach life like a game to be mastered. You're competitive, strategic in the moment, and thrive on optimization and improvement. You love the grind.",
+          "traits": ["Competitive", "Detail-focused", "Patient", "Strategic"],
+          "recommended_tools": ["DPS Calculator", "Elden Ring Optimizer", "Challenge Generator"],
+          "tips": "Apply your gaming mindset to real-world goals. Treat life like a game you're trying to speedrun."
+        },
+        "creator": {
+          "title": "The Creator",
+          "description": "You build, share, and inspire. Your currency is attention and influence. You understand that content is king and consistency is queen.",
+          "traits": ["Creative", "Expressive", "Consistent", "Audience-focused"],
+          "recommended_tools": ["Meme Captioner", "Avatar Generator", "Viral Quiz Generator"],
+          "tips": "Double down on what works. Your audience growth compounds with consistency."
+        },
+        "strategist": {
+          "title": "The Strategist",
+          "description": "You think three steps ahead. You're the planner, the optimizer, the one who sees the big picture. You turn chaos into systems.",
+          "traits": ["Analytical", "Patient", "Systematic", "Long-term focused"],
+          "recommended_tools": ["Unit Converter", "QR Code Generator", "Password Generator"],
+          "tips": "Balance planning with execution. Don't let perfect be the enemy of good."
+        }
+      }
+    },
+    {
+      "id": "content_creator_type",
+      "title": "What Type of Content Creator Are You?",
+      "description": "Find your perfect content niche and platform",
+      "questions": [
+        {
+          "id": 1,
+          "text": "What's your natural communication style?",
+          "options": [
+            {
+              "text": "Quick, witty, and to the point",
+              "points": { "short_form": 2, "entertainer": 1 }
+            },
+            {
+              "text": "Detailed explanations and deep dives",
+              "points": { "long_form": 2, "educator": 1 }
+            },
+            {
+              "text": "Visual storytelling with minimal words",
+              "points": { "visual": 2, "short_form": 1 }
+            },
+            {
+              "text": "Conversational and relatable",
+              "points": { "entertainer": 2, "long_form": 1 }
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "text": "How much time do you want to spend on each piece of content?",
+          "options": [
+            {
+              "text": "15-30 minutes max",
+              "points": { "short_form": 2, "visual": 1 }
+            },
+            {
+              "text": "2-4 hours for quality",
+              "points": { "long_form": 2, "educator": 1 }
+            },
+            {
+              "text": "1 hour of focused work",
+              "points": { "visual": 2, "entertainer": 1 }
+            },
+            {
+              "text": "Whatever it takes to get it right",
+              "points": { "educator": 2, "long_form": 1 }
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "text": "What excites you most about content creation?",
+          "options": [
+            {
+              "text": "Going viral and reaching millions",
+              "points": { "short_form": 2, "entertainer": 1 }
+            },
+            {
+              "text": "Teaching people valuable skills",
+              "points": { "educator": 2, "long_form": 1 }
+            },
+            {
+              "text": "Creating beautiful, aesthetic content",
+              "points": { "visual": 2, "short_form": 1 }
+            },
+            {
+              "text": "Building a loyal community",
+              "points": { "entertainer": 2, "educator": 1 }
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "text": "Which platform do you check most often?",
+          "options": [
+            {
+              "text": "TikTok or Instagram Reels",
+              "points": { "short_form": 2, "entertainer": 1 }
+            },
+            {
+              "text": "YouTube or podcasts",
+              "points": { "long_form": 2, "educator": 1 }
+            },
+            {
+              "text": "Instagram or Pinterest",
+              "points": { "visual": 2, "short_form": 1 }
+            },
+            {
+              "text": "Twitter or Reddit",
+              "points": { "entertainer": 2, "educator": 1 }
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "text": "How do you prefer to learn new things?",
+          "options": [
+            {
+              "text": "Quick tips and hacks",
+              "points": { "short_form": 2, "visual": 1 }
+            },
+            {
+              "text": "Comprehensive courses and guides",
+              "points": { "long_form": 2, "educator": 1 }
+            },
+            {
+              "text": "Visual demonstrations",
+              "points": { "visual": 2, "entertainer": 1 }
+            },
+            {
+              "text": "Interactive discussions",
+              "points": { "entertainer": 2, "long_form": 1 }
+            }
+          ]
+        }
+      ],
+      "results": {
+        "short_form": {
+          "title": "Short-Form Viral Creator",
+          "description": "You're built for TikTok and Reels. Your strength is capturing attention in seconds and creating highly shareable content.",
+          "traits": ["Fast-paced", "Trend-aware", "Concise", "Engaging"],
+          "recommended_tools": ["Meme Captioner", "Challenge Generator", "Headline Generator"],
+          "best_platforms": ["TikTok", "Instagram Reels", "YouTube Shorts"],
+          "tips": "Post consistently. The algorithm rewards frequency and engagement."
+        },
+        "long_form": {
+          "title": "Long-Form Educator",
+          "description": "You excel at deep dives and comprehensive content. Your audience values your expertise and thoroughness.",
+          "traits": ["Detailed", "Authoritative", "Patient", "Educational"],
+          "recommended_tools": ["Resume Builder", "Quiz Generator", "Unit Converter"],
+          "best_platforms": ["YouTube", "Podcasts", "Blog"],
+          "tips": "Build evergreen content that compounds over time."
+        },
+        "visual": {
+          "title": "Visual Storyteller",
+          "description": "Your content speaks through aesthetics. You create thumb-stopping visual experiences that don't need words.",
+          "traits": ["Aesthetic-focused", "Detail-oriented", "Artistic", "Inspiring"],
+          "recommended_tools": ["Avatar Generator", "Meme Captioner", "QR Code Generator"],
+          "best_platforms": ["Instagram", "Pinterest", "Behance"],
+          "tips": "Develop a signature style that makes your content instantly recognizable."
+        },
+        "entertainer": {
+          "title": "Community Entertainer",
+          "description": "You're the personality. People don't just follow your content, they follow you. Your authenticity is your asset.",
+          "traits": ["Charismatic", "Relatable", "Consistent", "Interactive"],
+          "recommended_tools": ["Poll Widget", "Compatibility Calculator", "Emoji Generator"],
+          "best_platforms": ["Twitch", "Twitter", "Discord"],
+          "tips": "Engage daily with your community. Relationships drive your growth."
+        },
+        "educator": {
+          "title": "Expert Educator",
+          "description": "You turn complex topics into understandable content. Your value is in making learning accessible and actionable.",
+          "traits": ["Clear", "Structured", "Knowledgeable", "Helpful"],
+          "recommended_tools": ["Headline Generator", "Resume Builder", "Password Generator"],
+          "best_platforms": ["YouTube", "Medium", "Udemy"],
+          "tips": "Create course-like series that build on each other."
+        }
+      }
+    }
+  ],
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2025-01-06",
+    "total_quizzes": 2
+  }
+}
