@@ -292,6 +292,26 @@ nav .container {
     box-shadow: var(--shadow-glow);
 }
 
+/* --- 4.5. Tool-Specific Action Groups --- */
+
+.tool-actions-group {
+    /* Mobile-first: Stack buttons vertically */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm); /* Use small spacing variable */
+    margin-bottom: var(--spacing-2);
+}
+
+/* Desktop/Tablet: Three-column layout for action buttons */
+@media (min-width: 600px) {
+    .tool-actions-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+        gap: var(--spacing-sm);
+    }
+}
+
+
 /* --- 5. Buttons --- */
 .btn {
     display: inline-block;

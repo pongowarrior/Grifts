@@ -106,6 +106,8 @@ function generateEmojiString(silent = false) {
         if (!silent) showAlert('Please enter at least 2 characters of text.', 'info');
         document.getElementById('copy-btn').disabled = true;
         document.getElementById('favorite-btn').disabled = true;
+        // NEW: Disable share button too
+        document.getElementById('share-btn').disabled = true;
         emojiOutput.textContent = 'Enter text and choose a style to generate a viral reaction!';
         return;
     }
@@ -124,6 +126,8 @@ function generateEmojiString(silent = false) {
     
     document.getElementById('copy-btn').disabled = false;
     document.getElementById('favorite-btn').disabled = false;
+    // NEW: Enable share button
+    document.getElementById('share-btn').disabled = false; 
     
     saveHistory(currentGeneration);
     
@@ -190,18 +194,22 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.value = 'HUSTLE';
     generateEmojiString(true);
 
-    // B. Group input listeners (Change events trigger regeneration)
-    [textInput, intensitySlider, styleSelect].forEach(element => {
+    // B. Input listeners for real-time updates and silent generation
+
+    // 1. Text and Slider update char counter/label and give live preview
+    [textInput, intensitySlider].forEach(element => {
         element.addEventListener('input', () => {
             if (element !== textInput) updateIntensityLabel(); // Only update label for slider
+        
             updateCharCounter();
+            // Silent generation for live preview if minimum text length is met
             if (textInput.value.trim().length >= 2) generateEmojiString(true);
         });
-        if (element === styleSelect) {
-            element.addEventListener('change', () => generateEmojiString(true));
-        }
     });
 
+    // 2. Separate listener for style select (triggers silent generation on change)
+    styleSelect.addEventListener('change', () => generateEmojiString(true));
+    
     // C. Group button listeners
     document.getElementById('generate-btn').addEventListener('click', () => generateEmojiString(false));
     document.getElementById('surprise-btn').addEventListener('click', () => {
@@ -222,6 +230,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (updateMemoryStore('emoji_favorites', currentGeneration)) {
                 showAlert('Added to favorites!', 'success');
             }
+        }
+    });
+
+    // NEW: Share button logic for viral mechanics
+    document.getElementById('share-btn').addEventListener('click', () => {
+        const shareText = emojiOutput.textContent;
+        const fallbackUrl = 'https://grifts.co.uk/viral/emoji-generator.html'; // SEO friendly link back to the tool
+        
+        // 1. Prefer modern Web Share API (Mobile responsive)
+        if (navigator.share && shareText) {
+            navigator.share({
+                title: 'Check out my GRIFTS viral message!',
+                text: shareText,
+                url: fallbackUrl
+            }).then(() => {
+                showAlert('Shared successfully!', 'success');
+            }).catch((error) => {
+                if (error.name !== 'AbortError') { 
+                    // Fallback to copy on API failure
+                    copyToClipboard(shareText, document.getElementById('share-btn'));
+                    showAlert('Could not share. Content copied to clipboard!', 'info');
+                }
+            });
+        } 
+        // 2. Fallback for desktop/non-supporting browsers
+        else if (shareText && typeof copyToClipboard === 'function') {
+            copyToClipboard(shareText, document.getElementById('share-btn'));
+            showAlert('Content copied to clipboard for manual sharing!', 'info');
         }
     });
 
