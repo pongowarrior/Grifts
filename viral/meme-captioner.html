@@ -116,15 +116,31 @@
             background: rgba(0, 217, 245, 0.1);
         }
 
-        .download-options {
-            display: flex;
-            gap: 0.5rem;
-            width: 100%;
-        }
+        /* Replacement code to ADD */
+.download-options {
+    /* Default: Stacked on small screens */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
 
-        .download-options button {
-            flex: 1;
-        }
+/* Enforce full width on small screens */
+.download-options button {
+    width: 100%;
+}
+
+@media (min-width: 500px) {
+    .download-options {
+        /* On screens >= 500px, switch to side-by-side */
+        flex-direction: row;
+    }
+    
+    .download-options button {
+        /* Share space evenly */
+        flex: 1;
+    }
+}
     </style>
     
 </head>
