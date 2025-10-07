@@ -3,95 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRIFTS | Meme Captioner - Create Viral Content</title>
-    <meta name="description" content="Instantly add top/bottom text to any image, drag, resize, and download the perfect viral meme.">
+    <title>GRIFTS | Meme Captioner - Viral Image Editor</title>
+    <meta name="description" content="The fastest in-browser meme captioner. Upload an image, add top/bottom text, and download your viral creation instantly.">
     
-    <meta name="keywords" content="meme maker, meme captioner, top text bottom text, viral image editor, free online meme generator">
+    <meta name="keywords" content="meme generator, online meme editor, free meme captioner, viral content tool">
+    <meta name="author" content="Grifts.co.uk">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://grifts.co.uk/viral/meme-captioner.html">
-    <meta property="og:title" content="Meme Captioner | GRIFTS">
-    <meta property="og:description" content="Create viral memes in seconds. Add text to images with no design skills needed.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://grifts.co.uk/viral/meme-captioner.html">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Meme Captioner | GRIFTS">
+    <meta property="og:title" content="GRIFTS | Meme Captioner - Viral Image Editor">
+    <meta property="og:description" content="The fastest in-browser meme captioner. Upload an image, add top/bottom text, and download your viral creation instantly.">
+    <meta property="og:image" content="https://grifts.co.uk/assets/og-image-meme.jpg">
     
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <meta name="theme-color" content="#00f5a0">
-
+    
     <link rel="preload" href="../css/style.css" as="style">
     <link rel="stylesheet" href="../css/style.css">
     
     <style>
-        .canvas-area {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-width: 600px;
+        .meme-container {
+            max-width: 900px;
             margin: 0 auto;
-            border: 2px dashed var(--accent-blue);
-            background: var(--bg-card);
-            overflow: hidden;
-            border-radius: var(--radius-sm);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-2);
         }
+        
+        @media (min-width: 768px) {
+            .meme-container {
+                grid-template-columns: 1.5fr 1fr; /* Output larger than controls */
+            }
+        }
+        
+        .card.output-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-2);
+        }
+
+        /* Canvas and Preview Area */
+        #meme-preview-container {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            margin-bottom: var(--spacing-2);
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            position: relative;
+        }
+        
         #meme-canvas {
             display: block;
             width: 100%;
             height: 100%;
         }
-        .text-controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-1);
-        }
-        .slider-group label {
+
+        #upload-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            justify-content: center;
+            color: var(--text-secondary);
+            background: var(--bg-dark);
+            cursor: pointer;
+            z-index: 10;
+            text-align: center;
         }
-        .slider-group input[type="range"] {
+
+        /* Controls */
+        .control-group {
+            margin-bottom: 1rem;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        #image-upload-input {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 48px;
+            background: var(--bg-card);
+            border: 2px dashed var(--accent-blue);
+            color: var(--accent-blue);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .upload-label:hover {
+            background: rgba(0, 217, 245, 0.1);
+        }
+
+        .download-options {
+            display: flex;
+            gap: 0.5rem;
             width: 100%;
         }
-        .share-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-sm);
-        }
-        .watermark-toggle-group {
-            display: flex;
-            align-items: center;
-            margin-top: var(--spacing-1);
-            cursor: pointer;
-        }
-        .watermark-toggle-group input[type="checkbox"] {
-            margin-right: 0.5rem;
-        }
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 1rem;
-        }
-        .template-grid button {
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            height: 100px; /* Standardize size for grid */
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-card);
+
+        .download-options button {
+            flex: 1;
         }
     </style>
     
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Meme Captioner",
-      "url": "https://grifts.co.uk/viral/meme-captioner.html",
-      "description": "Create viral memes in seconds."
-    }
-    </script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -100,156 +135,112 @@
         <div class="container">
             <a href="../index.html" class="logo" aria-label="GRIFTS Home">GRIFTS</a>
             <ul class="nav-links">
-                <li><a href="../index.html">Home</a></li>
                 <li><a href="../gaming/index.html">Gaming</a></li>
                 <li><a href="../influencer/index.html">Influencer</a></li>
                 <li><a href="../utilities/index.html">Utilities</a></li>
-                <li><a href="../viral/index.html" aria-current="page">Viral</a></li>
+                <li><a href="index.html" aria-current="page">Viral</a></li>
             </ul>
         </div>
     </nav>
 
     <main id="main-content" class="container">
-        <header class="text-center spacing-y-lg">
-            <h1 class="text-3xl">🖼️ Meme Captioner</h1>
-            <p class="text-secondary max-w-lg mx-auto mt-1">
-                Instantly add top/bottom text to any image. The fastest way to create a viral meme.
+        <header class="text-center" style="padding: 3rem 0 1rem;">
+            <h1 style="font-size: 2.2rem; line-height: 1.2;">Meme Captioner</h1>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 1rem auto;">
+                Go viral faster. Upload your image, add your captions, and get a ready-to-share PNG. **100% private and in-browser.**
             </p>
-            <nav class="breadcrumb mt-2" aria-label="Breadcrumb">
-                <a href="../index.html">Home</a> / 
-                <a href="index.html">Viral</a> / 
-                <span aria-current="page">Meme Captioner</span>
-            </nav>
         </header>
 
-        <div class="tool-content grid-2-col-lg">
-            <div class="card controls-card">
-                <h2>Text & Image Setup</h2>
+        <div class="meme-container">
+            <div class="card output-card" style="grid-column: 1 / -1;">
+                <h2>Meme Preview</h2>
                 
-                <div class="input-group">
-                    <label for="image-upload" class="btn btn-secondary w-full" style="cursor: pointer; margin-bottom: 1rem;">
-                        Click to Upload Image
-                        <input type="file" id="image-upload" accept="image/*" class="sr-only">
+                <div id="meme-preview-container" role="img" aria-label="Meme image with generated caption">
+                    <canvas id="meme-canvas" width="600" height="400"></canvas>
+                    <label id="upload-placeholder" for="image-upload-input">
+                        <span style="font-size: 3rem;">🖼️</span>
+                        <p style="margin-top: 1rem;">Click or Drag & Drop an image here to start</p>
                     </label>
                 </div>
                 
-                <h3>Top Text</h3>
-                <input type="text" id="top-text" placeholder="TOP TEXT HERE" class="input-lg mb-1">
-
-                <h3>Bottom Text</h3>
-                <input type="text" id="bottom-text" placeholder="BOTTOM TEXT HERE" class="input-lg">
-
-                <div class="text-controls-grid">
-                    <button id="clear-text-btn" class="btn btn-sm btn-secondary">Clear Text</button>
-                    <button id="swap-text-btn" class="btn btn-sm btn-secondary">Swap</button>
-                    <button id="clear-image-btn" class="btn btn-sm btn-secondary">Clear Image</button>
+                <div class="download-options">
+                    <button id="download-png-btn" class="btn btn-primary" aria-label="Download the generated meme as a PNG file" disabled>
+                        Download PNG
+                    </button>
+                    <button id="reset-btn" class="btn btn-secondary" aria-label="Reset the image and captions">
+                        Reset
+                    </button>
                 </div>
-                
-                <h3 class="mt-2">Meme Templates</h3>
-                <div id="template-buttons" class="template-grid">
-                    <button data-template="drake" title="Drake Hotline Bling">Drake</button>
-                    <button data-template="distracted" title="Distracted Boyfriend">Boyfriend</button>
-                    <button data-template="success" title="Success Kid">Success</button>
-                    <button data-template="rollsafe" title="Roll Safe">Roll Safe</button>
-                    </div>
             </div>
 
-            <div class="card result-card">
-                <h2>Meme Preview</h2>
-                <div class="canvas-area">
-                    <canvas id="meme-canvas"></canvas>
-                </div>
+            <div class="card controls-card" style="grid-column: 1 / -1; margin-top: -1rem;">
+                <h2>Edit Captions</h2>
                 
-                <div class="controls-section mt-2">
-                    <h2>Advanced Controls</h2>
-                    
-                    <div class="input-group">
-                        <label for="font-select">Font Style:</label>
-                        <select id="font-select" aria-label="Font Style Selection">
-                            <option value="Impact">Impact (Classic)</option>
-                            <option value="Roboto">Roboto</option>
-                            <option value="Arial">Arial</option>
-                            <option value="Comic Sans MS">Comic Sans MS (The Joke)</option>
-                        </select>
-                    </div>
-
-                    <div class="text-controls-grid">
-                        <div class="input-group">
-                            <label for="text-color">Text Color:</label>
-                            <input type="color" id="text-color" value="#ffffff" aria-label="Text Color Picker">
-                        </div>
-                        <div class="input-group">
-                            <label for="outline-color">Outline Color:</label>
-                            <input type="color" id="outline-color" value="#000000" aria-label="Outline Color Picker">
-                        </div>
-                    </div>
-                    
-                    <div class="slider-group mt-1">
-                        <label for="font-size">
-                            <span>Font Size:</span>
-                            <span class="slider-value" id="size-value">90%</span>
-                        </label>
-                        <input type="range" id="font-size" min="50" max="150" value="90">
-                    </div>
-
-                    <div class="slider-group">
-                        <label for="outline-width">
-                            <span>Outline Width:</span>
-                            <span class="slider-value" id="outline-value">10%</span>
-                        </label>
-                        <input type="range" id="outline-width" min="0" max="20" value="10">
-                    </div>
-                    
-                    <div class="slider-group">
-                        <label for="top-position">Top Text Vertical Position:</label>
-                        <input type="range" id="top-position" min="5" max="50" value="10">
-                    </div>
-                    <div class="slider-group">
-                        <label for="bottom-position">Bottom Text Vertical Position:</label>
-                        <input type="range" id="bottom-position" min="5" max="50" value="10">
-                    </div>
-                </div>
-                
-                <div class="download-section mt-2">
-                    <h2>Download & Share</h2>
-                    
-                    <div class="share-controls">
-                        <button id="download-btn" class="btn btn-primary w-full" disabled>Download PNG</button>
-                        <button id="copy-btn" class="btn btn-secondary w-full" disabled>Copy Image</button>
-                        <button id="share-twitter-btn" class="btn btn-secondary share-btn w-full" disabled>Share on X</button>
-                    </div>
-                    
-                    <label class="watermark-toggle-group">
-                        <input type="checkbox" id="watermark-toggle" checked>
-                        <span class="text-sm">Include GRIFTS.CO.UK watermark</span>
+                <div class="control-group">
+                    <label for="image-upload-input" class="upload-label">
+                        <input type="file" id="image-upload-input" accept="image/jpeg, image/png, image/webp" aria-label="Upload background image for the meme">
+                        <span id="upload-label-text">Select New Image</span>
                     </label>
-                    
-                    <div class="slider-group mt-1">
-                        <label for="quality-slider">
-                            <span>Image Quality (JPEG):</span>
-                            <span class="slider-value" id="quality-value">90%</span>
-                        </label>
-                        <input type="range" id="quality-slider" min="50" max="100" value="90" step="5">
-                    </div>
                 </div>
+                
+                <div class="control-group">
+                    <label for="top-text-input">Top Caption:</label>
+                    <textarea id="top-text-input" rows="2" maxlength="150" placeholder="Enter your top text here (max 150 characters)" aria-label="Top text for the meme"></textarea>
+                </div>
+
+                <div class="control-group">
+                    <label for="bottom-text-input">Bottom Caption:</label>
+                    <textarea id="bottom-text-input" rows="2" maxlength="150" placeholder="Enter your bottom text here (max 150 characters)" aria-label="Bottom text for the meme"></textarea>
+                </div>
+                
+                <div class="control-group">
+                    <label for="font-size-range">Font Size (current: <span id="font-size-value">40</span>px):</label>
+                    <input type="range" id="font-size-range" min="20" max="80" value="40" aria-label="Adjust font size of the captions">
+                </div>
+
+                <div class="control-group">
+                    <label for="text-color-input">Text Color:</label>
+                    <input type="color" id="text-color-input" value="#ffffff" aria-label="Choose color for the caption text">
+                </div>
+                
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    **Pro Tip:** Use all caps for the classic meme look!
+                </p>
             </div>
         </div>
 
-        <section class="monetization-section" role="complementary" aria-label="Affiliate recommendation">
-            <div class="card ad-affiliate border-dashed border-accent-blue">
-                AD SPOT: Creative Software / Stock Photos
+        <div class="ad-affiliate" style="margin-top: var(--spacing-3);">
+            </div>
+
+        <section class="card" style="margin-top: var(--spacing-3); max-width: 800px; margin-left: auto; margin-right: auto;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Meme Captain's Log</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p style="margin-bottom: 1rem;">
+                    <strong style="color: var(--accent-green);">How does it work?</strong><br>
+                    This tool uses the browser's native **Canvas API** to draw your image, then draws the text on top using the classic IMPACT font look (white text, black stroke). All processing happens instantly on your device.
+                </p>
+                <p>
+                    <strong style="color: var(--accent-green);">What formats are supported?</strong><br>
+                    You can upload JPG, PNG, or WEBP files. The output is a high-quality **PNG** file that is ready to post on X, Instagram, Reddit, or Discord.
+                </p>
             </div>
         </section>
     </main>
 
     <footer role="contentinfo">
         <div class="container">
-            <p><strong>GRIFTS</strong> | Meme Captioner</p>
-            <p class="mt-2 text-tertiary">© 2025 Grifts.co.uk | All Rights Reserved</p>
+            <p><strong>GRIFTS</strong> - Tools for Creators, Gamers & Hustlers</p>
+            <p class="mt-1">100% free, browser-based tools. No sign-ups. No BS.</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">Privacy (Coming Soon)</a>
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">Contact (Coming Soon)</a>
+                <a href="#" class="coming-soon" aria-disabled="true" role="link">About (Coming Soon)</a>
+            </nav>
+            <p style="margin-top: 2rem; opacity: 0.5;" class="text-center">© 2025 Grifts.co.uk | All Rights Reserved</p>
         </div>
     </footer>
     
-    <script src="../js/common.js" defer></script>
-    <script src="../js/meme-captioner.js" defer></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/meme-captioner.js"></script>
 </body>
 </html>

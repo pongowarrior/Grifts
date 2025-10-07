@@ -1,305 +1,301 @@
 /*
 File: js/meme-captioner.js
-Description: Minimized Core logic for the Meme Captioner tool (Enhanced version).
-Dependencies: common.js (for memoryStore, copyToClipboard, downloadFile, showAlert, debounce)
+Description: In-browser meme generation using Canvas API.
+Version: 3.1 - Fully modularized, using AppCore for debouncing and downloading.
 */
 
-// --- 1. DOM Elements & State ---
-const DOM = {
-    imageUpload: document.getElementById('image-upload'),
-    topTextInput: document.getElementById('top-text'),
-    bottomTextInput: document.getElementById('bottom-text'),
-    downloadButton: document.getElementById('download-btn'),
-    copyButton: document.getElementById('copy-btn'),
-    shareTwitterBtn: document.getElementById('share-twitter-btn'),
-    canvas: document.getElementById('meme-canvas'),
-    ctx: document.getElementById('meme-canvas').getContext('2d'),
-    canvasArea: document.querySelector('.canvas-area'),
-    
-    // Control elements
-    fontSelect: document.getElementById('font-select'),
-    fontSizeSlider: document.getElementById('font-size'),
-    outlineWidthSlider: document.getElementById('outline-width'),
-    textColorPicker: document.getElementById('text-color'),
-    outlineColorPicker: document.getElementById('outline-color'),
-    topPositionSlider: document.getElementById('top-position'),
-    bottomPositionSlider: document.getElementById('bottom-position'),
-    watermarkToggle: document.getElementById('watermark-toggle'),
-    qualitySlider: document.getElementById('quality-slider'),
-    
-    // Buttons
-    clearImageBtn: document.getElementById('clear-image-btn'),
-    clearTextBtn: document.getElementById('clear-text-btn'),
-    swapTextBtn: document.getElementById('swap-text-btn'),
-    templateButtons: document.getElementById('template-buttons'),
-
-    // Slider values
-    sizeValue: document.getElementById('size-value'),
-    outlineValue: document.getElementById('outline-value'),
-    qualityValue: document.getElementById('quality-value')
-};
-
-const STATE_KEY = 'meme-settings';
-let currentImage = null; // The loaded image object
-let currentSettings = {}; // All customizable settings
-
-const MEME_TEMPLATES = {
-    drake: '../assets/memes/drake.jpg',
-    distracted: '../assets/memes/distracted.jpg',
-    success: '../assets/memes/success.jpg',
-    rollsafe: '../assets/memes/rollsafe.jpg',
-};
-
-// --- 2. CORE DRAWING LOGIC (Simplified & Minimized) ---
-
-function drawText(text, x, y, isTop) {
-    const { ctx, canvas } = DOM;
-    
-    // Calculate font size relative to image height (canvas.height)
-    const fontSize = canvas.height * (currentSettings.fontSize / 100) * 0.1;
-    const outlineWidth = fontSize * (currentSettings.outlineWidth / 100);
-    
-    ctx.font = `${currentSettings.fontStyle} ${fontSize}px ${currentSettings.fontStyle}`;
-    ctx.textAlign = 'center';
-    
-    // Text Position calculation
-    const verticalPosition = isTop 
-        ? canvas.height * (currentSettings.topPosition / 100)
-        : canvas.height * (1 - (currentSettings.bottomPosition / 100));
-        
-    // Draw Outline
-    ctx.strokeStyle = currentSettings.outlineColor;
-    ctx.lineWidth = outlineWidth;
-    ctx.strokeText(text.toUpperCase(), x, verticalPosition);
-    
-    // Draw Fill Text
-    ctx.fillStyle = currentSettings.textColor;
-    ctx.fillText(text.toUpperCase(), x, verticalPosition);
-}
-
-function drawMeme() {
-    const { ctx, canvas } = DOM;
-    if (!currentImage) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Placeholder text/background here if needed, but usually just clear.
-        DOM.downloadButton.disabled = true;
-        DOM.copyButton.disabled = true;
-        DOM.shareTwitterBtn.disabled = true;
-        return;
+const MemeCaptioner = (() => {
+    // Check for AppCore availability
+    if (typeof AppCore === 'undefined' || typeof Tracker === 'undefined') {
+        console.error('GRIFTS ERROR: AppCore or Tracker module not loaded. Cannot initialize Meme Captioner.');
+        return {}; // Return empty module if core dependencies are missing
     }
 
-    // Set canvas dimensions to match image aspect ratio, max 600px width (handled by CSS)
-    const ratio = currentImage.width / currentImage.height;
-    const canvasWidth = 600; // Use a fixed reference size for drawing
-    const canvasHeight = 600 / ratio;
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    
-    // Draw Image
-    ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
-    
-    // Draw Text
-    drawText(DOM.topTextInput.value, canvas.width / 2, 0, true);
-    drawText(DOM.bottomTextInput.value, canvas.width / 2, 0, false);
-    
-    // Draw Watermark
-    if (currentSettings.watermark) {
-        ctx.fillStyle = 'rgba(0, 245, 160, 0.6)'; // GRIFTS accent green
-        ctx.font = 'bold 20px Roboto'; // Fixed size watermark
-        ctx.textAlign = 'right';
-        ctx.fillText('GRIFTS.CO.UK', canvas.width - 10, canvas.height - 10);
-    }
-    
-    // Enable buttons
-    DOM.downloadButton.disabled = false;
-    DOM.copyButton.disabled = false;
-    DOM.shareTwitterBtn.disabled = false;
-}
-
-// --- 3. Image & Template Handlers ---
-
-function loadImage(src) {
-    const img = new Image();
-    img.crossOrigin = 'anonymous'; // Necessary for template images
-    img.onload = () => {
-        currentImage = img;
-        DOM.topTextInput.value = ''; // Clear text on new image load
-        DOM.bottomTextInput.value = '';
-        saveSettings();
-        drawMeme();
+    // --- 0. DOM Elements & State ---
+    const elements = {
+        canvas: document.getElementById('meme-canvas'),
+        placeholder: document.getElementById('upload-placeholder'),
+        fileInput: document.getElementById('image-upload-input'),
+        topText: document.getElementById('top-text-input'),
+        bottomText: document.getElementById('bottom-text-input'),
+        fontSizeRange: document.getElementById('font-size-range'),
+        fontSizeValue: document.getElementById('font-size-value'),
+        textColor: document.getElementById('text-color-input'),
+        downloadBtn: document.getElementById('download-png-btn'),
+        resetBtn: document.getElementById('reset-btn'),
+        uploadLabelText: document.getElementById('upload-label-text')
     };
-    img.onerror = () => showAlert('Error loading image. Please try another one.', 'error');
-    img.src = src;
-}
 
-function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
+    // State Variables
+    let ctx;
+    let image = null;
+    let initialImageSrc = null; // Store the original image source for the reset function
+
+    // --- 1. Canvas & Drawing Logic ---
+
+    /**
+     * Draws text with a black outline for the classic meme look.
+     * @param {string} text - The caption text.
+     * @param {number} x - X coordinate.
+     * @param {number} y - Y coordinate.
+     * @param {number} width - Max width for text wrapping.
+     * @param {number} fontSize - Size of the font.
+     * @param {string} color - Text color.
+     */
+    function drawCaption(text, x, y, width, fontSize, color) {
+        if (!ctx) return;
+        
+        ctx.textAlign = 'center';
+        ctx.fillStyle = color;
+        ctx.strokeStyle = '#000000';
+        // Set font to Impact or a bold sans-serif fallback for standard meme look
+        ctx.font = `${fontSize}px Impact, sans-serif`;
+        ctx.lineWidth = Math.max(2, fontSize / 20); // Scale line width with font size
+
+        // Simple line wrapping (only for the single line of text in this basic tool)
+        const lines = text.toUpperCase().split('\n');
+        
+        let currentY = y;
+
+        for (const line of lines) {
+            ctx.strokeText(line, x, currentY);
+            ctx.fillText(line, x, currentY);
+            currentY += fontSize + 10; // Line spacing
+        }
+    }
+
+    /**
+     * Main function to draw the image and all text onto the canvas.
+     */
+    function renderMeme() {
+        if (!ctx || !image) {
+            // Only update font size value if no image is loaded
+            elements.fontSizeValue.textContent = elements.fontSizeRange.value;
+            return;
+        }
+        
+        // 1. Clear Canvas and Fit Image
+        const canvas = elements.canvas;
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // 2. Get Settings
+        const fontSize = parseInt(elements.fontSizeRange.value);
+        const textColor = elements.textColor.value;
+        const topText = elements.topText.value;
+        const bottomText = elements.bottomText.value;
+
+        // Update font size display
+        elements.fontSizeValue.textContent = fontSize;
+
+        // 3. Draw Top Caption
+        if (topText) {
+            drawCaption(
+                topText,
+                canvas.width / 2, // Centered X
+                fontSize + 15,    // Y offset from top
+                canvas.width * 0.9,
+                fontSize,
+                textColor
+            );
+        }
+
+        // 4. Draw Bottom Caption
+        if (bottomText) {
+            // Calculate Y position for the bottom text's baseline
+            let bottomY = canvas.height - 15;
+            
+            // Adjust for multiline text (simple check for single line)
+            if (bottomText.includes('\n')) {
+                const lineCount = bottomText.split('\n').length;
+                bottomY -= (lineCount - 1) * (fontSize + 10);
+            }
+
+            drawCaption(
+                bottomText,
+                canvas.width / 2, // Centered X
+                bottomY,
+                canvas.width * 0.9,
+                fontSize,
+                textColor
+            );
+        }
+
+        // Enable download button once rendered
+        elements.downloadBtn.disabled = !image;
+        elements.resetBtn.disabled = !image;
+    }
+
+    // CORRECTED: Using AppCore.debounce for performance
+    const debouncedRender = AppCore.debounce(renderMeme, 100);
+
+
+    // --- 2. Image Loading & Reset ---
+
+    /**
+     * Loads a file from input or drag/drop.
+     * @param {File} file - The image file object.
+     */
+    function loadImageFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            AppCore.showAlert('Please upload a valid image file (JPG, PNG, WEBP).', 'error');
+            return;
+        }
+
         const reader = new FileReader();
-        reader.onload = (e) => loadImage(e.target.result);
+        AppCore.showLoading('Loading image...');
+
+        reader.onload = (e) => {
+            initialImageSrc = e.target.result;
+            image = new Image();
+            image.onload = () => {
+                AppCore.hideLoading();
+                elements.placeholder.style.display = 'none';
+                elements.uploadLabelText.textContent = 'Change Image';
+                
+                // Track successful image load
+                Tracker.trackEvent('meme_image_loaded');
+                renderMeme();
+            };
+            image.onerror = () => {
+                AppCore.hideLoading();
+                AppCore.showAlert('Error loading image. Is the file corrupt?', 'error');
+                image = null;
+            };
+            image.src = initialImageSrc;
+        };
+
         reader.readAsDataURL(file);
     }
-}
 
-const applyTemplate = (templateName) => {
-    if (MEME_TEMPLATES[templateName]) {
-        loadImage(MEME_TEMPLATES[templateName]);
-        showAlert(`Template loaded: ${templateName}!`, 'success');
-    }
-};
-
-// --- 4. Settings & Storage ---
-
-function loadSettings() {
-    // Load from memoryStore or use defaults
-    const stored = memoryStore.getItem(STATE_KEY);
-    currentSettings = stored ? stored.value : {
-        topText: '', bottomText: '', fontStyle: 'Impact', 
-        fontSize: 90, outlineWidth: 10, textColor: '#ffffff', 
-        outlineColor: '#000000', topPosition: 10, bottomPosition: 10,
-        watermark: true, quality: 90
-    };
-    
-    // Apply settings to DOM elements (simplified)
-    DOM.topTextInput.value = currentSettings.topText || '';
-    DOM.bottomTextInput.value = currentSettings.bottomText || '';
-    DOM.fontSelect.value = currentSettings.fontStyle;
-    DOM.fontSizeSlider.value = currentSettings.fontSize;
-    DOM.outlineWidthSlider.value = currentSettings.outlineWidth;
-    DOM.textColorPicker.value = currentSettings.textColor;
-    DOM.outlineColorPicker.value = currentSettings.outlineColor;
-    DOM.topPositionSlider.value = currentSettings.topPosition;
-    DOM.bottomPositionSlider.value = currentSettings.bottomPosition;
-    DOM.watermarkToggle.checked = currentSettings.watermark;
-    DOM.qualitySlider.value = currentSettings.quality;
-
-    updateSliderDisplays();
-    drawMeme();
-}
-
-function saveSettings() {
-    currentSettings = {
-        topText: DOM.topTextInput.value,
-        bottomText: DOM.bottomTextInput.value,
-        fontStyle: DOM.fontSelect.value,
-        fontSize: parseInt(DOM.fontSizeSlider.value),
-        outlineWidth: parseInt(DOM.outlineWidthSlider.value),
-        textColor: DOM.textColorPicker.value,
-        outlineColor: DOM.outlineColorPicker.value,
-        topPosition: parseInt(DOM.topPositionSlider.value),
-        bottomPosition: parseInt(DOM.bottomPositionSlider.value),
-        watermark: DOM.watermarkToggle.checked,
-        quality: parseInt(DOM.qualitySlider.value)
-    };
-    memoryStore.setItem(STATE_KEY, currentSettings);
-    drawMeme();
-}
-
-const updateSliderDisplays = () => {
-    DOM.sizeValue.textContent = DOM.fontSizeSlider.value + '%';
-    DOM.outlineValue.textContent = DOM.outlineWidthSlider.value + '%';
-    DOM.qualityValue.textContent = DOM.qualitySlider.value + '%';
-};
-
-// --- 5. Action Functions ---
-
-const downloadMeme = () => {
-    if (!currentImage) return showAlert('Please load an image first.', 'info');
-    
-    // Use JPEG for better sharing compatibility if quality is adjusted, otherwise PNG.
-    const mimeType = DOM.qualitySlider.value < 100 ? 'image/jpeg' : 'image/png';
-    const quality = DOM.qualitySlider.value / 100;
-    
-    const dataURL = DOM.canvas.toDataURL(mimeType, quality);
-    if (typeof downloadFile === 'function') {
-        downloadFile(dataURL, `grifts-meme-${Date.now()}.${mimeType.split('/')[1]}`);
-    }
-};
-
-const copyMeme = () => {
-    if (!currentImage) return showAlert('Please load an image first.', 'info');
-    
-    DOM.canvas.toBlob((blob) => {
-        if (typeof copyToClipboard === 'function') {
-            copyToClipboard(blob);
-            showAlert('Meme image copied to clipboard!', 'success');
+    /**
+     * Resets the tool to its initial state.
+     */
+    function resetTool() {
+        if (image && ctx) {
+            ctx.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
         }
-    }, 'image/png');
-};
+        image = null;
+        initialImageSrc = null;
+        elements.topText.value = '';
+        elements.bottomText.value = '';
+        elements.fontSizeRange.value = 40;
+        elements.textColor.value = '#ffffff';
+        elements.downloadBtn.disabled = true;
+        elements.resetBtn.disabled = true;
+        elements.placeholder.style.display = 'flex';
+        elements.uploadLabelText.textContent = 'Select New Image';
 
-const shareOnX = () => {
-    const text = `Check out this viral meme I made with the GRIFTS Meme Captioner! #GRIFTS #MemeMaker ${window.location.href}`;
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-};
+        AppCore.showAlert('Meme Captioner reset.', 'info');
+        Tracker.trackEvent('meme_reset');
+    }
 
-// --- 6. Initialization & Event Listeners (Minimized) ---
+    // --- 3. Download Logic ---
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadSettings();
-    
-    // A. Image & Text Input Listeners (Drawing and Saving)
-    const drawAndSave = typeof debounce === 'function' ? debounce(saveSettings, 50) : saveSettings;
-    
-    [DOM.topTextInput, DOM.bottomTextInput].forEach(input => {
-        input.addEventListener('input', drawAndSave);
-    });
-    
-    DOM.imageUpload.addEventListener('change', handleImageUpload);
+    /**
+     * Downloads the canvas content as a PNG file.
+     */
+    function downloadMeme() {
+        if (!image) {
+            AppCore.showAlert('Please upload an image before downloading.', 'warning');
+            return;
+        }
 
-    // B. Control Input Listeners (Drawing, Saving, and Updating Sliders)
-    const controlElements = [
-        DOM.fontSelect, DOM.textColorPicker, DOM.outlineColorPicker, DOM.watermarkToggle,
-        DOM.fontSizeSlider, DOM.outlineWidthSlider, DOM.topPositionSlider, 
-        DOM.bottomPositionSlider, DOM.qualitySlider
-    ];
-    
-    controlElements.forEach(element => {
-        element.addEventListener('change', saveSettings);
-        element.addEventListener('input', () => {
-            if (element.type === 'range') updateSliderDisplays();
-            drawAndSave();
+        try {
+            // Ensure the meme is rendered with the latest settings before exporting
+            renderMeme();
+            
+            const dataURL = elements.canvas.toDataURL('image/png');
+            // CORRECTED: Using AppCore.generateId and AppCore.downloadFile
+            const filename = `grifts-meme-${AppCore.generateId('m')}.png`;
+            AppCore.downloadFile(dataURL, filename, 'image/png');
+            
+            Tracker.trackEvent('meme_download', { filename: filename });
+
+        } catch (error) {
+            console.error('Download error:', error);
+            AppCore.showAlert('Download failed. Try a smaller image.', 'error');
+        }
+    }
+
+
+    // --- 4. Event Handlers & Initialization ---
+
+    /**
+     * Initializes the tool, setting up context and listeners.
+     */
+    function init() {
+        if (!elements.canvas) {
+            console.error('Canvas element not found.');
+            return;
+        }
+        ctx = elements.canvas.getContext('2d');
+        if (!ctx) {
+            AppCore.showAlert('Your browser does not support the Canvas API needed for this tool.', 'error', 0);
+            return;
+        }
+
+        // Set initial state
+        elements.downloadBtn.disabled = true;
+        elements.resetBtn.disabled = true;
+
+        // Input Listeners (use debouncedRender for performance on text/range changes)
+        elements.topText.addEventListener('input', debouncedRender);
+        elements.bottomText.addEventListener('input', debouncedRender);
+        elements.fontSizeRange.addEventListener('input', debouncedRender);
+        elements.textColor.addEventListener('input', debouncedRender);
+
+        // File Upload Listener
+        elements.fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                loadImageFile(e.target.files[0]);
+            }
         });
-    });
 
-    // C. Action Button Listeners
-    DOM.downloadButton.addEventListener('click', downloadMeme);
-    DOM.copyButton.addEventListener('click', copyMeme);
-    DOM.shareTwitterBtn.addEventListener('click', shareOnX);
-    
-    DOM.clearTextBtn.addEventListener('click', () => {
-        DOM.topTextInput.value = '';
-        DOM.bottomTextInput.value = '';
-        saveSettings();
-    });
-    
-    DOM.clearImageBtn.addEventListener('click', () => {
-        currentImage = null;
-        drawMeme();
-        showAlert('Image cleared!', 'info');
-    });
-    
-    DOM.swapTextBtn.addEventListener('click', () => {
-        [DOM.topTextInput.value, DOM.bottomTextInput.value] = [DOM.bottomTextInput.value, DOM.topTextInput.value];
-        saveSettings();
-    });
+        // Placeholder/Click Listener
+        elements.placeholder.addEventListener('click', () => {
+            elements.fileInput.click();
+        });
 
-    // D. Template Buttons Listener (Event Delegation)
-    DOM.templateButtons.addEventListener('click', (e) => {
-        if (e.target.dataset.template) {
-            applyTemplate(e.target.dataset.template);
+        // Drag and Drop Listeners
+        const dropArea = elements.placeholder.parentElement;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false); // Prevent global drops
+        });
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-    });
 
-    // E. Global Keyboard Shortcut for Randomization
-    document.addEventListener('keydown', (e) => {
-        if (e.key.toUpperCase() === 'R' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            // Future feature: Randomize position/font
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            if (file) {
+                loadImageFile(file);
+            }
         }
-    });
 
-    // F. Handle Resize (Debounced)
-    const debouncedResize = typeof debounce === 'function' ? debounce(drawMeme, 250) : drawMeme;
-    window.addEventListener('resize', debouncedResize);
+        // Button Listeners
+        elements.downloadBtn.addEventListener('click', downloadMeme);
+        elements.resetBtn.addEventListener('click', resetTool);
+        
+        // Final event tracking
+        Tracker.trackEvent('meme_captioner_initialized');
+    }
+
+    // Public interface
+    return {
+        init: init
+    };
+
+})();
+
+// Initialize the tool when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    MemeCaptioner.init();
 });
