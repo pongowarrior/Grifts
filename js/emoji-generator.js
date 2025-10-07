@@ -64,6 +64,15 @@ const emojiDatabase = {
             high: ["LET'S GOOOOO {EMOJI}{EMOJI}{EMOJI} {TEXT} {EMOJI}{EMOJI}{EMOJI} I'M SO HYPED RIGHT NOW 🔊", "THE ENERGY IS UNREAL {EMOJI}{EMOJI} {TEXT} {EMOJI}{EMOJI} WE'RE GOING CRAZY 🎊"]
         }
     },
+    // NEW: GRIND / HUSTLE STYLE
+    grind: {
+        emojis: ['😤', '💪', '🦁', '💸', '💼', '📊'],
+        templates: {
+            low: ["😤 {TEXT}", "{TEXT} 💪", "Hustle mode {TEXT} 💼"],
+            medium: ["GRIND NEVER STOPS 😤 {EMOJI} {TEXT} {EMOJI} GET THAT BAG 💸", "LOCK IN 🦁 {TEXT} {EMOJI}{EMOJI} NOTHING BUT WINS"],
+            high: ["WE AIN'T STOPPING 😤💪🦁 {TEXT} {EMOJI}{EMOJI} FOCUS ON THE GOAL 📊💼", "DIAMOND HANDS 💎 {EMOJI}{EMOJI}{EMOJI} {TEXT} {EMOJI}{EMOJI} THE LION EATS FIRST 🦁"]
+        }
+    },
     mixed: {
         emojis: ['✨', '💯', '🔥', '🚀', '🐐', '✅', '👑', '🎉'],
         templates: {
@@ -106,8 +115,7 @@ function generateEmojiString(silent = false) {
         if (!silent) showAlert('Please enter at least 2 characters of text.', 'info');
         document.getElementById('copy-btn').disabled = true;
         document.getElementById('favorite-btn').disabled = true;
-        // NEW: Disable share button too
-        document.getElementById('share-btn').disabled = true;
+        document.getElementById('share-btn').disabled = true; // DISABLE SHARE
         emojiOutput.textContent = 'Enter text and choose a style to generate a viral reaction!';
         return;
     }
@@ -126,8 +134,7 @@ function generateEmojiString(silent = false) {
     
     document.getElementById('copy-btn').disabled = false;
     document.getElementById('favorite-btn').disabled = false;
-    // NEW: Enable share button
-    document.getElementById('share-btn').disabled = false; 
+    document.getElementById('share-btn').disabled = false; // ENABLE SHARE
     
     saveHistory(currentGeneration);
     
